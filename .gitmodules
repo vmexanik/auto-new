@@ -1,0 +1,12 @@
+[submodule "class/core"]
+	path = class/core
+	url = https://github.com/vmexanik/core.git
+[submodule "lib"]
+	path = lib
+	url = https://github.com/vmexanik/lib.git
+[submodule "libp"]
+	path = libp
+	url = https://github.com/vmexanik/libp.git
+[submodule "template/addon"]
+	path = template/addon
+	url = https://github.com/vmexanik/addon.git
