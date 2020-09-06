@@ -1,0 +1,25 @@
+#pass-strength-result {
+	width: 100%; 
+	background-color: #a2b683; 
+	height: 26px;
+}
+
+#pass-strength-result.bad {
+	width: 10%; 
+	background-color: #ffb78c;
+}
+
+#pass-strength-result.good {
+	width: 100%; 
+	background-color: #ffec8b;
+}
+
+#pass-strength-result.short {
+	width: 50%; 
+	background-color: #ffa0a0;
+}
+
+#pass-strength-result.strong {
+	width: 80%; 
+	background-color: #c3ff88;
+}

@@ -1,0 +1,1 @@
+{html_options name=data[id_price_group] options=$aPriceGroup selected=$aData.id_price_group class="form-control btn-sm"}

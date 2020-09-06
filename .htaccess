@@ -1,0 +1,128 @@
+php_value max_input_vars 5000
+# - svn folder hide -
+RewriteEngine on
+RewriteRule .*\.svn/.* - [F]
+RewriteBase /
+
+# if rewrite all url in small - AT-1158
+#RewriteCond %{REQUEST_URI} ^[^A-Z]*[A-Z].*
+#RewriteRule ^ ${lc:%{REQUEST_URI}} [L,R=301]
+# ---------------
+
+Options -Indexes
+
+#deny from all
+
+php_value register_globals 0
+ErrorDocument 404 /?action=missing
+
+# AT-1158
+# Настроить 301 серверный редирект со всех страниц с "/" на страницы без "/" Пример:
+#RewriteCond %{request_method} ^GET$
+#RewriteCond %{REQUEST_URI} ^(.+)/$
+#RewriteRule ^(.+)$ %1 [L,R=301]
+
+RewriteRule ^robots.txt$ /imgbank/Image/seo/robots.txt
+RewriteRule ^(siteindex|sitemap)(\d*).xml$ /imgbank/xml/$1$2.xml
+
+# AT-281 multilingual subdomains
+RewriteCond %{REQUEST_URI} !^/[^\/]+.(.*)
+RewriteCond %{HTTP_HOST} ^(en)\.irbis\.(.*)$
+RewriteCond %{QUERY_STRING} !(.*)locale(.*)
+RewriteRule ^(.*)$ /?locale=%1&%{QUERY_STRING}
+
+RewriteCond %{HTTP_HOST} ^irbisredesign.mstarproject.com$
+RewriteRule ^(.*)$ http://irbis.mstarproject.com/$1 [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^www.superpartbox.com.ua$ [OR]
+RewriteCond %{HTTP_HOST} ^pbx.mstarproject.com$ 
+RewriteRule ^(.*)$ http://superpartbox.com.ua/$1 [R=301,L]
+
+RewriteRule ^ua/?$ /?locale=ua [QSA,L]
+
+# ALT-152
+#RewriteRule ^select(\/{0,1})$ /?action=price_group [QSA,L]
+#RewriteRule ^select/([a-zA-Z0-9_-\s]+)(\/{0,1})$ /?action=price_group&category=$1 [QSA,L]
+#RewriteRule ^select/([a-zA-Z0-9_-\s]+)/([\d\w\s.\/].+)(\/{0,1})$ /?action=price_group&category=$1&all_params=$2 [QSA,L]
+RewriteRule ^(ua)?/?select(\/{0,1})$ /?locale=$1&action=price_group [QSA,L]
+RewriteRule ^(ua)?/?select/([a-zA-Z0-9_-\s]+)(\/{0,1})$ /?locale=$1&action=price_group&category=$2 [QSA,L]
+RewriteRule ^(ua)?/?select/([a-zA-Z0-9_-\s]+)/([\d\w\s.\/].+)(\/{0,1})$ /?locale=$1&action=price_group&category=$2&all_params=$3 [QSA,L]
+
+# AT-617
+#RewriteRule ^pages/([a-zA-Z0-9_-]+)\/{0,1}$ /?action=$1 [QSA,L]
+#RewriteRule ^pages/(news)\/_?([^\/]+)\/{0,1}$ /?action=news_preview&id=$2 [QSA,L]
+RewriteRule ^(ua)?/?pages/([a-zA-Z0-9_-]+)\/{0,1}$ /?locale=$1&action=$2 [QSA,L]
+RewriteRule ^(ua)?/?pages/(news)\/_?([^\/]+)\/{0,1}$ /?locale=$1&action=news_preview&id=$3 [QSA,L]
+
+#RewriteRule ^(model_for)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9\-\s\.]+)\/{0,1}$ /?action=catalog_model_for&data[cat]=$2&data[code]=$3&form_hide=0 [QSA]
+RewriteRule ^(ua)?/?(model_for)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9\-\s\.]+)\/{0,1}$ /?locale=$1&action=catalog_model_for&data[cat]=$3&data[code]=$4&form_hide=0 [QSA]
+
+#RewriteRule ^(price)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)\/{0,1}$ /?action=catalog_price_view&name=$2&code=$3 [QSA]
+#RewriteRule ^(price)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)/sort=(.*)/way=(.*)$ /?action=catalog_price_view&name=$2&code=$3&sort=$4&way=$5 [QSA,L]
+#RewriteRule ^(price)\/_?([^\/]+)/sort=(.*)/way=(.*)$ /?action=catalog_price_view&code=$2&sort=$3&way=$4 [QSA,L]
+#RewriteRule ^(price)\/_?([^\/]+)\/{0,1}$ /?action=catalog_price_view&code=$2 [QSA,L]
+RewriteRule ^(ua)?/?(price)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)\/{0,1}$ /?locale=$1&action=catalog_price_view&name=$3&code=$4 [QSA]
+RewriteRule ^(ua)?/?(price)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)/sort=(.*)/way=(.*)$ /?locale=$1&action=catalog_price_view&name=$3&code=$4&sort=$5&way=$6 [QSA,L]
+RewriteRule ^(ua)?/?(price)\/_?([^\/]+)/sort=(.*)/way=(.*)$ /?locale=$1&action=catalog_price_view&code=$3&sort=$4&way=$5 [QSA,L]
+RewriteRule ^(ua)?/?(price)\/_?([^\/]+)\/{0,1}$ /?locale=$1&action=catalog_price_view&code=$3 [QSA,L]
+
+#RewriteRule ^(buy)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.\/,:\"\[\]\(\)\*\+\`\']+)_([0-9]+)\/{0,1}$ /?action=catalog_part_info_view&cat_name=$2&code=$3&id_provider=$4 [QSA]
+#RewriteRule ^(buy)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.\/,:\"\[\]\(\)\*\+\`\']+)\/{0,1}$ /?action=catalog_part_info_view&cat_name=$2&code=$3 [QSA]
+
+#RewriteRule ^([bB]{1}[uU]{1}[yY]{1})\/([a-zA-Z0-9\-\s\.]+)_([^\/]+)/sort=(.*)/way=(.*)$ /buy/$2_$3/sort=$4/way=$5/ [R=301,L]
+#RewriteRule ^([bB]{1}[uU]{1}[yY]{1})\/([a-zA-Z0-9\-\s\.]+)_([^\/]+)_([0-9]+)\/{0,1}$ /buy/$2_$3/ [R=301,L]
+#RewriteRule ^([bB]{1}[uU]{1}[yY]{1})\/([a-zA-Z0-9\-\s\.]+)_([^\/]+)\/{0,1}$ /buy/$2_$3/ [R=301,L]
+#RewriteRule ^(buy)\/([a-zA-Z0-9\-\s\.]+)_([\d\w\-\x7f-\xffa-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)/sort=(.*)/way=(.*)$ /?action=catalog_part_info_view&cat_name=$2&code=$3&sort=$4&way=$5 [QSA,L]
+#RewriteRule ^(buy)\/([a-zA-Z0-9\-\s\.]+)_([\d\w\-\x7f-\xffa-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)\/{0,1}$ /?action=catalog_part_info_view&cat_name=$2&code=$3 [QSA,L]
+RewriteRule ^(ua)?/?(buy)\/([a-zA-Z0-9\-\s\.]+)_([\d\w\-\x7f-\xffa-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)/sort=(.*)/way=(.*)$ /?locale=$1&action=catalog_part_info_view&cat_name=$3&code=$4&sort=$5&way=$6 [QSA,L]
+RewriteRule ^(ua)?/?(buy)\/([a-zA-Z0-9\-\s\.]+)_([\d\w\-\x7f-\xffa-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)\/{0,1}$ /?locale=$1&action=catalog_part_info_view&cat_name=$3&code=$4 [QSA,L]
+
+#RewriteRule ^search_text\/([^~\/]+)/sort=(.*)/way=(.*)$ /?action=search&search[query]=$1&sort=$2&way=$3 [QSA,L]
+#RewriteRule ^search_text\/([^~\/]+)\/{0,1}$ /?action=search&search[query]=$1
+#RewriteRule ^search_text\/([^~]+)~(\-?[0-9]+)\/{0,1}$ /?action=search&search[query]=$1&search[id_price_group]=$2
+RewriteRule ^(ua)?/?search_text\/([^~\/]+)/sort=(.*)/way=(.*)$ /?locale=$1&action=search&search[query]=$2&sort=$3&way=$4 [QSA,L]
+RewriteRule ^(ua)?/?search_text\/([^~\/]+)\/{0,1}$ /?locale=$1&action=search&search[query]=$2
+RewriteRule ^(ua)?/?search_text\/([^~]+)~(\-?[0-9]+)\/{0,1}$ /?locale=$1&action=search&search[query]=$2&search[id_price_group]=$3
+
+#RewriteRule ^cars\/{0,1}$ /?action=catalog [QSA,L]
+#RewriteRule ^cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_,&\.\s\(\)\[\]\+]+-)?([0-9]+)-([0-9]+)-([0-9]+)/sort=(.*)/way=(.*)$ /?action=catalog_part_view&cat=$1&data[id_model]=$3&data[id_model_detail]=$4&data[id_part]=$5&sort=$6&way=$7 [QSA,L]
+#RewriteRule ^cars\/([a-zA-Z0-9_-\s]+)\/([0-9]+)/([0-9]+)/([0-9]+)\/?$ /?action=catalog_part_view&cat=$1&data[id_model]=$2&data[id_model_detail]=$3&data[id_part]=$4 [QSA]
+#RewriteRule ^cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_;,&\.\s\(\)\[\]\+]+-)?([0-9]+)-([0-9]+)-([0-9]+)\/?$ /?action=catalog_part_view&cat=$1&data[id_model]=$3&data[id_model_detail]=$4&data[id_part]=$5 [QSA]
+#RewriteRule ^cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_;,&\.\s\(\)\[\]\+]+-)?([0-9]+)-([0-9]+)\/?$ /?action=catalog_assemblage_view&cat=$1&data[id_model]=$3&data[id_model_detail]=$4 [QSA]
+#RewriteRule ^cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_;,&\.\s\(\)\[\]\+]+-)?([0-9]+)\/?$ /?action=catalog_detail_model_view&cat=$1&data[id_model]=$3 [QSA]
+#RewriteRule ^cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_;,&\.\s\(\)\[\]\+]+-)?([0-9]+)=([0-9]+)\/?$ /?action=catalog_detail_model_view&cat=$1&data[id_model]=$3&step=$4 [QSA]
+#RewriteRule ^cars\/([a-zA-Z0-9_,\.-\s\(\)\[\]\+]+)=([0-9]+)\/?$ /?action=catalog_model_view&cat=$1&step=$2 [QSA,L]
+#RewriteRule ^cars\/([a-zA-Z0-9_,\.-\s\(\)\[\]\+]+)\/?$ /?action=catalog_model_view&cat=$1 [QSA,L]
+#RewriteRule ^cars\/([a-zA-Z0-9_,\.-\s\(\)\[\]\+]+)\/([a-zA-Z0-9_,\.-\s\(\)\[\]\+]+)\/?$ /?action=catalog_model_group_view&cat=$1&model_group=$2 [QSA,L]
+RewriteRule ^(ua)?/?cars\/{0,1}$ /?locale=$1&action=catalog [QSA,L]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_,&\.\s\(\)\[\]\+]+-)?([0-9]+)-([0-9]+)-([0-9]+)/sort=(.*)/way=(.*)$ /?locale=$1&action=catalog_part_view&cat=$2&data[id_model]=$4&data[id_model_detail]=$5&data[id_part]=$6&sort=$7&way=$8 [QSA,L]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_-\s]+)\/([0-9]+)/([0-9]+)/([0-9]+)\/?$ /?locale=$1&action=catalog_part_view&cat=$2&data[id_model]=$3&data[id_model_detail]=$4&data[id_part]=$5 [QSA]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_;,&\.\s\(\)\[\]\+]+-)?([0-9]+)-([0-9]+)-([0-9]+)\/?$ /?locale=$1&action=catalog_part_view&cat=$2&data[id_model]=$4&data[id_model_detail]=$5&data[id_part]=$6 [QSA]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_;,&\.\s\(\)\[\]\+]+-)?([0-9]+)-([0-9]+)\/?$ /?locale=$1&action=catalog_assemblage_view&cat=$2&data[id_model]=$4&data[id_model_detail]=$5 [QSA]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_;,&\.\s\(\)\[\]\+]+-)?([0-9]+)\/?$ /?locale=$1&action=catalog_detail_model_view&cat=$2&data[id_model]=$4 [QSA]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_-\s]+)\/([a-zA-Z0-9_;,&\.\s\(\)\[\]\+]+-)?([0-9]+)=([0-9]+)\/?$ /?locale=$1&action=catalog_detail_model_view&cat=$2&data[id_model]=$4&step=$5 [QSA]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_,\.-\s\(\)\[\]\+]+)=([0-9]+)\/?$ /?locale=$1&action=catalog_model_view&cat=$2&step=$3 [QSA,L]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_,\.-\s\(\)\[\]\+]+)\/?$ /?locale=$1&action=catalog_model_view&cat=$2 [QSA,L]
+RewriteRule ^(ua)?/?cars\/([a-zA-Z0-9_,\.-\s\(\)\[\]\+]+)\/([a-zA-Z0-9_,\.-\s\(\)\[\]\+]+)\/?$ /?locale=$1&action=catalog_model_group_view&cat=$2&model_group=$3 [QSA,L]
+
+#RewriteRule ^cars_delete\/([0-9]+)\/?$ /?action=home&clear_auto=$1 [QSA]
+RewriteRule ^(ua)?/?cars_delete\/([0-9]+)\/?$ /?locale=$1&action=home&clear_auto=$2 [QSA]
+
+RewriteRule ^(original_cross)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)_([0-9]+)_([0-9]+)\/{0,1}$ /original_cross/$2_$3/ [R=301,L]
+RewriteRule ^ua/(original_cross)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)_([0-9]+)_([0-9]+)\/{0,1}$ /ua/original_cross/$2_$3/ [R=301,L]
+#RewriteRule ^(original_cross)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)\/{0,1}$ /?action=catalog_original_cross&code=$3&cat=$2&art_id=$4&id_cat_part=$5 [QSA,L]
+#RewriteRule ^(original_cross)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)\/([0-9]+)\/{0,1}$ /?action=catalog_original_cross&code=$3&cat=$2&step=$4 [QSA,L]
+RewriteRule ^(ua)?/?(original_cross)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)\/{0,1}$ /?locale=$1&action=catalog_original_cross&code=$4&cat=$3&art_id=$5&id_cat_part=$6 [QSA,L]
+RewriteRule ^(ua)?/?(original_cross)\/([a-zA-Z0-9\-\s\.]+)_([a-zA-Z0-9-\s\.,:\"\[\]\(\)\*\+\`\']+)\/([0-9]+)\/{0,1}$ /?locale=$1&action=catalog_original_cross&code=$4&cat=$3&step=$5 [QSA,L]
+
+#----- rubricator
+#RewriteRule ^rubricator(\/{0,1})$ /?action=rubricator [QSA,L]
+#RewriteRule ^rubricator/([a-zA-Z0-9_-\s]+)(\/{0,1})$ /?action=rubricator_category&category=$1 [QSA,L]
+#RewriteRule ^rubricator/([a-zA-Z0-9_-\s]+)/([\d\w\s.\/].+)(\/{0,1})$ /?action=rubricator_category&category=$1&all_params=$2 [QSA,L]
+RewriteRule ^(ua)?/?rubricator(\/{0,1})$ /?locale=$1&action=rubricator [QSA,L]
+RewriteRule ^(ua)?/?rubricator/([a-zA-Z0-9_-\s]+)(\/{0,1})$ /?locale=$1&action=rubricator_category&category=$2 [QSA,L]
+RewriteRule ^(ua)?/?rubricator/([a-zA-Z0-9_-\s]+)/([\d\w\s.\/].+)(\/{0,1})$ /?locale=$1&action=rubricator_category&category=$2&all_params=$3 [QSA,L]
+#------------
+RewriteRule ^exchange.php?(.+)$ /?action=exchange&$1 [QSA,L]
+RewriteRule ^(siteindex|site_index|sitemap|sitemapimages|sitemap-images|sitemap-products|sitemap-brands)(\d*).xml$ /imgbank/xml/$1$2.xml
+#------------

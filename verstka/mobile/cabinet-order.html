@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AVT</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,700&amp;subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="_js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="_js/jquery-ui.js"></script>
+    <script type="text/javascript" src="_js/ios.drag.fix.js"></script>
+    <script type="text/javascript" src="_js/jquery.uniform.min.js"></script>
+    <script type="text/javascript" src="_js/main.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="_css/jquery-ui.css"  />
+    <link rel="stylesheet" type="text/css" href="_css/main.css" />
+</head>
+<body>
+    <header class="at-header">
+        <div class="logo">
+            <a href="/"><img src="_images/logo.png" alt=""></a>
+        </div>
+    </header>
+
+    <nav class="at-top-nav js-top-nav">
+        <div class="block-inner">
+            <a class="block-element el-toggle js-curtain-toggle" href="javascript:void(0);"></a>
+            <div class="block-separate"></div>
+            <a class="block-element el-search js-search-toggle" href="javascript:void(0);"></a>
+            <div class="block-separate"></div>
+            <a class="block-element el-cabinet js-cabinet-toggle" href="javascript:void(0);">
+                <span class="status"></span>
+            </a>
+            <div class="block-separate"></div>
+            <a class="block-element el-basket" href="#">
+                <span class="count full">5</span>
+            </a>
+        </div>
+
+        <div class="block-search hidden js-block-search">
+            <input type="text" value="" placeholder="Поиск по артикулу или названию">
+            <input type="submit" value="">
+        </div>
+
+        <div class="block-client-menu js-client-menu" style="display: none;">
+            <ul>
+                <li><a href="#">Заказы</a></li>
+                <li><a href="#">Расходные накладные</a></li>
+                <li><a href="#">Акт сверки</a></li>
+                <li><a href="#">Настройки</a></li>
+                <li><a class="exit" href="#">Выход</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="at-top-nav-place js-top-nav-place"></div>
+
+    <section class="at-content">
+        <div class="at-page-caption">
+            <a href="#" class="back"></a>
+            <h1>Мои заказы</h1>
+        </div>
+
+        <div class="at-productlist-control">
+            <div class="block-help" onclick="popupOpen('.js-popup-info');">
+                Помощь
+            </div>
+            <div class="block-filter js-filters-wrapper-toggler">
+                Фильтры
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="at-order-list">
+            <div class="order-element js-order-element">
+                <div class="order-head">
+                    <strong>№1879787</strong>   |  26 октября 2016 в 20:16
+                </div>
+                <div class="order-body">
+                    <div class="at-productlist-wrap">
+                        <div class="at-productlist-element">
+                            <div class="block-image">
+                                <a href="#"><img src="_images/temp/004.png" alt=""></a>
+                            </div>
+                            <div class="block-info">
+                                <div class="name">
+                                    <strong>Bosch</strong>
+                                    F 0026 000 133
+                                </div>
+                                Тормозные колодки<br />
+                                <br />
+                                <span class="title">Наличие:</span> 15 шт.<br />
+                                <span class="title">Мин. заказ:</span> 2 шт.<br />
+                                <span class="title">Доставка</span> 13 дн.<br />
+                            </div>
+                            <div class="clear"></div>
+
+                            <div class="block-buy">
+                                <div class="price">
+                                    574.00 <span>грн</span>
+                                </div>
+
+                                <a href="#" class="at-button buy"></a>
+
+                                <div class="count-wrap">
+                                    <div class="at-block-count js-block-count">
+                                        <span class="plus"></span>
+                                        <span class="minus"></span>
+                                        <input class="count" type="text" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+
+                        <div class="at-productlist-element">
+                            <div class="block-image">
+                                <a href="#"><img src="_images/temp/004.png" alt=""></a>
+                            </div>
+                            <div class="block-info">
+                                <div class="name">
+                                    <strong>Bosch</strong>
+                                    F 0026 000 133
+                                </div>
+                                Тормозные колодки<br />
+                                <br />
+                                <span class="title">Наличие:</span> 15 шт.<br />
+                                <span class="title">Мин. заказ:</span> 2 шт.<br />
+                                <span class="title">Доставка</span> 13 дн.<br />
+                            </div>
+                            <div class="clear"></div>
+
+                            <div class="block-buy">
+                                <div class="price">
+                                    574.00 <span>грн</span>
+                                </div>
+
+                                <a href="#" class="at-button buy"></a>
+
+                                <div class="count-wrap">
+                                    <div class="at-block-count js-block-count">
+                                        <span class="plus"></span>
+                                        <span class="minus"></span>
+                                        <input class="count" type="text" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="at-order-total">
+                        <div class="summ">
+                            Сумма заказа:
+                            <strong>
+                                5 148.00
+                                <span>грн</span>
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-foot">
+                    <div class="name">Статус:</div>
+                    <div class="status accept">Принято</div>
+                    <div class="download"><a href="#"><span>Скачать счет</span></a></div>
+                </div>
+            </div>
+
+            <div class="order-element js-order-element">
+                <div class="order-head">
+                    <strong>№1879787</strong>   |  26 октября 2016 в 20:16
+                </div>
+                <div class="order-body">
+                    <div class="at-productlist-wrap">
+                        <div class="at-productlist-element">
+                            <div class="block-image">
+                                <a href="#"><img src="_images/temp/004.png" alt=""></a>
+                            </div>
+                            <div class="block-info">
+                                <div class="name">
+                                    <strong>Bosch</strong>
+                                    F 0026 000 133
+                                </div>
+                                Тормозные колодки<br />
+                                <br />
+                                <span class="title">Наличие:</span> 15 шт.<br />
+                                <span class="title">Мин. заказ:</span> 2 шт.<br />
+                                <span class="title">Доставка</span> 13 дн.<br />
+                            </div>
+                            <div class="clear"></div>
+
+                            <div class="block-buy">
+                                <div class="price">
+                                    574.00 <span>грн</span>
+                                </div>
+
+                                <a href="#" class="at-button buy"></a>
+
+                                <div class="count-wrap">
+                                    <div class="at-block-count js-block-count">
+                                        <span class="plus"></span>
+                                        <span class="minus"></span>
+                                        <input class="count" type="text" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+
+                        <div class="at-productlist-element">
+                            <div class="block-image">
+                                <a href="#"><img src="_images/temp/004.png" alt=""></a>
+                            </div>
+                            <div class="block-info">
+                                <div class="name">
+                                    <strong>Bosch</strong>
+                                    F 0026 000 133
+                                </div>
+                                Тормозные колодки<br />
+                                <br />
+                                <span class="title">Наличие:</span> 15 шт.<br />
+                                <span class="title">Мин. заказ:</span> 2 шт.<br />
+                                <span class="title">Доставка</span> 13 дн.<br />
+                            </div>
+                            <div class="clear"></div>
+
+                            <div class="block-buy">
+                                <div class="price">
+                                    574.00 <span>грн</span>
+                                </div>
+
+                                <a href="#" class="at-button buy"></a>
+
+                                <div class="count-wrap">
+                                    <div class="at-block-count js-block-count">
+                                        <span class="plus"></span>
+                                        <span class="minus"></span>
+                                        <input class="count" type="text" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="at-order-total">
+                        <div class="summ">
+                            Сумма заказа:
+                            <strong>
+                                5 148.00
+                                <span>грн</span>
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-foot">
+                    <div class="name">Статус:</div>
+                    <div class="status">В работе</div>
+                    <div class="download"><a href="#"><span>Скачать счет</span></a></div>
+                </div>
+            </div>
+
+            <div class="order-element js-order-element">
+                <div class="order-head">
+                    <strong>№1879787</strong>   |  26 октября 2016 в 20:16
+                </div>
+                <div class="order-body">
+                    <div class="at-productlist-wrap">
+                        <div class="at-productlist-element">
+                            <div class="block-image">
+                                <a href="#"><img src="_images/temp/004.png" alt=""></a>
+                            </div>
+                            <div class="block-info">
+                                <div class="name">
+                                    <strong>Bosch</strong>
+                                    F 0026 000 133
+                                </div>
+                                Тормозные колодки<br />
+                                <br />
+                                <span class="title">Наличие:</span> 15 шт.<br />
+                                <span class="title">Мин. заказ:</span> 2 шт.<br />
+                                <span class="title">Доставка</span> 13 дн.<br />
+                            </div>
+                            <div class="clear"></div>
+
+                            <div class="block-buy">
+                                <div class="price">
+                                    574.00 <span>грн</span>
+                                </div>
+
+                                <a href="#" class="at-button buy"></a>
+
+                                <div class="count-wrap">
+                                    <div class="at-block-count js-block-count">
+                                        <span class="plus"></span>
+                                        <span class="minus"></span>
+                                        <input class="count" type="text" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+
+                        <div class="at-productlist-element">
+                            <div class="block-image">
+                                <a href="#"><img src="_images/temp/004.png" alt=""></a>
+                            </div>
+                            <div class="block-info">
+                                <div class="name">
+                                    <strong>Bosch</strong>
+                                    F 0026 000 133
+                                </div>
+                                Тормозные колодки<br />
+                                <br />
+                                <span class="title">Наличие:</span> 15 шт.<br />
+                                <span class="title">Мин. заказ:</span> 2 шт.<br />
+                                <span class="title">Доставка</span> 13 дн.<br />
+                            </div>
+                            <div class="clear"></div>
+
+                            <div class="block-buy">
+                                <div class="price">
+                                    574.00 <span>грн</span>
+                                </div>
+
+                                <a href="#" class="at-button buy"></a>
+
+                                <div class="count-wrap">
+                                    <div class="at-block-count js-block-count">
+                                        <span class="plus"></span>
+                                        <span class="minus"></span>
+                                        <input class="count" type="text" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="at-order-total">
+                        <div class="summ">
+                            Сумма заказа:
+                            <strong>
+                                5 148.00
+                                <span>грн</span>
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-foot">
+                    <div class="name">Статус:</div>
+                    <div class="status">В работе</div>
+                    <div class="download"><a href="#"><span>Скачать счет</span></a></div>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <div class="at-block-stepper">
+            <a class="prev lite" href="#"></a>
+            <a class="next" href="#"></a>
+            <a class="lite" href="#">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+        </div>
+        <br />
+        <br />
+
+        <div class="at-block-userinfo">
+            <div class="info-element">
+                <div class="info" onclick="popupOpen('.js-popup-info');"></div>
+                <div class="caption">Задолжность грн.:</div>
+                <span class="title">Долг</span> 2 500<br />
+                <span class="title">Просрочка</span> 500<br />
+            </div>
+
+            <div class="info-element">
+                <div class="user-left">
+                    <div class="user-avatar"><img src="_images/avatar.png" alt=""></div>
+                    <div class="user-name">
+                        Полищук Олег Анатольевич
+                        <span>Ваше менеджер</span>
+                    </div>
+                </div>
+                <div class="user-contacts">
+                    <div class="block-phones">
+                        (044) 473-74-37<br />
+                    </div>
+                    <br />
+
+                    <div class="block-skype">
+                        <a href="#">petr.atp</a>
+                    </div>
+                    <br />
+
+                    <div class="block-email">
+                        <a href="mailto:info@atp.ua">petr@atp.ua</a>
+                    </div>
+                </div>
+
+                <div class="clear"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="at-block-prefooter">
+        <a class="block-phone" href="tel:0444737437">
+            (044) 473-74-37
+        </a>
+    </div>
+
+    <footer class="at-footer">
+        <div class="social">
+            <a class="fb" href="#"></a>
+            <a class="gp" href="#"></a>
+            <a class="tw" href="#"></a>
+        </div>
+        <div class="copy">
+            Все права защищены 2016
+        </div>
+    </footer>
+
+    <div class="at-curtain-left js-curtain-left">
+        <div class="head">
+            <div class="close js-curtain-toggle"></div>
+            <div class="logo"><a href="/"><img src="_images/logo-2.png" alt=""></a></div>
+            <div class="clear"></div>
+        </div>
+        <ul class="body">
+            <li><a href="#">Каталог товаров</a></li>
+            <li><a href="#">О компании</a></li>
+            <li><a href="#">Оплата и доставка</a></li>
+            <li><a href="#">Гарантия</a></li>
+            <li><a href="#">Сервис</a></li>
+            <li><a href="#">Контакты</a></li>
+        </ul>
+    </div>
+
+    <div class="at-filters-wrapper hidden js-filters-wrapper">
+        <div class="at-page-caption">
+            <a href="javascript:void(0);" class="back js-filters-wrapper-toggler"></a>
+            <h2 class="js-filters-wrapper-toggler">Назад</h2>
+
+            <div class="checked-filters">
+                <div class="title">Фильтры</div>
+                По заказам
+            </div>
+        </div>
+
+        <div class="filter-element">
+            <div class="body">
+                <div class="at-block-form">
+                    <div class="form-element">
+                        <select>
+                            <option value="">Транспорт</option>
+                        </select>
+                    </div>
+                    <div class="form-element">
+                        <select>
+                            <option value="">Статус</option>
+                        </select>
+                    </div>
+                    <div class="form-element">
+                        <input type="text" value="" placeholder="Номер заказа">
+                    </div>
+                    <div class="form-element">
+                        <input type="text" value="" placeholder="Артикул\наименование">
+                    </div>
+                    <div class="double">
+                        <div class="form-element">
+                            <div class="f-title">Дата</div>
+                            <input type="text" value="" placeholder="21.10.1897">
+                        </div>
+                        <div class="form-element">
+                            <div class="f-title">&nbsp;</div>
+                            <input type="text" value="" placeholder="21.10.1897">
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons-block">
+            <div class="button"><a class="at-button lite js-filters-wrapper-toggler" href="#">Сбросить</a></div>
+            <div class="button"><a class="at-button js-filters-wrapper-toggler" href="#">Применить</a></div>
+            <div class="clear"></div>
+        </div>
+        <div class="buttons-place"></div>
+    </div>
+
+    <div class="at-block-popup full-screen js-popup-info" style="display: none;">
+        <div class="dark" data-accept="false"></div>
+        <div class="block-popup">
+            <div class="head">
+                <span class="back">Справка</span>
+                <div class="clear"></div>
+            </div>
+
+            <div class="block-terms">
+                Не следует, однако забывать, что постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение направлений прогрессивного развития. Таким образом новая модель организационной деятельности позволяет выполнять важные задания по разработке существенных финансовых и административных условий.<br />
+                <br />
+                Товарищи! сложившаяся структура организации требуют определения и уточнения новых предложений. Значимость этих проблем настолько очевидна, что укрепление и развитие структуры обеспечивает широкому кругу (специалистов) участие в формировании существенных финансовых и административных условий. Повседневная практика показывает, что реализация намеченных плановых заданий требуют от нас анализа существенных финансовых и административных условий.<br />
+                <br />
+                Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности обеспечивает широкому кругу (специалистов) участие в формировании системы обучения кадров, соответствует насущным потребностям. Идейные соображения высшего порядка, а также консультация с широким активом играет важную роль в формировании направлений прогрессивного развития.
+            </div>
+            <div class="fixed-buttons">
+                <a class="at-button" href="javascript:void(0);" onclick="popupClose('.js-popup-info');">Закрыть</a>
+            </div>
+            <div class="fixed-buttons-place"></div>
+        </div>
+    </div>
+</body>
+</html>

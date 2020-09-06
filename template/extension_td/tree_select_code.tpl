@@ -1,0 +1,1 @@
+<select name="data[id_cat_part]" style="width:270px;" id="id_select_code">{html_options options=$aCodes}</select>

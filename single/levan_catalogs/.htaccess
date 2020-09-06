@@ -1,0 +1,5 @@
+AddDefaultCharset UTF-8
+DirectoryIndex index.php
+RewriteEngine On
+
+RewriteRule ^/$ /index.php [L,QSA]

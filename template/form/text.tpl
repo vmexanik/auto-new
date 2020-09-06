@@ -1,0 +1,1 @@
+{$aInput.value}

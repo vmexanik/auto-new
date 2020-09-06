@@ -1,0 +1,1 @@
+#gunzip < avers.zip | mysql avers_uax -upartmaster -pfdnjpg

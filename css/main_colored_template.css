@@ -1,0 +1,436 @@
+input[type=text]:focus,
+input[type=tel]:focus,
+input[type=search]:focus,
+input[type=password]:focus {
+    border-color: @color1;
+}
+select:focus {
+    border-color: @color1;
+}
+textarea:focus {
+    border-color: @color1;
+}
+a {
+    color: @color2;
+}
+body {
+    background-color: @color7;
+}
+.at-car-picker {
+    background-color: @color8;
+}
+.at-mid-header {
+    background-color: @color9;
+}
+.at-index-cat-thumb {
+    background-color: @colorA;
+}
+.at-custom-select-wrap .select-drop-inner {
+    background-color: @colorA;
+}
+.at-custom-select-wrap.opened .at-select {
+    background-color: @colorA;
+}
+.at-brand-thumb {
+    background-color: @colorA;
+}
+.at-btn {
+    border: 1px solid @color4;
+    color: @color2;
+}
+.at-btn:hover {
+    background-color: @color2;
+    border: 1px solid @color2;
+}
+.at-btn:active {
+    background-color: @color3;
+    border: 1px solid @color3;
+}
+.at-select:after {
+    background: url("@image1") no-repeat -21px -100px;
+}
+.at-checkbox > span {
+    background: url("/image/checker-skin-1.png") no-repeat left top;
+}
+.at-checkbox > span.checked {
+    background: url("/image/checker-skin-1.png") no-repeat left bottom;
+}
+.at-radio > span {
+    background: url("/image/radio-skin-1.png") no-repeat left top;
+}
+.at-radio > span.checked {
+    background: url("/image/radio-skin-1.png") no-repeat left bottom;
+}
+.at-block-popup .close {
+    background: url("@image1") no-repeat -50px -300px;
+}
+.at-pages-menu .inner-pages > a:hover {
+    color: @color2;
+}
+.at-docs-link > a:hover {
+    color: @color2;
+}
+.at-docs-link > a:before {
+    background: url("@image1") no-repeat 0 0;
+}
+.at-auth-block.loged > a:before {
+    background: url("@image1") no-repeat -100px -50px;
+}
+.at-auth-block.loged > a > span:before {
+    background: url("@image1") no-repeat -21px -100px;
+}
+.at-auth-block > a:before {
+    background: url("@image1") no-repeat -100px 0;
+}
+.at-auth-block > a > span {
+    color: @color2;
+}
+.at-auth-block .user-name td {
+    color: @color2;
+}
+.at-auth-block .list a:hover {
+    color: @color2;
+}
+.at-basket-widget > a:before {
+    background: url("@image1") no-repeat -150px 0;
+}
+.at-basket-widget .name {
+    color: @color2;
+}
+.at-phones-top.active .main-phone:after {
+    background: url("@image1") no-repeat 0 -65px;
+}
+.at-phones-top .link {
+    color: @color2;
+}
+.at-phones-top .main-phone:before {
+    background: url("@image1") no-repeat -50px 0;
+}
+.at-phones-top .main-phone:after {
+    background: url("@image1") no-repeat 0 -50px;
+}
+.at-phones-top .phones-top-drop .phone:before {
+    background-image: url("@image1");
+}
+.at-post-header {
+    background-color: @color3;
+}
+.at-nav > a {
+    background-color: @color1;
+}
+.at-nav > a i {
+    background: url("@image1") no-repeat -21px -50px;
+}
+.at-nav .nav-drop-inner ul > li > a:hover {
+    color: @color2;
+}
+.at-nav .nav-drop-inner .lvl1 > li:hover > a {
+    color: @color2;
+}
+.at-nav .nav-drop-inner .lvl2 > li:hover a {
+    color: @color2;
+}
+.at-top-button {
+    border: 1px solid @color5;
+}
+.at-top-button:hover {
+    background-color: @color1;
+}
+.at-index-banner .slick-prev {
+    background: url("@image1") no-repeat -100px -150px;
+}
+.at-index-banner .slick-next {
+    background: url("@image1") no-repeat -150px -150px;
+}
+.at-index-banner .slick-dots > li:hover button, .at-index-banner .slick-dots > li.slick-active button {
+    background-color: @color4;
+}
+.at-index-banner .name {
+    color: @color1;
+}
+.at-car-picker {
+    border-top: 2px solid @color3;
+}
+.at-index-cats-mob-list > a:after {
+    background-image: url("@image1");
+}
+.at-index-cat-thumb a {
+    color: @color2;
+}
+.at-toggler > a:after {
+    background-image: url("@image1");
+}
+.at-brand-thumb:hover {
+    border-color: @color4;
+    box-shadow: 0 0 10px @color4;
+}
+.at-product-carousel .at-thumb-element .x3-overflow {
+    color: @color2;
+}
+.at-product-carousel .slick-dots > li.slick-active button, .at-product-carousel .slick-dots > li:hover button {
+    background-color: @color4;
+}
+.at-product-carousel .slick-prev:before {
+    background: url("@image1") no-repeat -23px -350px;
+}
+.at-product-carousel .slick-prev:hover:before {
+    background: url("@image1") no-repeat -23px -386px;
+}
+.at-product-carousel .slick-prev:active:before {
+    background: url("@image1") no-repeat -23px -422px;
+}
+.at-product-carousel .slick-next:before {
+    background: url("@image1") no-repeat 0px -350px;
+}
+.at-product-carousel .slick-next:hover:before {
+    background: url("@image1") no-repeat 0px -386px;
+}
+.at-product-carousel .slick-next:active:before {
+    background: url("@image1") no-repeat 0px -422px;
+}
+.at-index-blog .slick-dots > li.slick-active button, .at-index-blog .slick-dots > li:hover button {
+    background-color: @color4;
+}
+.at-index-blog .slick-prev:before {
+    background: url("@image1") no-repeat -23px -350px;
+}
+.at-index-blog .slick-prev:hover:before {
+    background: url("@image1") no-repeat -23px -386px;
+}
+.at-index-blog .slick-prev:active:before {
+    background: url("@image1") no-repeat -23px -422px;
+}
+.at-index-blog .slick-next:before {
+    background: url("@image1") no-repeat 0px -350px;
+}
+.at-index-blog .slick-next:hover:before {
+    background: url("@image1") no-repeat 0px -386px;
+}
+.at-index-blog .slick-next:active:before {
+    background: url("@image1") no-repeat 0px -422px;
+}
+.at-selected-car {
+    border-top: 2px solid @color3;
+}
+.at-crumbs .mob-link:before {
+    background: url("@image1") no-repeat -176px -300px;
+}
+.at-sort .drop a.active:after {
+    background: url("@image1") no-repeat 0px -100px;
+}
+.at-sort .selected:after {
+    background: url("@image1") no-repeat 0px -100px;
+}
+.at-filters-selected .link:hover {
+    color: @color2;
+}
+.at-filters-selected .link:before {
+    background-image: url("@image1");
+}
+.at-filters label a:hover {
+    color: @color2;
+}
+.at-filter-slider .ui-slider-handle {
+    background: url("@image1") no-repeat -50px -350px !important;
+}
+.at-filter-slider .fields .filters-btn {
+    background-image: url("@image1");
+    background-color: @color2;
+}
+.at-filter-slider .fields .filters-btn:hover {
+    background-color: @color3;
+    border-color: @color3;
+}
+.at-filter-slider .fields .filters-btn:active {
+    background-color: @color3;
+    border-color: @color3;
+}
+.at-thumb-element.ready:hover {
+    box-shadow: 0 0 8px @color4;
+    border-color: @color4;
+}
+.at-thumb-element .fav, .at-thumb-element .com {
+    background-image: url("@image1");
+}
+.at-thumb-element .inbasket:after,
+.at-btn.inbasket:after {
+    background: url("@image1") no-repeat -150px -250px;
+}
+.at-stepper a.prev:before {
+    background: url("@image1") no-repeat -23px -350px;
+}
+.at-stepper a.prev:hover:before {
+    background: url("@image1") no-repeat -23px -386px;
+}
+.at-stepper a.prev:active:before {
+    background: url("@image1") no-repeat -23px -422px;
+}
+.at-stepper a.next:before {
+    background: url("@image1") no-repeat 0px -350px;
+}
+.at-stepper a.next:hover:before {
+    background: url("@image1") no-repeat 0px -386px;
+}
+.at-stepper a.next:active:before {
+    background: url("@image1") no-repeat 0px -422px;
+}
+.at-list-element .fav, .at-list-element .com {
+    background-image: url("@image1");
+}
+.at-list-element .photo {
+    background-image: url("@image1");
+}
+.at-list-element .buy .at-btn i {
+    background-image: url("@image1");
+}
+.at-list-element .buy .at-btn.inbasket i {
+    background: url("@image1") no-repeat -150px -250px;
+}
+.at-popup-basket .basket-buttons .clear-btn:hover, .at-popup-basket .basket-buttons .clear-btn:active {
+    border-color: @color2;
+}
+.at-list-basket-table td .delete {
+    background-image: url("@image1");
+}
+.at-basket-element .photo {
+    background-image: url("@image1");
+}
+.at-product-top .fav, .at-product-top .com {
+    background-image: url("@image1");
+}
+.at-product-info .caption i {
+    background: url("@image1") no-repeat -100px -400px;
+}
+.at-auth-menu .user-name td {
+    color: @color2;
+}
+.at-auth-menu .user-name td.icon i {
+    background: url("@image1") no-repeat -100px -50px;
+}
+.at-auth-menu .list a.selected:after {
+    background-color: @color2;
+}
+.at-auth-menu .list a:hover {
+    color: @color2;
+}
+.at-manager-block {
+    border-top: 4px solid @color3;
+}
+.at-manager-block > a:before, .at-manager-block > a:after {
+    background-image: url("@image1");
+}
+.at-user-card .massages > a:before, .at-user-card .massages > a:after {
+    background-image: url("@image1");
+}
+.at-tabs .tabs-head {
+    border-bottom: 4px solid @color3;
+}
+.at-tabs .tabs-head > a:before, .at-tabs .tabs-head > a:after {
+    background-color: @color3;
+}
+.at-tabs .mob-tabs-select {
+    border-top: 4px solid @color3;
+}
+.at-tab-table .manager-comment .more {
+    color: @color2;
+    border: 1px solid @color2;
+}
+.at-reg-info .bot-part:after {
+    background: url("@image1") no-repeat 0 -500px;
+}
+.at-block-form .field-name .icon {
+    background: url("@image1") no-repeat -100px -400px;
+}
+.at-makeorder-plist .header .edit-order > i {
+    background: url("@image1") no-repeat -100px -450px;
+}
+.at-makeorder-form .icon {
+    background: url("@image1") no-repeat -100px -400px;
+}
+.at-popup-auth .reg-info .bot-part:after {
+    background: url("@image1") no-repeat 0 -500px;
+}
+.at-footer {
+    border-top: 2px solid @color3;
+    background-color: @color6;
+}
+.at-map-link:before {
+    background: url("@image1") no-repeat -50px -158px;
+}
+.at-foot-cats .item a:hover {
+    color: @color2;
+}
+.at-soc a.vk {
+    background: url("@image1") no-repeat 3px -194px;
+}
+.at-soc a.fb {
+    background: url("@image1") no-repeat -30px -194px;
+}
+.at-soc a.gp {
+    background: url("@image1") no-repeat -61px -194px;
+}
+.at-soc a.vk:hover {
+    background: url("@image1") no-repeat 3px -225px;
+}
+.at-soc a.fb:hover {
+    background: url("@image1") no-repeat -30px -225px;
+}
+.at-soc a.gp:hover {
+    background: url("@image1") no-repeat -61px -225px;
+}
+.at-soc a.vk:active {
+    background: url("@image1") no-repeat 3px -257px;
+}
+.at-soc a.fb:active {
+    background: url("@image1") no-repeat -30px -257px;
+}
+.at-soc a.gp:active {
+    background: url("@image1") no-repeat -61px -257px;
+}
+@media screen and (max-width: 569px) {
+  .at-pages-menu .close {
+    background: url("@image1") no-repeat -50px -300px;
+  }
+  .at-pages-menu .close:hover, .at-pages-menu .close:active {
+    background: url("@image1") no-repeat -50px -325px;
+  }
+  .at-mob-toggle-menu > a > span {
+    background: url("@image1") no-repeat 0 -300px;
+  }
+  .at-auth-block .menu-header .close {
+    background: url("@image1") no-repeat -50px -300px;
+  }
+  .at-auth-block .menu-header .close:hover, .at-auth-block .menu-header .close:active {
+    background: url("@image1") no-repeat -50px -325px;
+  }
+  .at-auth-block .manager {
+    border-top: 4px solid @color3;
+  }
+  .at-auth-block .manager > a:before, .at-auth-block .manager > a:after {
+    background-image: url("@image1");
+  }
+  .at-block-search {
+    background-color: @color1;
+  }
+  .at-block-search .close {
+    background: url("@image1") no-repeat -75px -300px;
+  }
+  .at-block-search .close:hover, .at-block-search .close:active {
+    background: url("@image1") no-repeat -50px -325px;
+  }
+  .at-nav .nav-drop .mob-head .close {
+    background: url("@image1") no-repeat -50px -300px;
+  }
+  .at-nav .nav-drop .mob-head .close:hover, .at-nav .nav-drop .mob-head .close:active {
+    background: url("@image1") no-repeat -50px -325px;
+  }
+  .at-footer .mob-call .call-btn span:before {
+    background: url("@image1") no-repeat -50px 0;
+  }
+  .at-filters .mob-filter-head .close {
+     background: url("@image1") no-repeat -50px -300px;
+  }
+  .at-filters .mob-filter-head .close:hover, .at-filters .mob-filter-head .close:active {
+    background: url("@image1") no-repeat -50px -325px;
+  }
+}

@@ -1,0 +1,91 @@
+.dtree a {
+      color:#2c5ba;
+	font-size:14px;
+	line-height:16px;
+	height:18px;
+}
+
+.dTreeNode {
+  height:18px;
+}
+
+.Container {
+    padding:0;
+}
+
+.Container li {
+    list-style-type:none;
+}
+
+.Container li a {
+    color:#2c5ba;
+	font-size:14px;
+	line-height:16px;
+}
+
+.Node {
+    background-image:url('/image/design/i.gif');
+    background-position:top left;
+    background-repeat:repeat-y;
+    margin-left:18px;
+    zoom:1;
+}
+
+.IsRoot {
+    margin-left:0;
+}
+
+.IsLast {
+    background-image:url('/image/design/i_half.gif');
+    background-repeat:no-repeat;
+}
+ 
+.ExpandOpen .Expand {
+    background-image:url('/image/design/expand_minus.gif');
+}
+ 
+.ExpandClosed .Expand {
+    background-image:url('/image/design/expand_plus.gif');
+}
+ 
+.ExpandLeaf .Expand {
+    background-image:url('/image/design/expand_leaf.gif');
+}
+
+.dContent {
+    min-height:20px;
+    margin-left:20px;
+}
+
+* html  .dContent {
+    height:18px; 
+}
+
+.Expand {
+    width:18px;
+    height:18px;
+    float:left;
+}
+
+.ExpandLoading   {
+    width:18px;
+    height:18px;
+    float:left;
+    background-image:url('/image/design/expand_loading.gif');
+}
+
+.ExpandOpen .Container {
+	display:block;
+}
+
+.ExpandClosed .Container {
+	display:none;
+}
+
+.ExpandOpen .Expand, .ExpandClosed .Expand {
+	cursor:pointer;
+}
+
+.ExpandLeaf .Expand {
+	cursor:auto;
+}

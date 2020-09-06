@@ -1,0 +1,102 @@
+.at-block-popup {
+    position: fixed;
+    padding: 0 100px;
+    /*margin: 0 -100px;*/
+    overflow: auto;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0);
+}
+
+.at-block-popup:before,
+.at-block-popup:after {
+     content: '';
+     display: block;
+     height: 100px;
+     width: 100%;
+}
+
+.at-block-popup .dark {
+    position: fixed;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.at-block-popup .close {
+    width: 16px;
+    height: 16px;
+    text-decoration: none;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    text-align: center;
+}
+
+.at-block-popup .close:after {
+    content: 'X';
+    font-size: 16px;
+    color: #333;
+}
+
+.at-block-popup .close:hover {
+    opacity: 0.7;
+}
+
+.at-block-popup .block-popup {
+    margin: 0 auto;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 1002;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.30);
+    width: 550px;
+    padding: 30px;
+    box-sizing: border-box;
+    border-radius: 12px;
+}
+
+.at-block-popup .block-popup form {
+    /*background-color: #F0F4FD;*/
+}
+
+.at-block-popup .block-popup table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.at-block-popup .block-popup td {
+    padding: 6px 20px;
+    font-size: 15px;
+}
+
+.important {
+    color: red;
+}
+
+.at-block-popup .block-popup input[type='text'],
+.at-block-popup .block-popup input[type='email'],
+.at-block-popup .block-popup input[type='password'],
+.at-block-popup .block-popup select {
+    width: 100%;
+    padding: 0 10px;
+    border: 1px solid #333;
+    background-color: #fff;
+    box-sizing: border-box;
+    height: 30px;
+}
+
+.at-block-popup .block-popup textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #333;
+    background-color: #fff;
+    box-sizing: border-box;
+    resize: vertical;
+    height: 50px;
+}

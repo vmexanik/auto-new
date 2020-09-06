@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AVT</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,700&amp;subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="_js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="_js/jquery.uniform.min.js"></script>
+    <script type="text/javascript" src="_js/main.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="_css/main.css" />
+</head>
+<body>
+    <header class="at-header">
+        <div class="logo">
+            <a href="/"><img src="_images/logo.png" alt=""></a>
+        </div>
+    </header>
+
+    <nav class="at-top-nav js-top-nav">
+        <div class="block-inner">
+            <a class="block-element el-toggle js-curtain-toggle" href="javascript:void(0);"></a>
+            <div class="block-separate"></div>
+            <a class="block-element el-search js-search-toggle" href="javascript:void(0);"></a>
+            <div class="block-separate"></div>
+            <a class="block-element el-cabinet js-cabinet-toggle" href="javascript:void(0);">
+                <span class="status"></span>
+            </a>
+            <div class="block-separate"></div>
+            <a class="block-element el-basket" href="#">
+                <span class="count full">5</span>
+            </a>
+        </div>
+
+        <div class="block-search hidden js-block-search">
+            <input type="text" value="" placeholder="Поиск по артикулу или названию">
+            <input type="submit" value="">
+        </div>
+
+        <div class="block-client-menu js-client-menu" style="display: none;">
+            <ul>
+                <li><a href="#">Заказы</a></li>
+                <li><a href="#">Расходные накладные</a></li>
+                <li><a href="#">Акт сверки</a></li>
+                <li><a href="#">Настройки</a></li>
+                <li><a class="exit" href="#">Выход</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="at-top-nav-place js-top-nav-place"></div>
+
+    <section class="at-content">
+        <div class="at-page-caption">
+            <a href="#" class="back"></a>
+            <h1>Форма частного лица</h1>
+        </div>
+
+        <div class="at-page-content">
+            <div class="at-block-form">
+                <div class="form-element">
+                    <div class="f-title">Ваше имя</div>
+                    <input type="text" value="">
+                </div>
+                <div class="form-element">
+                    <div class="f-title">Email: <span class="important">*</span></div>
+                    <input type="email" value="">
+                </div>
+                <div class="form-element">
+                    <div class="f-title">Пароль: <span class="important">*</span></div>
+                    <input type="password" value="">
+
+                    <div class="addon">
+                        <input type="password" value="">
+                    </div>
+
+                    <div class="light">Повторите пароль</div>
+
+                    <div class="addon">
+                        <div class="indicator">Индикатор надежности</div>
+                    </div>
+                </div>
+                <div class="form-element">
+                    <div class="f-title">Город: <span class="important">*</span></div>
+                    <input type="text" value="">
+                </div>
+                <div class="form-element">
+                    <div class="f-title">Адрес: <span class="important">*</span></div>
+                    <input type="text" value="">
+                </div>
+                <div class="form-element">
+                    <div class="code-wrap">
+                        <span class="code">+38</span>
+                        <input type="text" value="">
+                    </div>
+                </div>
+                <div class="form-element">
+                    <label class="accept">
+                        <input class="js-accept-checkbox" type="checkbox">
+                        я согласен с <br />
+                        <a href="javascript:void(0);" onclick="popupOpen('.js-popup-accept')">пользовательским соглашением</a>
+                    </label>
+                </div>
+                <div class="form-element">
+                    <input class="at-button secondary" type="submit" value="Зарегистрироваться">
+                </div>
+            </div>
+
+        </div>
+        <br />
+        <br />
+    </section>
+
+    <div class="at-block-prefooter">
+        <a class="block-phone" href="tel:0444737437">
+            (044) 473-74-37
+        </a>
+    </div>
+
+    <footer class="at-footer">
+        <div class="social">
+            <a class="fb" href="#"></a>
+            <a class="gp" href="#"></a>
+            <a class="tw" href="#"></a>
+        </div>
+        <div class="copy">
+            Все права защищены 2016
+        </div>
+    </footer>
+
+    <div class="at-curtain-left js-curtain-left">
+        <div class="head">
+            <div class="close js-curtain-toggle"></div>
+            <div class="logo"><a href="/"><img src="_images/logo-2.png" alt=""></a></div>
+            <div class="clear"></div>
+        </div>
+        <ul class="body">
+            <li><a href="#">Каталог товаров</a></li>
+            <li><a href="#">О компании</a></li>
+            <li><a href="#">Оплата и доставка</a></li>
+            <li><a href="#">Гарантия</a></li>
+            <li><a href="#">Сервис</a></li>
+            <li><a href="#">Контакты</a></li>
+        </ul>
+    </div>
+
+    <div class="at-block-popup full-screen js-popup-accept">
+        <div class="dark js-term-accept-toggle" data-accept="false"></div>
+        <div class="block-popup">
+            <div class="head">
+                <span class="back">Пользовательское соглашение</span>
+                <div class="clear"></div>
+            </div>
+
+            <div class="block-terms">
+                Не следует, однако забывать, что постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение направлений прогрессивного развития. Таким образом новая модель организационной деятельности позволяет выполнять важные задания по разработке существенных финансовых и административных условий.<br />
+                <br />
+                Товарищи! сложившаяся структура организации требуют определения и уточнения новых предложений. Значимость этих проблем настолько очевидна, что укрепление и развитие структуры обеспечивает широкому кругу (специалистов) участие в формировании существенных финансовых и административных условий. Повседневная практика показывает, что реализация намеченных плановых заданий требуют от нас анализа существенных финансовых и административных условий.<br />
+                <br />
+                Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности обеспечивает широкому кругу (специалистов) участие в формировании системы обучения кадров, соответствует насущным потребностям. Идейные соображения высшего порядка, а также консультация с широким активом играет важную роль в формировании направлений прогрессивного развития.
+            </div>
+            <div class="fixed-buttons">
+                <div class="element">
+                    <a class="at-button lite js-term-accept-toggle" href="javascript:void(0);" data-accept="false">Не согласен</a>
+                </div>
+                <div class="element">
+                    <a class="at-button js-term-accept-toggle" href="javascript:void(0);" data-accept="true">Согласен</a>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="fixed-buttons-place"></div>
+        </div>
+    </div>
+</body>
+</html>

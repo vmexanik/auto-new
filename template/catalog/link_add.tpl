@@ -1,0 +1,1 @@
+{if $smarty.request.data.id_part}&data[id_part]={$smarty.request.data.id_part}{/if}

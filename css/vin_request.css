@@ -1,0 +1,19 @@
+.vin_info{
+	margin-bottom:10px;
+	border:2px solid #e7e7e7;
+	display: block !important;
+}
+.vin_info .bg1{background:url(/image/vin_request/info_cut1.png) 0 0 no-repeat;margin:-2px;}
+.vin_info .bg2{background:url(/image/vin_request/info_cut2.png) right 0 no-repeat;}
+.vin_info .bg3{background:url(/image/vin_request/info_cut4.png) right bottom no-repeat;}
+.vin_info .bg4{background:url(/image/vin_request/info_cut3.png) 0 bottom no-repeat;
+	overflow:hidden; padding:10px 15px;
+	font-size:11px;
+	line-height:normal}
+.vin_info h5{
+	background:url(/image/vin_request/info_icon.png) 0 0 no-repeat;
+	color:#990101;
+	margin:0;
+	padding:12px 0 12px 40px;
+	font-size:12px;
+	font-weight:bold}

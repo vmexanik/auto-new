@@ -1,0 +1,3 @@
+<?php /* Smarty version 2.6.18, created on 2020-04-05 17:45:33
+         compiled from car_select/xajax_link.tpl */ ?>
+<?php echo '&cat='; ?><?php if ($_REQUEST['cat']): ?><?php echo ''; ?><?php echo $_REQUEST['cat']; ?><?php echo ''; ?><?php else: ?><?php echo ''; ?><?php echo $_REQUEST['data']['make']; ?><?php echo ''; ?><?php endif; ?><?php echo '&model_group='; ?><?php echo $_REQUEST['model_group']; ?><?php echo '&data[id_model]='; ?><?php echo $_REQUEST['data']['id_model']; ?><?php echo '&car_select[model]='; ?><?php echo $_REQUEST['model_group']; ?><?php echo '&category='; ?><?php echo $_REQUEST['category']; ?><?php echo '&subcategory='; ?><?php echo $_REQUEST['subcategory']; ?><?php echo ''; ?>

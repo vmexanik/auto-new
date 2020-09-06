@@ -1,0 +1,1 @@
+<span style="color:{if $aUser.amount>=0}green{else}red{/if};">{$oCurrency->PrintSymbol($aUser.amount)}</span>

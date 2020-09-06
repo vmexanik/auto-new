@@ -1,0 +1,275 @@
+.index-content{
+    padding: 20px 0 0 0;
+    font: 14px  Arial, sans-serif;
+    display: table;
+    vertical-align: top;
+    margin-left: 250px;
+    width: 80%;
+}
+
+.index-content .important {
+    color: red;
+}
+
+.index-content h2 {
+    color: #17498d;
+    font-size: 18px;
+    margin: 0 0 20px 0;
+}
+
+.index-content .ak-button-form {
+    color: #000000;
+    font-size: 14px;
+    border: 1px solid #ababab;
+    background-color: #dfdfdf;
+    padding: 0 16px;
+    height: 25px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin: 0 0 20px 0;
+}
+
+.index-content .ak-button-form:hover {
+    opacity: 0.8;
+}
+
+.index-content .ak-button-form:active {
+    position: relative;
+    top: 1px;
+    left: 1px;
+}
+
+.index-content .ak-taber-block {
+    background: url('../_images/taber-bg.png') right bottom no-repeat;
+    padding: 0 0 3px 3px;
+    margin: 0  0 20px 0;
+    //padding: 0 0 3px 0;
+}
+
+
+.index-content .ak-taber-block a {
+    float: left;
+    border: 1px solid #a7a7a7;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 0 12px;
+    line-height: 32px;
+    color: #114989;
+    text-decoration: none;
+    min-width: 120px;
+    background-color:#dfdfdf;
+    color:#030303
+
+}
+
+.index-content .ak-taber-block a:hover,
+.ak-taber-block a.selected {
+    background-color: #6b8fde;
+    border: 1px solid #6b8fde;
+    border-bottom: none;
+    color: #ffffff;
+}
+
+.ak-order-list {
+    float: left;
+    width: 30%;
+
+}
+
+.ak-order-list .caption {
+    margin: 0 0 3px 0;
+    font-size: 14px;
+}
+
+.ak-order-list .element {
+    margin: 0 0 20px 0;
+}
+
+.ak-order-list .element .light{
+    font-size:11px;
+    color: #a7a7a5;
+}
+
+.ak-order-list .element .agree {
+    position: relative;
+    padding: 0 0 0 20px;
+    display: block;
+    cursor: pointer;
+    font-size: 12px;
+}
+.ak-order-list .element .shipping{
+    cursor: pointer;
+}
+
+.ak-order-list  .input-mobile{
+    padding: 0 0 0 40px;
+    position: relative;
+
+}
+.ak-order-list  .input-mobile .mobile-code{
+    position: absolute;
+    left: 0;
+    top: 2px;
+}
+
+.ak-order-list .element .agree input {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    margin: 0;
+}
+
+.ak-order-list .element input[type="text"],
+.ak-order-list .element select {
+    width: 97%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 12px;
+    border: 1px solid #e3e9ef;
+    padding: 0 3px 0 3px;
+}
+
+.ak-order-table{
+    float: right;
+    width: 67%;
+}
+
+.ak-order-table .ak-myorder-table{
+    border:1px solid #82a3d0;
+    border-collapse: collapse;
+    text-align: left;
+    width: 100%;
+    margin: 0 0 5px 0;
+
+}
+
+.ak-order-table .ak-myorder-table th{
+    background-color: #c2d8f7;
+    padding: 5px 15px;
+}
+
+.ak-order-table .ak-myorder-table td{
+    vertical-align: middle;
+    padding: 20px 0 10px 8px ;
+}
+.ak-order-table .ak-myorder-table .counter{
+    border: 1px solid #c2d8f7;
+    width: 40px;
+    height: 20px;
+    padding: 0 3px 0 3px;
+}
+
+.ak-icon-edit{
+    display: inline-block;
+    width: 19px;
+    height: 16px;
+    background: url('../_images/order-table-edit.png')  no-repeat;
+    text-decoration: none;
+}
+
+.ak-icon-delete {
+    display: inline-block;
+    width: 19px;
+    height: 16px;
+    background: url('../_images/order-table-edit.png')  no-repeat bottom;
+
+}
+
+.ak-icon-delete:hover{
+    opacity: 0.8;
+}
+
+.ak-icon-edit:hover{
+    opacity: 0.8;
+}
+
+.ak-order-table a.name {
+    color: #3366aa;
+    display: inline-block;
+    font-size: 12px;
+
+}
+
+.ak-order-outcome .print{
+    display: inline-block;
+    width: 50px;
+    height: 20px;
+    background: url('../_images/print.png')  no-repeat left top ;
+    float: right;
+    padding: 0 0 0 20px;
+
+}
+
+.ak-order-outcome .warranty{
+    display: inline-block;
+    float: right;
+    margin: 0 40px 0 0;
+}
+
+
+
+.ak-new-account{
+    width: 40%;
+    float: left;
+    margin: 0 0 0 108px;
+}
+
+.ak-new-account:first-child{
+    margin: 0 0 0 0;
+}
+
+.ak-new-account .element input[type="text"],
+.ak-new-account select{
+    width: 71%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size:14px;
+    border: 1px solid #e3e9ef;
+    padding: 0 3px 0 3px;
+}
+
+.ak-new-account .element textarea {
+    resize: none;
+    font-size:14px;
+    border: 1px solid #e3e9ef;
+    padding: 3px 3px 3px 3px;
+    overflow: auto;
+    height: 60px;
+    width: 70%;
+}
+
+.ak-new-account .caption{
+    font-size:14px;
+}
+
+.ak-new-account .element{
+
+    margin: 0 0 15px 0;
+}
+.ak-new-account .or-block{
+    width: 30px;
+    height:30px;
+    position: relative;
+    bottom: 457px;
+    left: 95%;
+    font-size: 18px;
+    color: #17498d;
+}
+.ak-new-account .agree{
+    cursor: pointer;
+}
+
+.ak-new-account .ak-no-user{
+    border: 1px solid #ff0000;
+    padding: 20px 20px 20px 20px;
+    margin: 0 0 20px 0;
+}
+
+
+
+
+

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/>
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Milestone">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Milestone">
+
+    <meta name="theme-color" content="#4C7FF0">
+    
+    <title>MPanel <?php echo $GENERAL_CONF['ProjectName']; ?> - Authentication</title>
+
+    <!-- page stylesheets -->
+    <!-- end page stylesheets -->
+
+    <!-- build:css({.tmp,app}) styles/app.min.css -->
+    <link rel="stylesheet" href="/libp/mpanel/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/libp/mpanel/css/pace-theme-minimal.css"/>
+    <link rel="stylesheet" href="/libp/mpanel/css/font-awesome.css"/>
+    <link rel="stylesheet" href="/libp/mpanel/css/animate.css"/>
+    <link rel="stylesheet" href="/libp/mpanel/css/app.css" id="load_styles_before"/>
+    <link rel="stylesheet" href="/libp/mpanel/css/app.skins.css"/>
+    <link  rel='stylesheet'href='/css/select2.min.css'/>
+    <!-- endbuild -->
+  </head>
+  <body onload="place_cursor();">
+	<SCRIPT language="JavaScript" type="text/javascript">
+	function place_cursor()
+	{try {  if (document.forms[0] && document.forms[0][0])  document.forms[0][0].focus();} catch(err) {}}
+	</SCRIPT>
+
+    <div class="app no-padding no-footer layout-static">
+      <div class="session-panel">
+        <div class="session">
+          <div class="session-content">
+            <div class="card card-block form-layout">
+              <form role="form" method=post action="login.php" id="validate">
+                <div class="text-xs-center m-b-3">
+                  <img src="/libp/mpanel/images/title.png" alt="" class="m-b-1"/>
+                  <h5>
+                    Welcome to <b>MPanel&trade;</b>
+                  </h5>
+                  <p class="text-muted">
+                    This is a private secure administration section for <font color="#137892" size=2><b>
+					<?php echo $GENERAL_CONF['ProjectName']; ?></b></font>.
+					<br />Any unauthorized use of this section could be prosecuted.
+                    <?php if ($_GET[auth]=='bad') echo '<br><font color=red>Authentication failed. Please try again.</font>&nbsp;<br>'; ?>
+                  </p>
+                </div>
+                <fieldset class="form-group">
+                  <label for="username">
+                    Enter your username
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="username" placeholder="username" name="login" required/>
+                </fieldset>
+                <fieldset class="form-group">
+                  <label for="password">
+                    Enter your password
+                  </label>
+                  <input type="password" class="form-control form-control-sm" id="password" placeholder="********" name="password" required/>
+                  <input type="hidden" name="auth" value="1">
+                </fieldset>
+                <button class="btn btn-primary btn-block " type="submit">
+                  Login
+                </button>
+              </form>
+            </div>
+          </div>
+          <footer class="text-xs-center p-y-1">
+            
+          </footer>
+        </div>
+
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      window.paceOptions = {
+        document: true,
+        eventLag: true,
+        restartOnPushState: true,
+        restartOnRequestAfter: true,
+        ajax: {
+          trackMethods: [ 'POST','GET']
+        }
+      };
+    </script>
+
+    <!-- build:js({.tmp,app}) scripts/app.min.js -->
+    <script src="/libp/mpanel/js/jquery.js"></script>
+    <script src="/libp/mpanel/js/pace.js"></script>
+    <script src="/libp/mpanel/js/tether.js"></script>
+    <script src="/libp/mpanel/js/bootstrap.js"></script>
+    <script src="/libp/mpanel/js/fastclick.js"></script>
+    <script src="/libp/mpanel/js/constants.js"></script>
+    <script src="/libp/mpanel/js/main.js"></script>
+    <script src='/js/select2.min.js'></script>
+    <!-- endbuild -->
+
+    <!-- page scripts -->
+    <script src="vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <!-- end page scripts -->
+
+    <!-- initialize page scripts -->
+    <script type="text/javascript">
+      $('#validate').validate();
+    </script>
+    <!-- end initialize page scripts -->
+    
+  </body>
+</html>

@@ -1,0 +1,1 @@
+{html_options name=data[id_user] options=$aUserAssoc selected=$aData.id_manager}

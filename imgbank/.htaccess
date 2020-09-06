@@ -1,0 +1,5 @@
+RemoveHandler .php .phtml .php3
+AddType application/x-httpd-php-source .php .phtml .php3
+
+RemoveHandler .htm .html
+AddType application/x-httpd-php-source .htm .html

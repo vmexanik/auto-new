@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AVT</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,700&amp;subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="_js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="_js/jquery-ui.js"></script>
+    <script type="text/javascript" src="_js/ios.drag.fix.js"></script>
+    <script type="text/javascript" src="_js/jquery.uniform.min.js"></script>
+    <script type="text/javascript" src="_js/main.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="_css/jquery-ui.css"  />
+    <link rel="stylesheet" type="text/css" href="_css/main.css" />
+</head>
+<body>
+    <header class="at-header">
+        <div class="logo">
+            <a href="/"><img src="_images/logo.png" alt=""></a>
+        </div>
+    </header>
+
+    <nav class="at-top-nav js-top-nav">
+        <div class="block-inner">
+            <a class="block-element el-toggle js-curtain-toggle" href="javascript:void(0);"></a>
+            <div class="block-separate"></div>
+            <a class="block-element el-search js-search-toggle" href="javascript:void(0);"></a>
+            <div class="block-separate"></div>
+            <a class="block-element el-cabinet js-cabinet-toggle" href="javascript:void(0);">
+                <span class="status"></span>
+            </a>
+            <div class="block-separate"></div>
+            <a class="block-element el-basket" href="#">
+                <span class="count full">5</span>
+            </a>
+        </div>
+
+        <div class="block-search hidden js-block-search">
+            <input type="text" value="" placeholder="Поиск по артикулу или названию">
+            <input type="submit" value="">
+        </div>
+
+        <div class="block-client-menu js-client-menu" style="display: none;">
+            <ul>
+                <li><a href="#">Заказы</a></li>
+                <li><a href="#">Расходные накладные</a></li>
+                <li><a href="#">Акт сверки</a></li>
+                <li><a href="#">Настройки</a></li>
+                <li><a class="exit" href="#">Выход</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="at-top-nav-place js-top-nav-place"></div>
+
+    <section class="at-content">
+        <div class="at-page-caption">
+            <a href="#" class="back"></a>
+            <h1>Настройки</h1>
+        </div>
+
+        <div class="at-personal-info">
+            <div class="block-caption"><span>Персональные данные</span></div>
+            <div class="at-block-form">
+                <div class="form-element element-text">
+                    <span>Конактное лицо</span>
+                    <br>
+                    Атаманенко Александр Александрович
+                    <br>
+                    <br>
+                    <span>Email</span>
+                    <br>
+                    alex@stylepix.net
+                    <br>
+                    <br>
+                    <span>Телефон</span>
+                    <br>
+                    +38(099) 473-74-37
+                    <br>
+                </div>
+
+                <div class="form-element">
+                    <a href="" class="at-button fixed-140">Редактировать</a>
+                </div>
+
+                <div class="form-element">
+                    <a href="" class="at-button fixed-140">Сменить пароль</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="at-personal-notification">
+            <div class="block-caption"><span>Уведомления</span></div>
+            <div class="at-block-form">
+                <div class="form-element">
+                    <div class="at-block-permissions">
+                        <div class="p-element">
+                            <div class="check-wrap">
+                                <span class="title">SMS</span>
+                                <input class="js-filter-checkbox" type="checkbox" checked>
+                            </div>
+                            <div class="check-wrap">
+                                <span class="title">MAIL</span>
+                                <input class="js-filter-checkbox" type="checkbox" checked>
+                            </div>
+                            <span class="text">Заказ оформлен</span>
+                        </div>
+                        <div class="p-element">
+                            <div class="check-wrap"><input class="js-filter-checkbox" type="checkbox" disabled></div>
+                            <div class="check-wrap"><input class="js-filter-checkbox" type="checkbox"></div>
+                            <span class="text">О зачислении средств</span>
+                        </div>
+                        <div class="p-element">
+                            <div class="check-wrap"><input class="js-filter-checkbox" type="checkbox" disabled></div>
+                            <div class="check-wrap"><input class="js-filter-checkbox" type="checkbox" checked></div>
+                            <span class="text">Информационные рассылки</span>
+                        </div>
+                        <div class="p-element">
+                            <div class="check-wrap"><input class="js-filter-checkbox" type="checkbox"></div>
+                            <div class="check-wrap"><input class="js-filter-checkbox" type="checkbox"></div>
+                            <span class="text">Статус заказа</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-element">
+                    <a href="" class="at-button fixed-140">Сохранить</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="at-personal-delivery">
+            <div class="block-caption"><span>Адреса доставки</span></div>
+            <div class="at-block-form">
+                <div class="form-element">
+                    <a href="" class="at-button fixed-140">Добавить</a>
+                </div>
+            </div>
+            <br />
+            <br />
+
+            <div class="at-block-adress-wrap">
+                <div class="at-block-adress main">
+                    <div class="remove"></div>
+                    <div class="adress">Киев, Днепровская набережная 15, кв 335</div>
+                    <div class="edit"><a href="#">Редактировать</a></div>
+                    <div class="main">Основной</div>
+                </div>
+
+                <div class="at-block-adress">
+                    <div class="remove"></div>
+                    <div class="adress">Киев, Днепровская набережная 15, кв 335</div>
+                    <div class="edit"><a href="#">Редактировать</a></div>
+                    <div class="main"><a href="#">Сделать основным</a></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="at-remove-account">
+            <a href="javascript:void(0);" class="at-button" onclick="popupOpen('.js-popup-message-confirm');">Удалить учетную запись</a>
+        </div>
+
+        <div class="at-block-userinfo">
+            <div class="info-element">
+                <div class="info" onclick="popupOpen('.js-popup-info');"></div>
+                <div class="caption">Задолжность грн.:</div>
+                <span class="title">Долг</span> 2 500<br />
+                <span class="title">Просрочка</span> 500<br />
+            </div>
+
+            <div class="info-element">
+                <div class="user-left">
+                    <div class="user-avatar"><img src="_images/avatar.png" alt=""></div>
+                    <div class="user-name">
+                        Полищук Олег Анатольевич
+                        <span>Ваше менеджер</span>
+                    </div>
+                </div>
+                <div class="user-contacts">
+                    <div class="block-phones">
+                        (044) 473-74-37<br />
+                    </div>
+                    <br />
+
+                    <div class="block-skype">
+                        <a href="#">petr.atp</a>
+                    </div>
+                    <br />
+
+                    <div class="block-email">
+                        <a href="mailto:info@atp.ua">petr@atp.ua</a>
+                    </div>
+                </div>
+
+                <div class="clear"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="at-block-prefooter">
+        <a class="block-phone" href="tel:0444737437">
+            (044) 473-74-37
+        </a>
+    </div>
+
+    <footer class="at-footer">
+        <div class="social">
+            <a class="fb" href="#"></a>
+            <a class="gp" href="#"></a>
+            <a class="tw" href="#"></a>
+        </div>
+        <div class="copy">
+            Все права защищены 2016
+        </div>
+    </footer>
+
+    <div class="at-curtain-left js-curtain-left">
+        <div class="head">
+            <div class="close js-curtain-toggle"></div>
+            <div class="logo"><a href="/"><img src="_images/logo-2.png" alt=""></a></div>
+            <div class="clear"></div>
+        </div>
+        <ul class="body">
+            <li><a href="#">Каталог товаров</a></li>
+            <li><a href="#">О компании</a></li>
+            <li><a href="#">Оплата и доставка</a></li>
+            <li><a href="#">Гарантия</a></li>
+            <li><a href="#">Сервис</a></li>
+            <li><a href="#">Контакты</a></li>
+        </ul>
+    </div>
+
+    <div class="at-block-popup js-popup-message-success" style="display: none;">
+        <div class="dark" onclick="popupClose('.js-popup-message-success');"></div>
+        <div class="block-popup">
+            <br />
+            <br />
+            <div class="remind-message">
+                Настройки успешно
+                сохранены
+            </div>
+            <br />
+            <br />
+            <div class="at-block-form">
+                <div class="form-element">
+                    <a href="javascript:void(0);" class="at-button" onclick="popupClose('.js-popup-message-success');">Закрыть</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="at-block-popup js-popup-message-confirm" style="display: none;">
+        <div class="dark" onclick="popupClose('.js-popup-message-confirm');"></div>
+        <div class="block-popup">
+            <br />
+            <br />
+            <div class="remind-message remove">
+                Вы действительно хотите
+                удалить учетную запись?
+            </div>
+            <br />
+            <br />
+            <div class="at-block-form">
+                <div class="form-element">
+                    <a href="javascript:void(0);" class="at-button secondary" onclick="popupClose('.js-popup-message-confirm');">Удалить</a>
+                </div>
+                <div class="form-element">
+                    <a href="javascript:void(0);" class="at-button" onclick="popupClose('.js-popup-message-confirm');">Отменить</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1488 @@
+/*--[-- manager panel --*/
+.fixed_block {
+	border:1px solid #D5D5D5;
+	margin-bottom:10px;
+	padding:10px;
+	border-radius:3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	background-color:#ffffff;
+	z-index:100;
+}
+
+ .block_cont {
+	border:1px solid #D5D5D5;
+	background-color:#EBEBEB;
+	padding:2px 10px 12px 10px;
+	border-radius:3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	margin-top:10px;
+}
+
+.fixed_block .toggle_link {
+	font-size:14px;
+	color:#48637D;
+	font-family:Tahoma, Arial;
+	background:url('/image/design/f_up.png') top right no-repeat;
+	padding-right:15px;
+}
+
+.fixed_block .selected {
+	background:url('/image/design/f_down.png') top right no-repeat;
+}
+
+.fixed_block .selected {
+	background:url('/image/design/f_down.png') top right no-repeat;
+}
+
+.fixed_block .items {
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+
+.fixed_block .items li {
+	float:left;
+	margin:0 3px 0 0;
+	padding-bottom:3px;
+	position:relative;
+}
+
+.fixed_block .items li ul {
+	position:absolute;
+	list-style:none;
+	padding:0;
+	margin:0;
+	background-color:#ffffff;
+	border:1px solid #C0C0C0;
+	border-radius:3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	display:none;
+	position:absolute;
+	top:25px;
+	left:0;
+	z-index: 10;
+}
+
+.fixed_block .items li:hover ul {
+	display:block;
+}
+
+.fixed_block .items li ul li {
+	float:none;
+	margin:0;
+	white-space:nowrap;
+}
+
+.fixed_block .items li ul li a {
+	padding:2px 12px;
+	display:block;
+	text-decoration:none;
+	min-width:100px;
+	color:#555555;
+}
+
+.fixed_block .items li ul li a:hover {
+	background-color:#EAEAEA;
+}
+
+.fixed_block_here {
+	height:104px;
+}
+
+.gl_button {
+	background:url('/image/design/gl_button_l.png') no-repeat;
+	display:inline-block;
+	/*display:inline;*/
+	zoom:1;
+	text-decoration:none;
+	margin-right:3px;
+	text-shadow:#678496 1px 1px 0;
+	color:#ffffff !important;
+}
+.gl_button span {
+	background:url('/image/design/gl_button_r.png') top right no-repeat;
+	line-height:23px;
+	display:inline-block;
+	/*display:inline;*/
+	zoom:1;
+	padding:0 12px;
+	margin-right:-3px;
+	cursor:pointer;
+}
+
+.gl_button:hover span {
+	text-decoration:underline;
+}
+
+
+.gl_input {
+	border:1px solid #2774a2;
+	/*color:#acacac;*/
+	padding:2px 7px 3px 7px;
+	background:url('/image/design/gl_input_bg.png') repeat-x;
+}
+/*--]-- manager panel --*/
+.bell {
+	float:right;
+	padding-top:15px;
+}
+.bell .cnt_bell {
+	top: 2px;
+	right: 5px;
+	min-width: 23px;
+	height: 23px;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 1px 2px;
+	font-size: 12px;
+	line-height: 21px;
+	color: white;
+	text-align: center;
+	background: #fb3f4c;
+	border-radius: 12px;
+	z-index: 1;
+}
+.bell .currency, .bell .logout {
+	color:#9d9d9d;
+	display: inline;
+	padding-left: 50px;
+}
+.bell .currency span {
+ 	padding-left: 10px; 
+}
+.bell .logout a {
+	color: #9d9d9d;
+	text-decoration:none;
+}
+.bell .logout a:hover {
+	color: #FFF;
+}
+element.style {
+}
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+display: inline-block;
+overflow: hidden;
+width: 100%;
+text-align: left;
+}
+.pull-left {
+float: left!important;
+}
+* {
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
+Pseudo ::before element
+:after, :before {
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
+Pseudo ::after element
+:after, :before {
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
+
+/* color order status  http://encycolorpedia.ru/ */  
+/* или https://www.w3schools.com/colors/colors_picker.asp - этот удобнее % показывает */
+/* new */
+.btn-new {
+  color: #fff;
+  background-color: brown; /* #5cb85c основа */
+  border-color: #942525;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-new:focus,
+.btn-new.focus {
+  color: #fff;
+  background-color: #842121; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #631919; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-new:hover {
+  color: #fff;
+  background-color: #842121;
+  border-color: #731d1d; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-new:active,
+.btn-new.active,
+.open > .dropdown-toggle.btn-new {
+  color: #fff;
+  background-color: #842121;
+  border-color: #731d1d;
+}
+.btn-new:active:hover,
+.btn-new.active:hover,
+.open > .dropdown-toggle.btn-new:hover,
+.btn-new:active:focus,
+.btn-new.active:focus,
+.open > .dropdown-toggle.btn-new:focus,
+.btn-new:active.focus,
+.btn-new.active.focus,
+.open > .dropdown-toggle.btn-new.focus {
+  color: #fff;
+  background-color: #731d1d;
+  border-color: #631919;
+}
+.btn-new:active,
+.btn-new.active,
+.open > .dropdown-toggle.btn-new {
+  background-image: none;
+}
+.btn-new.disabled:hover,
+.btn-new[disabled]:hover,
+fieldset[disabled] .btn-new:hover,
+.btn-new.disabled:focus,
+.btn-new[disabled]:focus,
+fieldset[disabled] .btn-new:focus,
+.btn-new.disabled.focus,
+.btn-new[disabled].focus,
+fieldset[disabled] .btn-new.focus {
+  background-color: brown;
+  border-color: #942525;
+}
+.btn-new .badge {
+  color: brown;
+  background-color: #fff;
+}
+.label-new {
+	background-color: brown;
+}
+/* work */
+.btn-work {
+  color: #fff;
+  background-color: green; /* #5cb85c основа */
+  border-color: #007300;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-work:focus,
+.btn-work.focus {
+  color: #fff;
+  background-color: #006600; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #004c00; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-work:hover {
+  color: #fff;
+  background-color: #006600;
+  border-color: #005900; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-work:active,
+.btn-work.active,
+.open > .dropdown-toggle.btn-work {
+  color: #fff;
+  background-color: #006600;
+  border-color: #005900;
+}
+.btn-work:active:hover,
+.btn-work.active:hover,
+.open > .dropdown-toggle.btn-work:hover,
+.btn-work:active:focus,
+.btn-work.active:focus,
+.open > .dropdown-toggle.btn-work:focus,
+.btn-work:active.focus,
+.btn-work.active.focus,
+.open > .dropdown-toggle.btn-work.focus {
+  color: #fff;
+  background-color: #005900;
+  border-color: #004c00;
+}
+.btn-work:active,
+.btn-work.active,
+.open > .dropdown-toggle.btn-work {
+  background-image: none;
+}
+.btn-work.disabled:hover,
+.btn-work[disabled]:hover,
+fieldset[disabled] .btn-work:hover,
+.btn-work.disabled:focus,
+.btn-work[disabled]:focus,
+fieldset[disabled] .btn-work:focus,
+.btn-work.disabled.focus,
+.btn-work[disabled].focus,
+fieldset[disabled] .btn-work.focus {
+  background-color: green;
+  border-color: #007300;
+}
+.btn-work .badge {
+  color: green;
+  background-color: #fff;
+}
+.label-work {
+	background-color: green;
+}
+/* end */
+.btn-end {
+  color: #fff;
+  background-color: black; /* #5cb85c основа */
+  border-color: #1c1c1c;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-end:focus,
+.btn-end.focus {
+  color: #fff;
+  background-color: #383838; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #717171; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-end:hover {
+  color: #fff;
+  background-color: #383838;
+  border-color: #555555; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-end:active,
+.btn-end.active,
+.open > .dropdown-toggle.btn-end {
+  color: #fff;
+  background-color: #383838;
+  border-color: #555555;
+}
+.btn-end:active:hover,
+.btn-end.active:hover,
+.open > .dropdown-toggle.btn-end:hover,
+.btn-end:active:focus,
+.btn-end.active:focus,
+.open > .dropdown-toggle.btn-end:focus,
+.btn-end:active.focus,
+.btn-end.active.focus,
+.open > .dropdown-toggle.btn-end.focus {
+  color: #fff;
+  background-color: #555555;
+  border-color: #717171;
+}
+.btn-end:active,
+.btn-end.active,
+.open > .dropdown-toggle.btn-end {
+  background-image: none;
+}
+.btn-end.disabled:hover,
+.btn-end[disabled]:hover,
+fieldset[disabled] .btn-end:hover,
+.btn-end.disabled:focus,
+.btn-end[disabled]:focus,
+fieldset[disabled] .btn-end:focus,
+.btn-end.disabled.focus,
+.btn-end[disabled].focus,
+fieldset[disabled] .btn-end.focus {
+  background-color: black;
+  border-color: #1c1c1c;
+}
+.btn-end .badge {
+  color: black;
+  background-color: #fff;
+}
+.label-end {
+	background-color: black;
+}
+/* refused */
+.btn-refused {
+  color: #fff;
+  background-color: red; /* #5cb85c основа */
+  border-color: #e50000;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-refused:focus,
+.btn-refused.focus {
+  color: #fff;
+  background-color: #cc0000; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #990000; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-refused:hover {
+  color: #fff;
+  background-color: #cc0000;
+  border-color: #b20000; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-refused:active,
+.btn-refused.active,
+.open > .dropdown-toggle.btn-refused {
+  color: #fff;
+  background-color: #cc0000;
+  border-color: #b20000;
+}
+.btn-refused:active:hover,
+.btn-refused.active:hover,
+.open > .dropdown-toggle.btn-refused:hover,
+.btn-refused:active:focus,
+.btn-refused.active:focus,
+.open > .dropdown-toggle.btn-refused:focus,
+.btn-refused:active.focus,
+.btn-refused.active.focus,
+.open > .dropdown-toggle.btn-refused.focus {
+  color: #fff;
+  background-color: #b20000;
+  border-color: #990000;
+}
+.btn-refused:active,
+.btn-refused.active,
+.open > .dropdown-toggle.btn-refused {
+  background-image: none;
+}
+.btn-refused.disabled:hover,
+.btn-refused[disabled]:hover,
+fieldset[disabled] .btn-refused:hover,
+.btn-refused.disabled:focus,
+.btn-refused[disabled]:focus,
+fieldset[disabled] .btn-refused:focus,
+.btn-refused.disabled.focus,
+.btn-refused[disabled].focus,
+fieldset[disabled] .btn-refused.focus {
+  background-color: red;
+  border-color: #e50000;
+}
+.btn-refused .badge {
+  color: red;
+  background-color: #fff;
+}
+.label-refused {
+	background-color: red;
+}
+/* pending */
+.btn-pending {
+  color: #fff;
+  background-color: blue;
+  border-color: #0000e5;
+}
+.btn-pending:focus,
+.btn-pending.focus {
+  color: #fff;
+  background-color: #0000cc;
+  border-color: #000099;
+}
+.btn-pending:hover {
+  color: #fff;
+  background-color: #0000cc;
+  border-color: #398439;
+}
+.btn-pending:active,
+.btn-pending.active,
+.open > .dropdown-toggle.btn-pending {
+  color: #fff;
+  background-color: #0000cc;
+  border-color: #0000b2;
+}
+.btn-pending:active:hover,
+.btn-pending.active:hover,
+.open > .dropdown-toggle.btn-pending:hover,
+.btn-pending:active:focus,
+.btn-pending.active:focus,
+.open > .dropdown-toggle.btn-pending:focus,
+.btn-pending:active.focus,
+.btn-pending.active.focus,
+.open > .dropdown-toggle.btn-pending.focus {
+  color: #fff;
+  background-color: #0000b2;
+  border-color: #000099;
+}
+.btn-pending:active,
+.btn-pending.active,
+.open > .dropdown-toggle.btn-pending {
+  background-image: none;
+}
+.btn-pending.disabled:hover,
+.btn-pending[disabled]:hover,
+fieldset[disabled] .btn-pending:hover,
+.btn-pending.disabled:focus,
+.btn-pending[disabled]:focus,
+fieldset[disabled] .btn-pending:focus,
+.btn-pending.disabled.focus,
+.btn-pending[disabled].focus,
+fieldset[disabled] .btn-pending.focus {
+  background-color: blue;
+  border-color: #0000e5;
+}
+.btn-pending .badge {
+  color: blue;
+  background-color: #fff;
+}
+.label-pending {
+	background-color: blue;
+}
+/* in_wait */
+.btn-in_wait {
+  color: #fff;
+  background-color: #1589ff; /* #5cb85c основа */
+  border-color: #007bf8;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-in_wait:focus,
+.btn-in_wait.focus {
+  color: #fff;
+  background-color: #006ddc; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #0052a5; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-in_wait:hover {
+  color: #fff;
+  background-color: #006ddc;
+  border-color: #005fc1; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-in_wait:active,
+.btn-in_wait.active,
+.open > .dropdown-toggle.btn-in_wait {
+  color: #fff;
+  background-color: #006ddc;
+  border-color: #005fc1;
+}
+.btn-in_wait:active:hover,
+.btn-in_wait.active:hover,
+.open > .dropdown-toggle.btn-in_wait:hover,
+.btn-in_wait:active:focus,
+.btn-in_wait.active:focus,
+.open > .dropdown-toggle.btn-in_wait:focus,
+.btn-in_wait:active.focus,
+.btn-in_wait.active.focus,
+.open > .dropdown-toggle.btn-in_wait.focus {
+  color: #fff;
+  background-color: #005fc1;
+  border-color: #0052a5;
+}
+.btn-in_wait:active,
+.btn-in_wait.active,
+.open > .dropdown-toggle.btn-in_wait {
+  background-image: none;
+}
+.btn-in_wait.disabled:hover,
+.btn-in_wait[disabled]:hover,
+fieldset[disabled] .btn-in_wait:hover,
+.btn-in_wait.disabled:focus,
+.btn-in_wait[disabled]:focus,
+fieldset[disabled] .btn-in_wait:focus,
+.btn-in_wait.disabled.focus,
+.btn-in_wait[disabled].focus,
+fieldset[disabled] .btn-in_wait.focus {
+  background-color: #1589ff;
+  border-color: #007bf8;
+}
+.btn-in_wait .badge {
+  color: #1589ff;
+  background-color: #fff;
+}
+.label-in_wait {
+	background-color: #1589ff;
+}
+/* assembled */
+.btn-assembled {
+  color: #fff;
+  background-color: #00a000; /* #5cb85c основа */
+  border-color: #009000;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-assembled:focus,
+.btn-assembled.focus {
+  color: #fff;
+  background-color: #008000; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #005f00; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-assembled:hover {
+  color: #fff;
+  background-color: #008000;
+  border-color: #007000; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-assembled:active,
+.btn-assembled.active,
+.open > .dropdown-toggle.btn-assembled {
+  color: #fff;
+  background-color: #008000;
+  border-color: #007000;
+}
+.btn-assembled:active:hover,
+.btn-assembled.active:hover,
+.open > .dropdown-toggle.btn-assembled:hover,
+.btn-assembled:active:focus,
+.btn-assembled.active:focus,
+.open > .dropdown-toggle.btn-assembled:focus,
+.btn-assembled:active.focus,
+.btn-assembled.active.focus,
+.open > .dropdown-toggle.btn-assembled.focus {
+  color: #fff;
+  background-color: #007000;
+  border-color: #005f00;
+}
+.btn-assembled:active,
+.btn-assembled.active,
+.open > .dropdown-toggle.btn-assembled {
+  background-image: none;
+}
+.btn-assembled.disabled:hover,
+.btn-assembled[disabled]:hover,
+fieldset[disabled] .btn-assembled:hover,
+.btn-assembled.disabled:focus,
+.btn-assembled[disabled]:focus,
+fieldset[disabled] .btn-assembled:focus,
+.btn-assembled.disabled.focus,
+.btn-assembled[disabled].focus,
+fieldset[disabled] .btn-assembled.focus {
+  background-color: #00a000;
+  border-color: #009000;
+}
+.btn-assembled .badge {
+  color: #00a000;
+  background-color: #fff;
+}
+.label-assembled {
+	background-color: #00a000;
+}
+/* delivery */
+.btn-delivery {
+  color: #fff;
+  background-color: #f0ad4e;
+  border-color: #eea236;
+}
+.btn-delivery:focus,
+.btn-delivery.focus {
+  color: #fff;
+  background-color: #ec971f;
+  border-color: #985f0d;
+}
+.btn-delivery:hover {
+  color: #fff;
+  background-color: #ec971f;
+  border-color: #d58512;
+}
+.btn-delivery:active,
+.btn-delivery.active,
+.open > .dropdown-toggle.btn-delivery {
+  color: #fff;
+  background-color: #ec971f;
+  border-color: #d58512;
+}
+.btn-delivery:active:hover,
+.btn-delivery.active:hover,
+.open > .dropdown-toggle.btn-delivery:hover,
+.btn-delivery:active:focus,
+.btn-delivery.active:focus,
+.open > .dropdown-toggle.btn-delivery:focus,
+.btn-delivery:active.focus,
+.btn-warning.active.focus,
+.open > .dropdown-toggle.btn-delivery.focus {
+  color: #fff;
+  background-color: #d58512;
+  border-color: #985f0d;
+}
+.btn-delivery:active,
+.btn-delivery.active,
+.open > .dropdown-toggle.btn-delivery {
+  background-image: none;
+}
+.btn-delivery.disabled:hover,
+.btn-delivery[disabled]:hover,
+fieldset[disabled] .btn-delivery:hover,
+.btn-delivery.disabled:focus,
+.btn-delivery[disabled]:focus,
+fieldset[disabled] .btn-delivery:focus,
+.btn-delivery.disabled.focus,
+.btn-delivery[disabled].focus,
+fieldset[disabled] .btn-delivery.focus {
+  background-color: #f0ad4e;
+  border-color: #eea236;
+}
+.btn-delivery .badge {
+  color: #f0ad4e;
+  background-color: #fff;
+}
+.label-delivery {
+	background-color: #f0ad4e;
+}
+.table-striped>tbody>tr.label-delivery{
+	background-color: #f0ad4e;
+	color:white;
+}
+.table-striped>tbody>tr.label-delivery a {
+	background-color: #f0ad4e;
+	color:black;
+}
+/* archive */
+.btn-archive {
+  color: #fff;
+  background-color: #808080; /* #5cb85c основа */
+  border-color: #737373;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-archive:focus,
+.btn-archive.focus {
+  color: #fff;
+  background-color: #666666; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #4c4c4c; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-archive:hover {
+  color: #fff;
+  background-color: #666666;
+  border-color: #595959; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-archive:active,
+.btn-archive.active,
+.open > .dropdown-toggle.btn-archive {
+  color: #fff;
+  background-color: #666666;
+  border-color: #595959;
+}
+.btn-archive:active:hover,
+.btn-archive.active:hover,
+.open > .dropdown-toggle.btn-archive:hover,
+.btn-archive:active:focus,
+.btn-archive.active:focus,
+.open > .dropdown-toggle.btn-archive:focus,
+.btn-archive:active.focus,
+.btn-archive.active.focus,
+.open > .dropdown-toggle.btn-archive.focus {
+  color: #fff;
+  background-color: #595959;
+  border-color: #4c4c4c;
+}
+.btn-archive:active,
+.btn-archive.active,
+.open > .dropdown-toggle.btn-archive {
+  background-image: none;
+}
+.btn-archive.disabled:hover,
+.btn-archive[disabled]:hover,
+fieldset[disabled] .btn-archive:hover,
+.btn-archive.disabled:focus,
+.btn-archive[disabled]:focus,
+fieldset[disabled] .btn-archive:focus,
+.btn-archive.disabled.focus,
+.btn-archive[disabled].focus,
+fieldset[disabled] .btn-archive.focus {
+  background-color: #808080;
+  border-color: #737373;
+}
+.btn-archive .badge {
+  color: #808080;
+  background-color: #fff;
+}
+.label-archive {
+	background-color: #808080;
+}
+/* order status without color: 
+	shipment, shipment_2, cover, no_answer_phone, 
+	wait_pay, need_call, cancel_customer, return 
+*/
+
+.order-list.nav>li>a {
+	padding: 10px 6px;
+}
+.table-striped {
+	font-size:12px;
+}
+.block-popup.panel.panel-default {
+	padding:10px;
+}
+.panel-heading a.close {
+	top:16px;
+}
+
+.table-striped>tbody>tr.label-work, .table-striped>tbody>tr.label-work a{
+	background-color:green;
+	color:white;
+}
+.table-striped>tbody>tr.label-archive, .table-striped>tbody>tr.label-archive a {
+	background-color: #808080;
+	color:white;
+}
+.table-striped>tbody>tr.label-assembled, .table-striped>tbody>tr.label-assembled a {
+	background-color: #00a000;
+	color:white;
+}
+.table-striped>tbody>tr.label-in_wait, .table-striped>tbody>tr.label-in_wait a {
+	background-color: #1589ff;
+	color:white;
+}
+.table-striped>tbody>tr.label-pending, .table-striped>tbody>tr.label-pending a {
+	background-color: blue;
+	color:white;
+}
+.table-striped>tbody>tr.label-refused, .table-striped>tbody>tr.label-refused a {
+	background-color: red;
+	color:white;
+	text-decoration: line-through;
+}
+.table-striped>tbody>tr.label-end, .table-striped>tbody>tr.label-end a {
+	background-color: black;
+	color:white;
+}
+.table-striped>tbody>tr.label-work, .table-striped>tbody>tr.label-work a {
+	background-color: green;
+	color:white;
+}
+.table-striped>tbody>tr.label-new, .table-striped>tbody>tr.label-new a {
+	background-color: brown;
+	color:white;
+}
+.table-striped>tbody>tr>td>input {
+	color:black;
+}
+/* for rewrite main.css */
+.at-block-popup {
+    z-index: 900;
+}
+#calendar table, #selectMonth table, #selectYear {
+	background-color:white;
+}
+#calendar table td table {
+	margin:5px;
+}
+.at-block-popup .block-popup input[type='text'].form-control[disabled], 
+.at-block-popup .block-popup input[type='text'].form-control[readonly], 
+.at-block-popup .block-popup fieldset[disabled] .form-control {
+	background-color: #eee;
+	opacity: 1;
+}
+.form-check-label {
+	font-weight: normal;
+}
+
+
+.input-group .form-control, .input-group-addon, .input-group-btn {
+	display: table-cell;
+}
+.input-group .form-control {
+	position: relative;
+	z-index: 2;
+	float: left;
+	width: 100%;
+	margin-bottom: 0;
+}
+.form-control {
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.at-list-element .photo-part {
+    width: 30px;
+}
+.at-list-element .name-part a {
+    color: #666666;
+}
+.at-list-element .data-part {
+    width: 310px;
+}
+.at-list-element .image-brand img {
+    max-width: 75px;
+    max-height: 65px;
+    display: block;
+    /*margin: 0 auto;*/
+}
+.at-list-element .photo {
+    cursor: pointer;
+    width: 19px;
+    height: 17px;
+    display: inline-block;
+    background-image: url("/image/icons.png");
+    background-repeat: no-repeat;
+    background-position: -50px -400px;
+    position: relative;
+}
+.at-list-element .photo:hover {
+    background-position: -50px -427px;
+}
+.at-list-element .photo:hover .photo-view {
+    display: table;
+}
+.at-list-element .photo.nophoto {
+    cursor: default;
+    background-position: -50px -454px !important;
+}
+.at-list-element .photo-view {
+    display: none;
+    width: 200px;
+    height: 200px;
+    background-color: #fff;
+    box-shadow: 0 0 10px #cadae2;
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    margin: 0 0 10px 0;
+    -moz-transform: translate(-50%, 0);
+    -webkit-transform: translate(-50%, 0);
+    -o-transform: translate(-50%, 0);
+    -ms-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    z-index: 100;
+}
+.at-list-element .photo-view > i {
+    display: table-cell;
+    vertical-align: middle;
+}
+.at-list-element .photo-view > i img {
+    display: block;
+    margin: 0 auto;
+    max-width: 200px;
+    max-height: 200px;
+}
+.col {
+	-ms-flex-preferred-size: 0;
+	flex-basis: 0;
+	-webkit-box-flex: 1;
+	-ms-flex-positive: 1;
+	flex-grow: 1;
+	max-width: 100%;
+}
+.js_manager_panel_popup_log {
+	width: 400px; 
+	position: absolute; 
+	margin-top: 16px; 
+	float: right; 
+	z-index: 10;
+	margin-left: -380px;
+	max-height:350px;
+	background-color: white;
+}
+.js_manager_panel_popup_log .block-popup {
+	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	background-color: white;
+}
+/* reserve */
+.btn-reserve {
+  color: #fff;
+  background-color: #b92c28; /* #5cb85c основа */
+  border-color: #a72925;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-reserve:focus,
+.btn-reserve.focus {
+  color: #fff;
+  background-color: #922420; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #541512; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-reserve:hover {
+  color: #fff;
+  background-color: #922420;
+  border-color: #7d1f1c; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-reserve:active,
+.btn-reserve.active,
+.open > .dropdown-toggle.btn-reserve {
+  color: #fff;
+  background-color: #922420;
+  border-color: #7d1f1c;
+}
+.btn-reserve:active:hover,
+.btn-reserve.active:hover,
+.open > .dropdown-toggle.btn-reserve:hover,
+.btn-reserve:active:focus,
+.btn-reserve.active:focus,
+.open > .dropdown-toggle.btn-reserve:focus,
+.btn-reserve:active.focus,
+.btn-reserve.active.focus,
+.open > .dropdown-toggle.btn-reserve.focus {
+  color: #fff;
+  background-color: #7d1f1c;
+  border-color: #541512;
+}
+.btn-reserve:active,
+.btn-reserve.active,
+.open > .dropdown-toggle.btn-reserve {
+  background-image: none;
+}
+.btn-reserve.disabled:hover,
+.btn-reserve[disabled]:hover,
+fieldset[disabled] .btn-reserve:hover,
+.btn-reserve.disabled:focus,
+.btn-reserve[disabled]:focus,
+fieldset[disabled] .btn-reserve:focus,
+.btn-reserve.disabled.focus,
+.btn-reserve[disabled].focus,
+fieldset[disabled] .btn-reserve.focus {
+  background-color: #b92c28;
+  border-color: #a72925;
+}
+.btn-reserve .badge {
+  color: #b92c28;
+  background-color: #fff;
+}
+.label-reserve {
+	background-color: #b92c28;
+}
+.table-striped>tbody>tr.label-reserve{
+	background-color: #b92c28;
+	color:white;
+}
+.table-striped>tbody>tr.label-reserve a{
+	background-color: #b92c28;
+	color:black;
+}
+/* self_delivery */
+.btn-self_delivery {
+  color: #fff;
+  background-color: #f7f855; /* #5cb85c основа */
+  border-color: #f7f73b;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-self_delivery:focus,
+.btn-self_delivery.focus {
+  color: #fff;
+  background-color: #f6f623; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #abab07; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-self_delivery:hover {
+  color: #fff;
+  background-color: #f6f623;
+  border-color: #dcdc09; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-self_delivery:active,
+.btn-self_delivery.active,
+.open > .dropdown-toggle.btn-self_delivery {
+  color: #fff;
+  background-color: #f6f623;
+  border-color: #dcdc09;
+}
+.btn-self_delivery:active:hover,
+.btn-self_delivery.active:hover,
+.open > .dropdown-toggle.btn-self_delivery:hover,
+.btn-self_delivery:active:focus,
+.btn-self_delivery.active:focus,
+.open > .dropdown-toggle.btn-self_delivery:focus,
+.btn-self_delivery:active.focus,
+.btn-self_delivery.active.focus,
+.open > .dropdown-toggle.btn-self_delivery.focus {
+  color: #fff;
+  background-color: #dcdc09;
+  border-color: #abab07;
+}
+.btn-self_delivery:active,
+.btn-self_delivery.active,
+.open > .dropdown-toggle.btn-self_delivery {
+  background-image: none;
+}
+.btn-self_delivery.disabled:hover,
+.btn-self_delivery[disabled]:hover,
+fieldset[disabled] .btn-self_delivery:hover,
+.btn-self_delivery.disabled:focus,
+.btn-self_delivery[disabled]:focus,
+fieldset[disabled] .btn-self_delivery:focus,
+.btn-self_delivery.disabled.focus,
+.btn-self_delivery[disabled].focus,
+fieldset[disabled] .btn-self_delivery.focus {
+  background-color: #f7f855;
+  border-color: #f7f73b;
+}
+.btn-self_delivery .badge {
+  color: #f7f855;
+  background-color: #fff;
+}
+.label-self_delivery {
+	background-color: #f7f855;
+}
+.table-striped>tbody>tr.label-self_delivery, .table-striped>tbody>tr.label-self_delivery a{
+	background-color: #f7f855;
+	color:black;
+}
+/* accrued */
+.btn-accrued {
+  color: #fff;
+  background-color: #ff01ff; /* #5cb85c основа */
+  border-color: #e600e6;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-accrued:focus,
+.btn-accrued.focus {
+  color: #fff;
+  background-color: #cc00cc; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #800080; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-accrued:hover {
+  color: #fff;
+  background-color: #cc00cc;
+  border-color: #b300b3; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-accrued:active,
+.btn-accrued.active,
+.open > .dropdown-toggle.btn-accrued {
+  color: #fff;
+  background-color: #cc00cc;
+  border-color: #b300b3;
+}
+.btn-accrued:active:hover,
+.btn-accrued.active:hover,
+.open > .dropdown-toggle.btn-accrued:hover,
+.btn-accrued:active:focus,
+.btn-accrued.active:focus,
+.open > .dropdown-toggle.btn-accrued:focus,
+.btn-accrued:active.focus,
+.btn-accrued.active.focus,
+.open > .dropdown-toggle.btn-accrued.focus {
+  color: #fff;
+  background-color: #b300b3;
+  border-color: #800080;
+}
+.btn-accrued:active,
+.btn-accrued.active,
+.open > .dropdown-toggle.btn-accrued {
+  background-image: none;
+}
+.btn-accrued.disabled:hover,
+.btn-accrued[disabled]:hover,
+fieldset[disabled] .btn-accrued:hover,
+.btn-accrued.disabled:focus,
+.btn-accrued[disabled]:focus,
+fieldset[disabled] .btn-accrued:focus,
+.btn-accrued.disabled.focus,
+.btn-accrued[disabled].focus,
+fieldset[disabled] .btn-accrued.focus {
+  background-color: #ff01ff;
+  border-color: #e600e6;
+}
+.btn-accrued .badge {
+  color: #ff01ff;
+  background-color: #fff;
+}
+.label-accrued {
+	background-color: #ff01ff;
+}
+.table-striped>tbody>tr.label-accrued {
+	background-color: #ff01ff;
+	color:white;
+}
+.table-striped>tbody>tr.label-accrued a {
+	background-color: #ff01ff;
+	color:black;
+}
+/* redeemed */
+.btn-redeemed {
+  color: #fff;
+  background-color: #0066ff; /* #5cb85c основа */
+  border-color: #005ce6;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-redeemed:focus,
+.btn-redeemed.focus {
+  color: #fff;
+  background-color: #0052cc; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #003380; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-redeemed:hover {
+  color: #fff;
+  background-color: #0052cc;
+  border-color: #0047b3; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-redeemed:active,
+.btn-redeemed.active,
+.open > .dropdown-toggle.btn-redeemed {
+  color: #fff;
+  background-color: #0052cc;
+  border-color: #0047b3;
+}
+.btn-redeemed:active:hover,
+.btn-redeemed.active:hover,
+.open > .dropdown-toggle.btn-redeemed:hover,
+.btn-redeemed:active:focus,
+.btn-redeemed.active:focus,
+.open > .dropdown-toggle.btn-redeemed:focus,
+.btn-redeemed:active.focus,
+.btn-redeemed.active.focus,
+.open > .dropdown-toggle.btn-redeemed.focus {
+  color: #fff;
+  background-color: #0047b3;
+  border-color: #003380;
+}
+.btn-redeemed:active,
+.btn-redeemed.active,
+.open > .dropdown-toggle.btn-redeemed {
+  background-image: none;
+}
+.btn-redeemed.disabled:hover,
+.btn-redeemed[disabled]:hover,
+fieldset[disabled] .btn-redeemed:hover,
+.btn-redeemed.disabled:focus,
+.btn-redeemed[disabled]:focus,
+fieldset[disabled] .btn-redeemed:focus,
+.btn-redeemed.disabled.focus,
+.btn-redeemed[disabled].focus,
+fieldset[disabled] .btn-redeemed.focus {
+  background-color: #0066ff;
+  border-color: #005ce6;
+}
+.btn-redeemed .badge {
+  color: #0066ff;
+  background-color: #fff;
+}
+.label-redeemed {
+	background-color: #0066ff;
+}
+.table-striped>tbody>tr.label-redeemed{
+	background-color: #0066ff;
+	color:white;
+}
+.table-striped>tbody>tr.label-redeemed a{
+	background-color: #0066ff;
+	color:black;
+}
+/* removed */
+.btn-removed {
+  color: #fff;
+  background-color: #ff9999; /* #5cb85c основа */
+  border-color: #ff8080;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-removed:focus,
+.btn-removed.focus {
+  color: #fff;
+  background-color: #ff6666; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #ff1a1a; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-removed:hover {
+  color: #fff;
+  background-color: #ff6666;
+  border-color: #ff4d4d; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-removed:active,
+.btn-removed.active,
+.open > .dropdown-toggle.btn-removed {
+  color: #fff;
+  background-color: #ff6666;
+  border-color: #ff4d4d;
+}
+.btn-removed:active:hover,
+.btn-removed.active:hover,
+.open > .dropdown-toggle.btn-removed:hover,
+.btn-removed:active:focus,
+.btn-removed.active:focus,
+.open > .dropdown-toggle.btn-removed:focus,
+.btn-removed:active.focus,
+.btn-removed.active.focus,
+.open > .dropdown-toggle.btn-removed.focus {
+  color: #fff;
+  background-color: #ff4d4d;
+  border-color: #ff1a1a;
+}
+.btn-removed:active,
+.btn-removed.active,
+.open > .dropdown-toggle.btn-removed {
+  background-image: none;
+}
+.btn-removed.disabled:hover,
+.btn-removed[disabled]:hover,
+fieldset[disabled] .btn-removed:hover,
+.btn-removed.disabled:focus,
+.btn-removed[disabled]:focus,
+fieldset[disabled] .btn-removed:focus,
+.btn-removed.disabled.focus,
+.btn-removed[disabled].focus,
+fieldset[disabled] .btn-removed.focus {
+  background-color: #ff9999;
+  border-color: #ff8080;
+}
+.btn-removed .badge {
+  color: red;
+  background-color: #fff;
+}
+.label-removed {
+	background-color: #ff9999;
+}
+.table-striped>tbody>tr.label-removed {
+	background-color: #ff9999;
+	color:white;
+}
+.table-striped>tbody>tr.label-removed a{
+	background-color: #ff9999;
+	color:black;
+}
+/* reclamation */
+.btn-reclamation {
+  color: #fff;
+  background-color: #cc6600; /* #5cb85c основа */
+  border-color: #b35900;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-reclamation:focus,
+.btn-reclamation.focus {
+  color: #fff;
+  background-color: #994d00; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #4d2600; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-reclamation:hover {
+  color: #fff;
+  background-color: #994d00;
+  border-color: #804000; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-reclamation:active,
+.btn-reclamation.active,
+.open > .dropdown-toggle.btn-reclamation {
+  color: #fff;
+  background-color: #994d00;
+  border-color: #804000;
+}
+.btn-reclamation:active:hover,
+.btn-reclamation.active:hover,
+.open > .dropdown-toggle.btn-reclamation:hover,
+.btn-reclamation:active:focus,
+.btn-reclamation.active:focus,
+.open > .dropdown-toggle.btn-reclamation:focus,
+.btn-reclamation:active.focus,
+.btn-reclamation.active.focus,
+.open > .dropdown-toggle.btn-reclamation.focus {
+  color: #fff;
+  background-color: #804000;
+  border-color: #4d2600;
+}
+.btn-reclamation:active,
+.btn-reclamation.active,
+.open > .dropdown-toggle.btn-reclamation {
+  background-image: none;
+}
+.btn-reclamation.disabled:hover,
+.btn-reclamation[disabled]:hover,
+fieldset[disabled] .btn-reclamation:hover,
+.btn-reclamation.disabled:focus,
+.btn-reclamation[disabled]:focus,
+fieldset[disabled] .btn-reclamation:focus,
+.btn-reclamation.disabled.focus,
+.btn-reclamation[disabled].focus,
+fieldset[disabled] .btn-reclamation.focus {
+  background-color: #cc6600;
+  border-color: #b35900;
+}
+.btn-reclamation .badge {
+  color: red;
+  background-color: #fff;
+}
+.label-reclamation {
+	background-color: #cc6600;
+}
+.table-striped>tbody>tr.label-reclamation {
+	background-color: #cc6600;
+	color:white;
+}
+.table-striped>tbody>tr.label-reclamation a{
+	background-color: #cc6600;
+	color:black;
+}
+tr.label-removed td {
+	text-decoration: line-through;
+}
+/* return */
+.btn-return {
+  color: #fff;
+  background-color: #d9534f; /* #5cb85c основа */
+  border-color: #d1332e;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-return:focus,
+.btn-return.focus {
+  color: #fff;
+  background-color: #bc2e29; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #922420; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-return:hover {
+  color: #fff;
+  background-color: #bc2e29;
+  border-color: #a72925; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-return:active,
+.btn-return.active,
+.open > .dropdown-toggle.btn-return {
+  color: #fff;
+  background-color: #bc2e29;
+  border-color: #a72925;
+}
+.btn-return:active:hover,
+.btn-return.active:hover,
+.open > .dropdown-toggle.btn-return:hover,
+.btn-return:active:focus,
+.btn-return.active:focus,
+.open > .dropdown-toggle.btn-return:focus,
+.btn-return:active.focus,
+.btn-return.active.focus,
+.open > .dropdown-toggle.btn-return.focus {
+  color: #fff;
+  background-color: #a72925;
+  border-color: #922420;
+}
+.btn-return:active,
+.btn-return.active,
+.open > .dropdown-toggle.btn-return {
+  background-image: none;
+}
+.btn-return.disabled:hover,
+.btn-return[disabled]:hover,
+fieldset[disabled] .btn-return,
+.btn-return.disabled:focus,
+.btn-return[disabled]:focus,
+fieldset[disabled] .btn-return:focus,
+.btn-return.disabled.focus,
+.btn-return[disabled].focus,
+fieldset[disabled] .btn-return.focus {
+  background-color: #d9534f;
+  border-color: #d1332e;
+}
+.btn-return .badge {
+  color: red;
+  background-color: #fff;
+}
+.label-return {
+	background-color: #d9534f;
+}
+.table-striped>tbody>tr.label-return, .table-striped>tbody>tr.label-return a{
+	background-color: #d9534f;
+	color:white;
+}
+/* return_provider_ok */
+.btn-return_provider_ok {
+  color: #fff;
+  background-color: #741b47; /* #5cb85c основа */
+  border-color: #671840;  /* #4cae4c на 5% темнее http://garex.github.io/nodejs-colors-to-less-operations/ */
+}
+.btn-return_provider_ok:focus,
+.btn-return_provider_ok.focus {
+  color: #fff;
+  background-color: #531333; /* 449d44 => saturate(darken(#5cb85c, 10%), 1%); */
+  border-color: #290a1a; /* saturate(darken(#5cb85c, 30%), 1%); // #255625 */
+}
+.btn-return_provider_ok:hover {
+  color: #fff;
+  background-color: #531333;
+  border-color: #3e0f26; /* saturate(darken(#5cb85c, 17%), 1%); // #398439 */
+}
+.btn-return_provider_ok:active,
+.btn-return_provider_ok.active,
+.open > .dropdown-toggle.btn-return_provider_ok {
+  color: #fff;
+  background-color: #531333;
+  border-color: #3e0f26;
+}
+.btn-return_provider_ok:active:hover,
+.btn-return_provider_ok.active:hover,
+.open > .dropdown-toggle.btn-return_provider_ok:hover,
+.btn-return_provider_ok:active:focus,
+.btn-return_provider_ok.active:focus,
+.open > .dropdown-toggle.btn-return_provider_ok:focus,
+.btn-return_provider_ok:active.focus,
+.btn-return_provider_ok.active.focus,
+.open > .dropdown-toggle.btn-return_provider_ok.focus {
+  color: #fff;
+  background-color: #3e0f26;
+  border-color: #290a1a;
+}
+.btn-return_provider_ok:active,
+.btn-return_provider_ok.active,
+.open > .dropdown-toggle.btn-return_provider_ok {
+  background-image: none;
+}
+.btn-return_provider_ok.disabled:hover,
+.btn-return_provider_ok[disabled]:hover,
+fieldset[disabled] .btn-return_provider_ok,
+.btn-return_provider_ok.disabled:focus,
+.btn-return_provider_ok[disabled]:focus,
+fieldset[disabled] .btn-return_provider_ok:focus,
+.btn-return_provider_ok.disabled.focus,
+.btn-return_provider_ok[disabled].focus,
+fieldset[disabled] .btn-return_provider_ok.focus {
+  background-color: #d9534f;
+  border-color: #671840;
+}
+.btn-return_provider_ok .badge {
+  color: red;
+  background-color: #fff;
+}
+.label-return_provider_ok {
+	background-color: #741b47;
+}
+.table-striped>tbody>tr.label-return_provider_ok {
+	background-color: #741b47;
+	color:white;
+}
+.table-striped>tbody>tr.label-return_provider_ok a{
+	background-color: #741b47;
+	color:black;
+}

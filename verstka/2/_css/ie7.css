@@ -1,0 +1,14 @@
+.at-side-bar .user-login-block  .user-navigation a,
+.at-filter-action-layoot .filter-block .filter-inner label,
+.at-category-block .item,
+.at-category-block .item-fake,
+.at-car-category .item,
+.at-car-category .item-fake {
+    display: inline;
+    zoom: 0; 
+}
+
+.small-type-btn {
+    display: inline;
+    zoom: 0;
+}

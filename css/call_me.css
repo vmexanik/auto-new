@@ -1,0 +1,75 @@
+.call-me {      
+    position: fixed;        
+    right: -81px;
+    height: 22px;
+    width: 185px;
+    z-index: 7;
+}
+
+.button-call-me {
+    border: 0;
+    padding: 0;
+    height: 22px;
+    width: 185px;
+    -ms-transform: rotate(270deg);
+    -ms-transform-origin: left top 0;
+    -webkit-transform: translate(81px, 120px) rotate(270deg);
+    -webkit-transform-origin: left top 0;
+    -moz-transform: translate(81px, 120px) rotate(270deg);
+    -moz-transform-origin: left top 0;
+    -o-transform: translate(81px, 120px) rotate(270deg);
+    -o-transform-origin: left top 0;
+}
+
+.button-call-me:hover {
+    cursor: pointer;
+}
+
+.popup-body {
+	 opacity:0.8;
+	 background-color:#074776;
+	 position:fixed;
+	 top: 0;
+	 left: 0;
+	 width:100%;
+	 height:100%;
+	 z-index:50;
+}
+
+.popup {
+	 width:270px;
+	 height:200px;
+	 position: fixed;
+	 z-index:100;
+	 padding:10px;
+	 background-position:left top;
+	 background-repeat: no-repeat;
+	 background-color:#F6F6F6;
+	 border-radius:10px;
+	 border:2px solid #3B84D8;
+}
+
+.popup-form {
+	 float: right;
+	 margin-right:5px;
+	 margin-top:20px;
+}
+
+.popup-input {
+	 width:210px;
+	 height:28px;
+}
+
+.popup-close {
+	 float: right;
+	 border-radius:10px;
+	 border:2px solid #3B84D8;
+	 width:24px;
+	 height:20px;
+	 padding-top: 5px;
+	 text-align: center;
+	 cursor: pointer;
+}
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+.call-me { right: -163px; }
+}

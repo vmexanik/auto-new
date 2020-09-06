@@ -1,0 +1,2 @@
+<input type="button" class="btn" value="{$oLanguage->GetMessage('add user')}" onclick="document.location='/pages/binotel_user_add'">
+<input type="button" class="btn" value="{$oLanguage->GetMessage('import users')}" onclick="document.location='/pages/binotel_user_import'">

@@ -1,0 +1,1 @@
+ {html_options name=data[id_cat] options=$aCat selected=$aData.id_cat class="form-control btn-sm"}

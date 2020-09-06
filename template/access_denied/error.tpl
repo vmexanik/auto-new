@@ -1,0 +1,1 @@
+<span style="font-size:15px; color:red;">{$oLanguage->getMessage("You dont have permissions to view this page")} </span>

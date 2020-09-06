@@ -1,0 +1,2 @@
+<input type="text" name="table_{$sCol}_{$iRowId}" value="{$sValue}"
+onkeyup="xajax_process_browse_url('/?action=catalog_manager_update_number&table={$sTable}&col={$sCol}&row={$sRow}&row_id={$iRowId}&number='+this.value); return false;">
