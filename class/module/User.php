@@ -306,9 +306,8 @@ class User extends Base
 		if (!Base::$aRequest['user_agreement'])
 		return "You need to apply user agreemnt";
 
-		if (!Base::$aRequest['login']||!Base::$aRequest['password']||!Base::$aRequest['email']
-		|| !Base::$aRequest['data']['phone'] || !Base::$aRequest['data']['name'] || !Base::$aRequest['data']['address']
-		|| !Base::$aRequest['data']['city'])
+		if (!Base::$aRequest['login']||!Base::$aRequest['password']
+		|| !Base::$aRequest['data']['phone'] || !Base::$aRequest['data']['name'])
 		return "Please, enter all the fields";
 
 		if (Base::$aRequest['password']!=Base::$aRequest['verify_password'])
@@ -319,24 +318,27 @@ class User extends Base
 
 		if (strlen(Base::$aRequest['password'])<4)
 		return "Password can't be less then 4 digits";
-
-		if (!String::CheckEmail(Base::$aRequest['email']))
-		return "Please, check your email";
-
+		
+        if(Base::$aRequest['email']){
+    		if (!String::CheckEmail(Base::$aRequest['email']))
+    		return "Please, check your email";
+        }
+        
 		$sQuery="select * from user where login='".Base::$aRequest['login']."'";
 		$aUser=Db::GetRow($sQuery);
 		if ($aUser)	return "This login is already occupied. Please choose different one.";
 
-		$sQuery="select * from user where email='".Base::$aRequest['email']."'";
-		$aUser=Db::GetRow($sQuery);
-		if ($aUser)	{
-			if (Customer::IsChangeableLogin($aUser['login'])) {
-				return 'disable_temp_user';
-			}
-			else
-			return "This email is already registered. Please use the link \"Forgot password\".";
+		if(Base::$aRequest['email']){
+    		$sQuery="select * from user where email='".Base::$aRequest['email']."'";
+    		$aUser=Db::GetRow($sQuery);
+    		if ($aUser)	{
+    			if (Customer::IsChangeableLogin($aUser['login'])) {
+    				return 'disable_temp_user';
+    			}
+    			else
+    			return "This email is already registered. Please use the link \"Forgot password\".";
+    		}
 		}
-
 // 		if (!Capcha::CheckMathematic()) return "Check capcha value";
 
 		return false;

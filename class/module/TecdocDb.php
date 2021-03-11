@@ -357,12 +357,12 @@ class TecdocDb extends Base
 	        return Base::$oTecdocDb->realtimeCache['GetModels'][$sParamsHash];
 	    }
 	    
-	    if ($aData['id_make'] && !$aData['id_tof'])
+	    if ($aData['id_make'] && !$aData['id_mfa'])
 	    {
-	        $sWhere.=" and man.ID_src = '".Db::GetOne("select id_tof from cat where id='".$aData['id_make']."' ")."' ";
+	        $sWhere.=" and man.ID_src = '".Db::GetOne("select id_mfa from cat where id='".$aData['id_make']."' ")."' ";
 	    }
-	    elseif ($aData['id_tof']) {
-	        $sWhere.=" and man.ID_src = '".$aData['id_tof']."' ";
+	    elseif ($aData['id_mfa']) {
+	        $sWhere.=" and man.ID_src = '".$aData['id_mfa']."' ";
 	    }
 	    else
 	    {
@@ -448,17 +448,17 @@ class TecdocDb extends Base
 	        $sField.=", tm.*";
 	    }
 	    
-	    if ($aData['id_make'] && !$aData['id_tof'])
+	    if ($aData['id_make'] && !$aData['id_mfa'])
 	    {
-	    	$iIdTof=Db::GetOne("select id_tof from cat where id='".$aData['id_make']."'");
+	    	$iIdTof=Db::GetOne("select id_mfa from cat where id='".$aData['id_make']."'");
 	    	if ($iIdTof)
 	        	$sWhere.=" and man.id_src = ".$iIdTof;
 	    	else 
 	    		$sWhere.= ' and 0=1';
 	    }
-	    elseif ($aData['id_tof'])
+	    elseif ($aData['id_mfa'])
 	    {
-	        $sWhere.=" and man.id_src = ".$aData['id_tof'];
+	        $sWhere.=" and man.id_src = ".$aData['id_mfa'];
 	    }
 	    else
 	    {
@@ -507,13 +507,13 @@ class TecdocDb extends Base
 	        $sField.=", tm.*";
 	    }
 	    
-	    if ($aData['id_make'] && !$aData['id_tof'])
+	    if ($aData['id_make'] && !$aData['id_mfa'])
 	    {
-	        $sWhere.=" and man.id_src = ".Db::GetOne("select id_tof from cat where id='".$aData['id_make']."' ");
+	        $sWhere.=" and man.id_src = ".Db::GetOne("select id_mfa from cat where id='".$aData['id_make']."' ");
 	    }
-	    elseif ($aData['id_tof'])
+	    elseif ($aData['id_mfa'])
 	    {
-	        $sWhere.=" and man.id_src = ".$aData['id_tof'];
+	        $sWhere.=" and man.id_src = ".$aData['id_mfa'];
 	    }
 	    else
 	    {
@@ -529,7 +529,7 @@ class TecdocDb extends Base
 	        $sOrder=$aData['sOrder'];
 	    }
 	    
-	    $sSql="select m.ID_src,	m.Name, man.ID_src as id_tof
+	    $sSql="select m.ID_src,	m.Name, man.ID_src as id_mfa
     		from ".DB_OCAT."cat_alt_models as m
     		inner join ".DB_OCAT."cat_alt_manufacturer man on m.ID_mfa=man.ID_mfa
          	where 1=1
@@ -538,10 +538,10 @@ class TecdocDb extends Base
 	    $aTecdocModel=TecdocDb::GetAll($sSql);
 		$aManufacturerList = array();
 	    foreach($aTecdocModel as $aValueModel)
-			$aManufacturerList[$aValueModel['id_tof']] = $aValueModel['id_tof'];
+			$aManufacturerList[$aValueModel['id_mfa']] = $aValueModel['id_mfa'];
 		
 		$aManufacturerKeys = array_keys($aManufacturerList);
-	    if($aManufacturerKeys) $sWhere2.=" and cm.id_tof in ('".implode("','", $aManufacturerKeys)."') ";
+	    if($aManufacturerKeys) $sWhere2.=" and cm.id_mfa in ('".implode("','", $aManufacturerKeys)."') ";
 	    if($aTecdocModel) $aModels=Db::GetAssoc("select cm.tof_mod_id as id_model, cm.name from cat_model as cm where 1=1 ".$sWhere2);
 	    	//$aModels=Db::GetAssoc("select cm.id_model, cm.name from model_pic as cm where 1=1 ".$sWhere2);
 	    
@@ -572,66 +572,7 @@ class TecdocDb extends Base
 	    }
 	    
 	    $sSql="select
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-cat_alt_types.Description
-
-, 'CHEVR', 'CHEVROLET')
-, 'VAUXH', 'VAUXHALL')
-, 'MERCE', 'MERCEDES')
-, 'RENAU', 'RENAULT')
-, 'PROTO', 'PROTON')
-, 'ALFA', 'ALFAROMEO')
-, 'BENT', 'BENTLEY')
-, 'CADIL', 'CADILLAC')
-, 'CHRYS', 'CHRYSLER')
-, 'CITRO', 'CITROEN')
-, 'DAIHA', 'DAIHATSU')
-, 'FERRA', 'FERRARI')
-, 'HUMME', 'HUMMER')
-, 'INFIN', 'INFINITI')
-, 'JAGUA', 'JAGUAR')
-, 'LAMBO', 'LAMBORGHINI')
-, 'MASER', 'MASERATI')
-, 'NISSA', 'NISSAN')
-, 'PEUGE', 'PEUGEOT')
-, 'PONTI', 'PONTIAC')
-, 'PORSC', 'PORSCHE')
-, 'ROLLS', 'ROLLSROYCE')
-, 'SSANG', 'SSANGYONG')
-, 'SUBAR', 'SUBARU')
-, 'SUZUK', 'SUZUKI')
-, 'TOYOT', 'TOYOTA')
-, 'DAIML', 'DAIMLER')
-, 'MITSU', 'MITSUBISHI')
-, 'MITSUBISHIBISHI', 'MITSUBISHI') as type_auto,
+         cat_alt_types.Description as type_auto,
          substr(cat_alt_types.DateStart,1,4) model_year_from,
          substr(cat_alt_types.DateEnd,1,4) model_year_to,
          LEFT(KwHp, LOCATE('/', KwHp)-1) power_kw,
@@ -703,66 +644,7 @@ cat_alt_types.Description
     		, cat_alt_models.ID_src as id_model
     	    , cat_alt_models.id_mod
     		, cat_alt_types.ID_src as id_model_detail
-    		, REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-cat_alt_types.Description
-
-, 'CHEVR', 'CHEVROLET')
-, 'VAUXH', 'VAUXHALL')
-, 'MERCE', 'MERCEDES')
-, 'RENAU', 'RENAULT')
-, 'PROTO', 'PROTON')
-, 'ALFA', 'ALFAROMEO')
-, 'BENT', 'BENTLEY')
-, 'CADIL', 'CADILLAC')
-, 'CHRYS', 'CHRYSLER')
-, 'CITRO', 'CITROEN')
-, 'DAIHA', 'DAIHATSU')
-, 'FERRA', 'FERRARI')
-, 'HUMME', 'HUMMER')
-, 'INFIN', 'INFINITI')
-, 'JAGUA', 'JAGUAR')
-, 'LAMBO', 'LAMBORGHINI')
-, 'MASER', 'MASERATI')
-, 'NISSA', 'NISSAN')
-, 'PEUGE', 'PEUGEOT')
-, 'PONTI', 'PONTIAC')
-, 'PORSC', 'PORSCHE')
-, 'ROLLS', 'ROLLSROYCE')
-, 'SSANG', 'SSANGYONG')
-, 'SUBAR', 'SUBARU')
-, 'SUZUK', 'SUZUKI')
-, 'TOYOT', 'TOYOTA')
-, 'DAIML', 'DAIMLER')
-, 'MITSU', 'MITSUBISHI')
-, 'MITSUBISHIBISHI', 'MITSUBISHI') as name
+    		, cat_alt_types.Description as name
     		, LEFT(KwHp, LOCATE('/', KwHp)-1) kw_from
     		, SUBSTR(KwHp, LOCATE('/', KwHp)+1) hp_from
     		, CCM as ccm, Body as body
@@ -770,67 +652,7 @@ cat_alt_types.Description
     		, cat_alt_types.ID_src as typ_id
     		, cat_alt_manufacturer.ID_src as mod_mfa_id
     	    , cat_alt_types.Fuel as fuel
-,REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-cat_alt_types.Description
-
-, 'CHEVR', 'CHEVROLET')
-, 'VAUXH', 'VAUXHALL')
-, 'MERCE', 'MERCEDES')
-, 'RENAU', 'RENAULT')
-, 'PROTO', 'PROTON')
-, 'ALFA', 'ALFAROMEO')
-, 'BENT', 'BENTLEY')
-, 'CADIL', 'CADILLAC')
-, 'CHRYS', 'CHRYSLER')
-, 'CITRO', 'CITROEN')
-, 'DAIHA', 'DAIHATSU')
-, 'FERRA', 'FERRARI')
-, 'HUMME', 'HUMMER')
-, 'INFIN', 'INFINITI')
-, 'JAGUA', 'JAGUAR')
-, 'LAMBO', 'LAMBORGHINI')
-, 'MASER', 'MASERATI')
-, 'NISSA', 'NISSAN')
-, 'PEUGE', 'PEUGEOT')
-, 'PONTI', 'PONTIAC')
-, 'PORSC', 'PORSCHE')
-, 'ROLLS', 'ROLLSROYCE')
-, 'SSANG', 'SSANGYONG')
-, 'SUBAR', 'SUBARU')
-, 'SUZUK', 'SUZUKI')
-, 'TOYOT', 'TOYOTA')
-, 'DAIML', 'DAIMLER')
-, 'MITSU', 'MITSUBISHI')
-, 'MITSUBISHIBISHI', 'MITSUBISHI') as Description
-    	    
+            , cat_alt_types.Description as Description    	    
     	    ".$sField."
             FROM ".DB_OCAT."cat_alt_types
             inner join ".DB_OCAT."cat_alt_models on cat_alt_models.ID_mod = cat_alt_types.ID_mod
@@ -839,8 +661,8 @@ cat_alt_types.Description
            where 1=1
             ".$sWhere." order by cat_alt_types.Description";;
     	
-    	if(!$aCat) $aCat=Db::GetAssoc("select c.id_tof,c.id from cat as c where c.visible=1 ");
-    	if(!$aCatTitles) $aCatTitles=Db::GetAssoc("select c.id_tof,c.title from cat as c where c.visible=1");
+    	if(!$aCat) $aCat=Db::GetAssoc("select c.id_mfa,c.id from cat as c where c.visible=1 ");
+    	if(!$aCatTitles) $aCatTitles=Db::GetAssoc("select c.id_mfa,c.title from cat as c where c.visible=1");
     	
     	$aTecdocModelDetail=TecdocDb::GetAll($sSql);
     	if($aTecdocModelDetail) foreach ($aTecdocModelDetail as $sKey => $aValue) {
@@ -914,11 +736,11 @@ cat_alt_types.Description
 	    {
 	        if(Base::GetConstant('catalog:show_oe','1')==1) {
 	            if($aData['pref_arr']) {
-	                $aBrandOe=Db::GetAssoc("select id_tof,id_tof as id from cat where pref in ('".implode("','", $aData['pref_arr'])."') and is_brand='1' and id_tof>0 ");
+	                $aBrandOe=Db::GetAssoc("select id_mfa,id_mfa as id from cat where pref in ('".implode("','", $aData['pref_arr'])."') and is_brand='1' and id_mfa>0 ");
 	                $iIdTofOe=implode(",", $aBrandOe);
 	            } else {
-	                $aBrandOe=Db::GetRow("select id_tof,is_brand from cat where pref='".$aData['pref']."' and is_brand='1' and id_tof>0 ");
-	                $iIdTofOe=$aBrandOe['id_tof'];
+	                $aBrandOe=Db::GetRow("select id_mfa,is_brand from cat where pref='".$aData['pref']."' and is_brand='1' and id_mfa>0 ");
+	                $iIdTofOe=$aBrandOe['id_mfa'];
 	            }
 	            
 	            if(!$iIdTofOe && !$aData['id_cat_part']) {
@@ -984,66 +806,7 @@ cat_alt_types.Description
 	
     		, cat_alt_models.ID_src as id_model
     		, cat_alt_types.ID_src as id_model_detail
-    		, REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-cat_alt_types.Description
-
-, 'CHEVR', 'CHEVROLET')
-, 'VAUXH', 'VAUXHALL')
-, 'MERCE', 'MERCEDES')
-, 'RENAU', 'RENAULT')
-, 'PROTO', 'PROTON')
-, 'ALFA', 'ALFAROMEO')
-, 'BENT', 'BENTLEY')
-, 'CADIL', 'CADILLAC')
-, 'CHRYS', 'CHRYSLER')
-, 'CITRO', 'CITROEN')
-, 'DAIHA', 'DAIHATSU')
-, 'FERRA', 'FERRARI')
-, 'HUMME', 'HUMMER')
-, 'INFIN', 'INFINITI')
-, 'JAGUA', 'JAGUAR')
-, 'LAMBO', 'LAMBORGHINI')
-, 'MASER', 'MASERATI')
-, 'NISSA', 'NISSAN')
-, 'PEUGE', 'PEUGEOT')
-, 'PONTI', 'PONTIAC')
-, 'PORSC', 'PORSCHE')
-, 'ROLLS', 'ROLLSROYCE')
-, 'SSANG', 'SSANGYONG')
-, 'SUBAR', 'SUBARU')
-, 'SUZUK', 'SUZUKI')
-, 'TOYOT', 'TOYOTA')
-, 'DAIML', 'DAIMLER')
-, 'MITSU', 'MITSUBISHI')
-, 'MITSUBISHIBISHI', 'MITSUBISHI') as name
+    		, cat_alt_types.Description as name
     		, LEFT(KwHp, LOCATE('/', KwHp)-1) kw_from
     		, SUBSTR(KwHp, LOCATE('/', KwHp)+1) hp_from
     		, CCM as ccm, Body as body
@@ -1064,7 +827,7 @@ cat_alt_types.Description
 	        $aNeedCat[]=$aValue['mod_mfa_id'];
 	    }
 	    $aNeedCat=array_unique($aNeedCat);
-	    $aCat=Db::GetAssoc("select c.id_tof,c.id,c.name from cat as c where id_tof in ('".implode("','", $aNeedCat)."') and c.visible='1' and c.is_brand='1' ");
+	    $aCat=Db::GetAssoc("select c.id_mfa,c.id,c.name from cat as c where id_mfa in ('".implode("','", $aNeedCat)."') and c.visible='1' and c.is_brand='1' ");
 	    
 	    if($aTecdocModelDetail) foreach ($aTecdocModelDetail as $sKey => $aValue) {
 	        if(!$aCat[$aValue['mod_mfa_id']]['id']) unset($aTecdocModelDetail[$sKey]);
@@ -1246,7 +1009,7 @@ cat_alt_types.Description
 	    
 	    $sSql="select a.ID_src art_id, UPPER(a.Search) art_article_nr
 			, a.Name as name
-	        , s.ID_src as id_tof
+	        , s.ID_src as id_sup
 	        , grp.id_src as id_group, grp.Name as group_name
 	        , a.id_art
 			FROM ".DB_OCAT."cat_alt_link_typ_art lta
@@ -1257,13 +1020,14 @@ cat_alt_types.Description
 			join ".DB_OCAT."cat_alt_suppliers s on lta.ID_sup=s.ID_sup
             	where 1=1
             ".$sWhere;
-	    if(!$aCats) $aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
+	    if(!$aCats) $aCats=Db::GetAssoc("select c.id_sup,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
+	    $aCatsMfa=Db::GetAssoc("select c.id_mfa,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
 	    
 	    $aTreeDetails=TecdocDb::GetAll($sSql);
 	    if ($aTreeDetails) {
 	        $aArtForOriginalLink=array();
 	        foreach ($aTreeDetails as $sKey => $aValue) {
-    	        $aCat=$aCats[$aValue['id_tof']];
+    	        $aCat=$aCats[$aValue['id_sup']];
     	        
     	        $aTreeDetails[$sKey]['item_code']=$aCat['pref']."_".$aValue['art_article_nr'];
     	        $aTreeDetails[$sKey]['brand']=$aCat['title'];
@@ -1276,12 +1040,12 @@ cat_alt_types.Description
 	    
 	    if(Base::GetConstant('catalog:show_oe','1')==1) {
 	        $iIdMake=Base::$aRequest['car_select']['id_make']?Base::$aRequest['car_select']['id_make']:Base::$aRequest['data']['id_make'];
-	        $aMake=Db::GetRow("select id_tof,is_brand from cat where id='".$iIdMake."' ");
+	        $aMake=Db::GetRow("select id_mfa,is_brand from cat where id='".$iIdMake."' ");
 	        
     	    if ($aArtForOriginalLink){
     	        /*$sSql="select 0 art_id, UPPER(o.oe_code) art_article_nr
     			, '' as name
-    	        , o.oe_brand as id_tof
+    	        , o.oe_brand as id_mfa
     			FROM ".DB_OCAT."cat_alt_link_typ_art lta
     			join ".DB_OCAT."cat_alt_types t on lta.ID_typ=t.ID_typ and t.ID_src in ('".$aData['id_model_detail']."') 
     			join ".DB_OCAT."cat_alt_link_str_grp lsg on lsg.ID_tree in ('".$aData['id_part']."') and lsg.ID_grp=lta.ID_grp
@@ -1289,19 +1053,19 @@ cat_alt_types.Description
     			join ".DB_OCAT."cat_alt_suppliers s on lta.ID_sup=s.ID_sup
     			join ".DB_OCAT."cat_alt_original o on o.id_art=a.id_art
     			".$sJoin."
-                	where 1=1 and o.id_art in ('".implode("','", $aArtForOriginalLink)."') and o.oe_brand='".$aMake['id_tof']."' 
+                	where 1=1 and o.id_art in ('".implode("','", $aArtForOriginalLink)."') and o.oe_brand='".$aMake['id_mfa']."' 
                 ";*/
 		 $sSql="select 0 art_id, UPPER(o.oe_code) art_article_nr
 		  , '' as name
-		  , o.oe_brand as id_tof
+		  , o.oe_brand as id_mfa
 		  FROM ".DB_OCAT."cat_alt_original o
-	          where 1=1 and o.id_art in ('".implode("','", $aArtForOriginalLink)."') and o.oe_brand='".$aMake['id_tof']."'
+	          where 1=1 and o.id_art in ('".implode("','", $aArtForOriginalLink)."') and o.oe_brand='".$aMake['id_mfa']."'
 		  ";
 	      
     	        $aTreeDetailsOriginal=TecdocDb::GetAll($sSql);
     	        if ($aTreeDetailsOriginal) {
     	            foreach ($aTreeDetailsOriginal as $sKey => $aValue) {
-    	                $aCat=$aCats[$aValue['id_tof']];
+    	                $aCat=$aCatsMfa[$aValue['id_mfa']];
     	                
     	                $aDataNew=array();
     	                $aDataNew=$aValue;
@@ -1374,7 +1138,7 @@ cat_alt_types.Description
 	    if($aData['id_model'] && strpos($aData['id_model'], ",")!==false) {
 	        $sSql="select a.ID_src art_id, UPPER(a.Search) art_article_nr
     			, a.Name as name
-    	        , s.ID_src as id_tof
+    	        , s.ID_src as id_sup
     	        , grp.id_src as id_group, grp.Name as group_name
     	        , a.id_art
     			FROM ".DB_OCAT."cat_alt_link_mod_art lma
@@ -1388,7 +1152,7 @@ cat_alt_types.Description
 	    } else {
 	        $sSql="select a.ID_src art_id, UPPER(a.Search) art_article_nr
     			, a.Name as name
-    	        , s.ID_src as id_tof
+    	        , s.ID_src as id_sup
     	        , grp.id_src as id_group, grp.Name as group_name
     	        , a.id_art
     			FROM ".DB_OCAT."cat_alt_link_typ_art lta
@@ -1402,7 +1166,8 @@ cat_alt_types.Description
 	    }
 	    //Debug::PrintPre($sSql);
 // 	    if(!$aCats) 
-        $aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name,c.id_cat_virtual from cat as c where c.visible=1");
+        $aCats=Db::GetAssoc("select c.id_sup,c.id,c.pref,c.title,c.image,c.name,c.id_cat_virtual from cat as c where c.visible=1");
+		$aCatsMfa=Db::GetAssoc("select c.id_mfa,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
         $aCatsVirtual=Db::GetAssoc("select c.id as id2,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1 and c.is_cat_virtual='1' ");
 	    
 	    $aTreeDetails=array();
@@ -1429,7 +1194,7 @@ cat_alt_types.Description
 	    }
 	    if ($aTreeDetails) {
 	        foreach ($aTreeDetails as $sKey => $aValue) {
-    	        $aCat=$aCats[$aValue['id_tof']];
+    	        $aCat=$aCats[$aValue['id_sup']];
     	        if($aCat['id_cat_virtual']) {
     	            $aCat=$aCatsVirtual[$aCat['id_cat_virtual']];
     	        }
@@ -1438,7 +1203,7 @@ cat_alt_types.Description
 			        if ($aCat['is_use_own_logo'] && $aCat['image'])
 			        	$sImage = $aCat['image'];
 			        elseif ($aCat['image_tecdoc'])
-			        	$sImage = Base::$aGeneralConf['TecDocUrl']."/imgbank/tcd/".$aCat['image_tecdoc'];
+			        	$sImage = Base::$aGeneralConf['TecDocUrl']."/imgbank/tcd".$aCat['image_tecdoc'];
 			         
 			        $aTreeDetails[$sKey]['item_code']=$aCat['pref']."_".$aValue['art_article_nr'];
 			        $aTreeDetails[$sKey]['brand']=$aCat['title'];
@@ -1450,12 +1215,12 @@ cat_alt_types.Description
 	    
 	    if(Base::GetConstant('catalog:show_oe','1')==1) {
 	        $iIdMake=Base::$aRequest['car_select']['id_make']?Base::$aRequest['car_select']['id_make']:Base::$aRequest['data']['id_make'];
-	        $aMake=Db::GetRow("select id_tof,is_brand from cat where id='".$iIdMake."' ");
+	        $aMake=Db::GetRow("select id_mfa,is_brand from cat where id='".$iIdMake."' ");
 	        
     	    if ($aArtForOriginalLink){
     	        /*$sSql="select 0 art_id, UPPER(o.oe_code) art_article_nr
     			, '' as name
-    	        , o.oe_brand as id_tof
+    	        , o.oe_brand as id_mfa
     			FROM ".DB_OCAT."cat_alt_link_typ_art lta
     			join ".DB_OCAT."cat_alt_types t on lta.ID_typ=t.ID_typ and t.ID_src in ( '".$aData['id_model_detail']."')
     			join ".DB_OCAT."cat_alt_link_str_grp lsg on lsg.ID_tree in ('".$aData['id_part']."') and lsg.ID_grp=lta.ID_grp
@@ -1463,19 +1228,19 @@ cat_alt_types.Description
     			join ".DB_OCAT."cat_alt_suppliers s on lta.ID_sup=s.ID_sup
     			join ".DB_OCAT."cat_alt_original o on o.id_art=a.id_art
     			".$sJoin."
-                	where 1=1 and o.id_art in ('".implode("','", $aArtForOriginalLink)."') and o.oe_brand='".$aMake['id_tof']."' 
+                	where 1=1 and o.id_art in ('".implode("','", $aArtForOriginalLink)."') and o.oe_brand='".$aMake['id_mfa']."' 
                 ";*/
                 $sSql="select 0 art_id, UPPER(o.oe_code) art_article_nr
 		  , '' as name
-		  , o.oe_brand as id_tof
+		  , o.oe_brand as id_mfa
 		  FROM ".DB_OCAT."cat_alt_original o
-	          where 1=1 and o.id_art in ('".implode("','", $aArtForOriginalLink)."') and o.oe_brand='".$aMake['id_tof']."'
+	          where 1=1 and o.id_art in ('".implode("','", $aArtForOriginalLink)."') and o.oe_brand='".$aMake['id_mfa']."'
 		";
     	        
     	        $aTmpOrig=TecdocDb::GetAll($sSql);
     	        if($aTmpOrig) {
     	            foreach ($aTmpOrig as $aValue) {
-    	                $aTreeDetailsOriginal[$aValue['art_article_nr']."_".$aValue['id_tof']]=$aValue;
+    	                $aTreeDetailsOriginal[$aValue['art_article_nr']."_".$aValue['id_mfa']]=$aValue;
     	            }
     	            if($aTreeDetailsOriginal) {
     	                sort($aTreeDetailsOriginal);
@@ -1485,7 +1250,7 @@ cat_alt_types.Description
     	        
     	        if ($aTreeDetailsOriginal) {
     	            foreach ($aTreeDetailsOriginal as $sKey => $aValue) {
-    	                $aCat=$aCats[$aValue['id_tof']];
+    	                $aCat=$aCatsMfa[$aValue['id_mfa']];
     	                if($aCat['id_cat_virtual']) {
     	                    $aCat=$aCatsVirtual[$aCat['id_cat_virtual']];
     	                }
@@ -1494,7 +1259,7 @@ cat_alt_types.Description
 			                if ($aCat['is_use_own_logo'] && $aCat['image'])
 			                	$sImage = $aCat['image'];
 			                elseif ($aCat['image_tecdoc'])
-			                	$sImage = Base::$aGeneralConf['TecDocUrl']."/imgbank/tcd/".$aCat['image_tecdoc'];
+			                	$sImage = Base::$aGeneralConf['TecDocUrl']."/imgbank/tcd".$aCat['image_tecdoc'];
 			                
 			                $aDataNew=array();
 			                $aDataNew=$aValue;
@@ -1538,7 +1303,7 @@ cat_alt_types.Description
 	    if($aData['id_mfa']) {
 	        $sSql="select DISTINCT a.ID_src art_id, UPPER(a.Search) art_article_nr
 			, a.Name as name
-	        , s.ID_src as id_tof
+	        , s.ID_src as id_sup
 	        , grp.id_src as id_group, grp.Name as group_name
 			FROM ".DB_OCAT."cat_alt_link_mfa_art lta
 			join ".DB_OCAT."cat_alt_link_str_grp lsg on lsg.ID_tree in ('".$aData['id_part']."') and lsg.ID_grp=lta.ID_grp
@@ -1551,7 +1316,7 @@ cat_alt_types.Description
 	    } else {
 	        $sSql="select DISTINCT a.ID_src art_id, UPPER(a.Search) art_article_nr
 			, a.Name as name
-	        , s.ID_src as id_tof
+	        , s.ID_src as id_sup
 	        , grp.id_src as id_group, grp.Name as group_name
 			FROM ".DB_OCAT."cat_alt_link_art lta
 			join ".DB_OCAT."cat_alt_link_str_grp lsg on lsg.ID_tree in ('".$aData['id_part']."') and lsg.ID_grp=lta.ID_grp
@@ -1562,13 +1327,13 @@ cat_alt_types.Description
             ".$sWhere." ".$aData['limit'];
 	    }
 	    
-	    if(!$aCats) $aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name,c.id_cat_virtual from cat as c where c.visible=1 and c.id_tof>0 ");
+	    if(!$aCats) $aCats=Db::GetAssoc("select c.id_sup,c.id,c.pref,c.title,c.image,c.name,c.id_cat_virtual from cat as c where c.visible=1 and c.id_sup>0 ");
 	    if(!$aCatsVirtual) $aCatsVirtual=Db::GetAssoc("select c.id as id2,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1 and c.is_cat_virtual='1' ");
 	    
 	    $aTreeDetails=TecdocDb::GetAll($sSql);
 	    $aTreeDetailsTmp=array();
 	    if ($aTreeDetails) foreach ($aTreeDetails as $sKey => $aValue) {
-	        $aCat=$aCats[$aValue['id_tof']];
+	        $aCat=$aCats[$aValue['id_sup']];
 	        // добавить в результат виртуальные бренды
 	        if($aCat['id_cat_virtual']) {
 	            $aCat=$aCatsVirtual[$aCat['id_cat_virtual']];
@@ -1708,7 +1473,7 @@ cat_alt_types.Description
 	//-----------------------------------------------------------------------------------------------
 	public static function GetImages($aData, $aCats=false, $bAssoc=TRUE)
 	{
-	    $sParamsHash=md5(serialize($aData));
+	    $sParamsHash=md5(serialize($aData).'&bAssoc='.($bAssoc ? 1 : 0));
 	    if(isset(Base::$oTecdocDb->realtimeCache['GetImages'][$sParamsHash])) {
 	        return Base::$oTecdocDb->realtimeCache['GetImages'][$sParamsHash];
 	    }
@@ -1734,11 +1499,12 @@ cat_alt_types.Description
 	        $sWhere2.=" and 0=1";
 	    }
 	    
-	    
+	    $sAdd='';
 	    if ($aData['type_image']=='pdf')
 	    {
 	        $sWhere.=" and g.path like '%.pdf' ";
 	        $sWhere2.=" and extension='pdf' ";
+		$sAdd = '/pdf';
 	    }
 	    else
 	    {
@@ -1758,14 +1524,14 @@ cat_alt_types.Description
 	        $sWhere.=" and 0=1 ";
 	    }
 
-	    $sSql="select cp.item_code, cpp.image as img_path, cpp.id as id_cat_pic, cpp.*
+	    $sSql="select upper(trim(cp.item_code)) as item_code, cpp.image as img_path, cpp.id as id_cat_pic, cpp.*
         FROM cat_pic cpp
 	    inner join cat_part as cp on cp.id=cpp.id_cat_part 
         where 1=1
         ".$sWhere2;
 	    
-	    $sSql2="select a.Search, s.ID_src as id_tof, 
-        concat( '".Base::$aGeneralConf['TecDocUrl']."/imgbank/tcd/' , g.path) as img_path
+	    $sSql2="select a.Search, s.ID_src as id_sup, 
+        concat( '".Base::$aGeneralConf['TecDocUrl']."/imgbank/tcd".$sAdd."' , g.path) as img_path
         FROM ".DB_OCAT."cat_alt_images g
         JOIN ".DB_OCAT."cat_alt_articles a ON a.ID_art = g.ID_art
         join ".DB_OCAT."cat_alt_suppliers as s on s.id_sup=a.id_sup
@@ -1786,10 +1552,10 @@ cat_alt_types.Description
         	} 
         	
             if(!$aCats) {
-				$aCatsAll=Db::GetAll("select c.pref,c.id_tof,c.id,c.id_cat_virtual from cat as c where c.visible=1");
+				$aCatsAll=Db::GetAll("select c.pref,c.id_sup,c.id,c.id_cat_virtual from cat as c where c.visible=1");
         		foreach($aCatsAll as $aVal) {
-        	    	if ($aVal['id_tof'])
-        				$aCats[$aVal['id_tof']][$aVal['pref']] = $aVal;
+        	    	if ($aVal['id_sup'])
+        				$aCats[$aVal['id_sup']][$aVal['pref']] = $aVal;
         		}
 			}
             foreach ($aImagesTcd as $sKey => $aValue) {
@@ -1804,7 +1570,7 @@ cat_alt_types.Description
             	
             	$aTmp[] = $aValue;
             	/*
-                if($bAssoc) $aResult[$aCats[$aValue['id_tof']]['pref']."_".$aValue['Search']]=$aValue;
+                if($bAssoc) $aResult[$aCats[$aValue['id_to f']]['pref']."_".$aValue['Search']]=$aValue;
                 else $aResult[]=array('img_path'=>$aValue);
                 */
             }
@@ -1824,13 +1590,13 @@ cat_alt_types.Description
 	        	if($bAssoc) {
 	        		// tecdoc
 	        		if ($aValue['Search']) {
-						if (!is_array($aCats[$aValue['id_tof']])){
-	        				$aResult[$aCats[$aValue['id_tof']]['pref']."_".$aValue['Search']]=$aValue;
+						if (!is_array($aCats[$aValue['id_sup']])){
+	        				$aResult[$aCats[$aValue['id_sup']]['pref']."_".$aValue['Search']]=$aValue;
 						}else {
-							foreach ($aCats[$aValue['id_tof']] as $sPrefCat => $aPrefCat){
+							foreach ($aCats[$aValue['id_sup']] as $sPrefCat => $aPrefCat){
             		    		$aResult[$sPrefCat."_".$aValue['Search']]=$aValue;
-            		    		if($aCats[$aValue['id_tof']][$aPrefCat['pref']]['id_cat_virtual'] && $aCatsVirtual[$aCats[$aValue['id_tof']][$aPrefCat['pref']]['id_cat_virtual']]){
-            		    		    $aResult[$aCatsVirtual[$aCats[$aValue['id_tof']][$aPrefCat['pref']]['id_cat_virtual']]."_".$aValue['Search']]=$aValue;
+            		    		if($aCats[$aValue['id_sup']][$aPrefCat['pref']]['id_cat_virtual'] && $aCatsVirtual[$aCats[$aValue['id_sup']][$aPrefCat['pref']]['id_cat_virtual']]){
+            		    		    $aResult[$aCatsVirtual[$aCats[$aValue['id_sup']][$aPrefCat['pref']]['id_cat_virtual']]."_".$aValue['Search']]=$aValue;
             		    		}
 							}
             	    	}
@@ -1852,12 +1618,12 @@ cat_alt_types.Description
 	        return Base::$oTecdocDb->realtimeCache['GetArt'][$sParamsHash];
 	    }
 	    
-	    if(!$aData['id_tof'] && $aData['pref']) $aData['id_tof']=Db::GetOne("select id_tof from cat where pref='".$aData['pref']."' ");
+	    if(!$aData['id_sup'] && $aData['pref']) $aData['id_sup']=Db::GetOne("select id_sup from cat where pref='".$aData['pref']."' ");
 	    
 	    $aResult=TecdocDb::GetOne("
 			select a.ID_src
 			from ".DB_OCAT."cat_alt_articles a
-			INNER JOIN ".DB_OCAT."cat_alt_suppliers as s on a.ID_sup=s.ID_sup and s.ID_src='".$aData['id_tof']."'
+			INNER JOIN ".DB_OCAT."cat_alt_suppliers as s on a.ID_sup=s.ID_sup and s.ID_src='".$aData['id_sup']."'
 			where a.Search = '".$aData['code']."'");
 	    
 	    Base::$oTecdocDb->realtimeCache['GetArt'][$sParamsHash]=$aResult;
@@ -1871,12 +1637,12 @@ cat_alt_types.Description
 	        return Base::$oTecdocDb->realtimeCache['GetArtName'][$sParamsHash];
 	    }
 	    
-	    if(!$aData['id_tof'] && $aData['pref']) $aData['id_tof']=Db::GetOne("select id_tof from cat where pref='".$aData['pref']."' ");
+	    if(!$aData['id_sup'] && $aData['pref']) $aData['id_sup']=Db::GetOne("select id_sup from cat where pref='".$aData['pref']."' ");
 	    
 	    $aResult= TecdocDb::GetRow("
 			select a.ID_src, a.Name
 			from ".DB_OCAT."cat_alt_articles a
-			INNER JOIN ".DB_OCAT."cat_alt_suppliers as s on a.ID_sup=s.ID_sup and s.ID_src='".$aData['id_tof']."'
+			INNER JOIN ".DB_OCAT."cat_alt_suppliers as s on a.ID_sup=s.ID_sup and s.ID_src='".$aData['id_sup']."'
 			where a.Search = '".$aData['code']."'");
 	    
 	    Base::$oTecdocDb->realtimeCache['GetArtName'][$sParamsHash]=$aResult;
@@ -1890,21 +1656,20 @@ cat_alt_types.Description
 	        return Base::$oTecdocDb->realtimeCache['GetArts'][$sParamsHash];
 	    }
 	    
-	    $aArts=TecdocDb::GetAll("select a.ID_src as art_id, a.Search as code, s.ID_src as id_tof
+	    $aArts=TecdocDb::GetAll("select a.ID_src as art_id, a.Search as code, s.ID_src as id_sup
 			from ".DB_OCAT."cat_alt_articles a
 			INNER JOIN ".DB_OCAT."cat_alt_suppliers as s on a.ID_sup=s.ID_sup
 			where a.Search in ('".implode("','", $aCodes)."') ");
 	    
 	    if($aArts) {
-	        $aIdTof=array();
-	        foreach ($aArts as $aValue) $aIdTof[]=$aValue['id_tof'];
-	        $aIdTof=array_unique($aIdTof);
+            $aIdTof=array_column($aArts,'id_sup');
+            $aIdTof=array_unique($aIdTof);
 	        
-	        $aCat=Db::GetAssoc("select id_tof,pref from cat where id_tof in ('".implode("','",$aIdTof)."') ");
+	        $aCat=Db::GetAssoc("select id_sup,pref from cat where id_sup in ('".implode("','",$aIdTof)."') ");
 	        $aResult=array();
 	        
 	        if($aCat) foreach ($aArts as $aValue) {
-	            $sPref=$aCat[$aValue['id_tof']];
+	            $sPref=$aCat[$aValue['id_sup']];
 	            
 	            if(!$sPref || !$aValue['art_id']) continue;
 	            $sIteCode=$sPref."_".$aValue['code'];
@@ -1952,7 +1717,7 @@ cat_alt_types.Description
 	    $sSql="
             select  a.ID_src art_id, a.Search as code
             		, a.Name as name
-	               ,s2.ID_src as id_tof
+	               ,s2.ID_src as id_sup
              from ".DB_OCAT."cat_alt_articles as a
             INNER JOIN ".DB_OCAT."cat_alt_suppliers as s2 on a.ID_sup=s2.ID_sup
              where 1=1 and a.ID_src>0
@@ -1983,13 +1748,13 @@ cat_alt_types.Description
 	    $aInfoTcd=TecdocDb::GetAll($sSql);
 	    
 	    if(!$aCats) {
-	        $aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
+	        $aCats=Db::GetAssoc("select c.id_sup,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
 	    }
 	    
 	   	$aReturnValue = array();
 	    if($aInfoTcd) {
 	    	foreach($aInfoTcd as $aValueTcd){
-		        $aCat=$aCats[$aValueTcd['id_tof']];
+		        $aCat=$aCats[$aValueTcd['id_sup']];
 		        if($aCat['pref'] == $aData['pref']){
 		        	$aReturnValue = $aValueTcd;
 			        $aReturnValue['item_code']=$aCat['pref']."_".$aValueTcd['code'];
@@ -2031,8 +1796,12 @@ cat_alt_types.Description
 	    if($aData['aCode'] && is_array($aData['aCode'])) {
 	        $aData['sCode'] = "'".implode("','",$aData['aCode'])."'";
 	    }
-	    if ($aData['sCode'])
+	    if ($aData['sCode']) {
 	    	$aCodes = array_unique(explode(',',$aData['sCode']));
+	    	// для корректной работы виртуальности
+	    	if (count($aCodes)==1)
+	    	    $aData['sCode'] = $aCodes[0];
+	    }
 	    
 	    if ($aData['code']) $aData['sCode']="'".trim($aData['code'],"'")."'";
 	    
@@ -2041,6 +1810,7 @@ cat_alt_types.Description
 	        $sWhere2.=" and a2.Search in (".$aData['sCode'].") and a2.Search<>''";
 	        $sWhere1.=" and cc.code in (".$aData['sCode'].") ";
 	        $sWhereStop=" and cc.code in (".$aData['sCode'].") ";
+			$sWhere1oe.=" and o.oe_code in (".$aData['sCode'].")";
 	    } elseif($aData['aItemCode']) {
             $aCodes=array();
             foreach ($aData['aItemCode'] as $sValue) {
@@ -2056,6 +1826,7 @@ cat_alt_types.Description
             $sWhere2.=" and a2.Search in ('".$sCode."') and a2.Search<>''";
             $sWhere1.=" and cc.code in ('".$sCode."') ";
             $sWhereStop =" and cc.code in ('".$sCode."') ";
+			$sWhere1oe.=" and o.oe_code in ('".$sCode."')";
 	    } else {
 	        return null;
 	    }
@@ -2067,6 +1838,7 @@ cat_alt_types.Description
 	    	$aCat = Db::GetRow("SELECT * FROM cat WHERE pref like '".$aData['pref']."'");
 	    	$aVagPref = array();
 	    	$aVagIDTof = array();
+	    	$aVagIDMfa = array();
 	    	if ($aCat['id_cat_virtual']!=0) {
 	    		$aVag=Db::getAll("Select c.* from cat c
 	    				inner join cat c2 on c2.id = c.id_cat_virtual and c2.visible=1
@@ -2080,14 +1852,20 @@ cat_alt_types.Description
 							'".$aData['pref']."' as pref, ".$sCode." as code,
 							'".$aVagItem['pref']."' as pref_crs, ".$sCode." as code_crs";
 	    				}
-	    				$aVagPref[]=$aVagItem['pref'];
-	    				if ($aVagItem['id_tof'])
-	    					$aVagIDTof[$aVagItem['id_tof']] = $aVagItem['id_tof'];
+	    				$aVagPref[$aVagItem['pref']]=$aVagItem['pref'];
+	    				if ($aVagItem['id_sup'])
+	    					$aVagIDTof[$aVagItem['id_sup']] = $aVagItem['id_sup'];
+	    				if ($aVagItem['id_mfa'])
+	    				    $aVagIDMfa[$aVagItem['id_mfa']] = $aVagItem['id_mfa'];
 	    			}
 	    			$sWherePref=" and cc.pref in ('".implode("','",$aVagPref)."')";
 	    		}
 	    	}
 	    	elseif ($aCat['is_cat_virtual']!=0) {
+	    		if ($aCat['id_sup'])
+	    			$aVagIDTof[$aCat['id_sup']] = $aCat['id_sup'];
+	    		if ($aCat['id_mfa'])
+	    		    $aVagIDMfa[$aCat['id_mfa']] = $aCat['id_mfa'];
 	    		$aVag=Db::getAll("Select c.* from cat c
 	    				where c.visible=1 and c.id_cat_virtual=".$aCat['id']);
 	    		if ($aVag) {
@@ -2099,18 +1877,20 @@ cat_alt_types.Description
 							'".$aData['pref']."' as pref, ".$sCode." as code,
 							'".$aVagItem['pref']."' as pref_crs, ".$sCode." as code_crs";
 	    				}
-	    				$aVagPref[]=$aVagItem['pref'];
-	    				if ($aVagItem['id_tof'])
-	    					$aVagIDTof[$aVagItem['id_tof']] = $aVagItem['id_tof'];
+	    				$aVagPref[$aVagItem['pref']]=$aVagItem['pref'];
+	    				if ($aVagItem['id_sup'])
+	    					$aVagIDTof[$aVagItem['id_sup']] = $aVagItem['id_sup'];
+	    				if ($aVagItem['id_mfa'])
+	    				    $aVagIDMfa[$aVagItem['id_mfa']] = $aVagItem['id_mfa'];
 	    			}
 	    			
 	    		}
 	    	}
 	    	if ($aVagPref) {
 	    		if ($aData['pref'])
-	    			$aVagPref[] = $aData['pref'];
+	    			$aVagPref[$aData['pref']] = $aData['pref'];
 	    		
-	    	    if($aCat['id_tof']){
+	    	    if($aCat['id_sup']){
     	    		$sWherePref=" and cc.pref in ('".implode("','",$aVagPref)."','".$aData['pref']."')";
     	    		//$sWhere1 .= $sWherePref;	    	        
 	    	    }else {
@@ -2122,37 +1902,46 @@ cat_alt_types.Description
 	    	$sWhere1 .= $sWherePref;
 	    	
 	    	if ($aVagIDTof) {
-	    	    if($aCat['id_tof']){
-	    	        $sWhere .= " and s1.ID_src in ('".implode("','",$aVagIDTof)."','".$aCat['id_tof']."')";
-	    	        $sWhere2 .= " and s2.ID_src in ('".implode("','",$aVagIDTof)."','".$aCat['id_tof']."')";
+	    	    if($aCat['id_sup']){
+	    	        $sWhere .= " and s1.ID_src in ('".implode("','",$aVagIDTof)."','".$aCat['id_sup']."')";
+	    	        $sWhere2 .= " and s2.ID_src in ('".implode("','",$aVagIDTof)."','".$aCat['id_sup']."')";
 	    	    }else {
     	    		$sWhere .= " and s1.ID_src in ('".implode("','",$aVagIDTof)."')";
     	    		$sWhere2 .= " and s2.ID_src in ('".implode("','",$aVagIDTof)."')";
 	    	    }
+				if ($aVagIDMfa) {
+					if ($aCat['id_mfa']){
+				 		$sWhere1oe .= " and m1.ID_src in ('".implode("','",$aVagIDMfa)."','".$aCat['id_mfa']."')";
+					}
+					else {
+						$sWhere1oe .= " and m1.ID_src in ('".implode("','",$aVagIDMfa)."')";
+					}
+				}
 	    	}
-	    	elseif($aCat['id_tof']){
-	    		$sWhere .= " and s1.ID_src in ('".$aCat['id_tof']."')";
-	    		$sWhere2 .= " and s2.ID_src in ('".$aCat['id_tof']."')";
-	    	}    
+	    	elseif ($aVagIDMfa) {
+				if ($aCat['id_mfa']){
+			 		$sWhere1oe .= " and m1.ID_src in ('".implode("','",$aVagIDMfa)."','".$aCat['id_mfa']."')";
+				}
+				else {
+    	    		$sWhere1oe .= " and m1.ID_src in ('".implode("','",$aVagIDMfa)."')";
+				}
+	    	}
+	    	elseif($aCat['id_sup']){
+	    		$sWhere .= " and s1.ID_src in ('".$aCat['id_sup']."')";
+	    		$sWhere2 .= " and s2.ID_src in ('".$aCat['id_sup']."')";
+	    		if ($aCat['id_mfa'])
+	    		    $sWhere1oe .= " and m1.ID_src in ('".$aCat['id_mfa']."')";
+	    	}
+	    	elseif($aCat['id_mfa']){
+	    	    $sWhere1oe .= " and m1.ID_src in ('".$aCat['id_mfa']."')";
+	    	}
 	    	else {
 	    		$sWhere .= " and 1=0 ";
 	    		$sWhere2 .= " and 1=0 ";
+	    		$sWhere1oe .= " and 1=0 ";
 	    	}
-	    	 
-// 	        $aVag=array("AU","SC","SE","VW","VAG");
-// 	        if (in_array($aData['pref'],$aVag)) {
-// 	            foreach ($aVag as $sKey => $sValue) {
-// 	                $sUnion.="
-// 			union SELECT concat('".$sValue."','_',".$aData['sCode'].") as  item_code_crs ,  concat('".$aData['pref']."','_',".$aData['sCode'].") as item_code, 0 is_replacement, 0 as art_id, 0 as art_id2";
-// 	            }
-// 	            $sWherePref=$aVag;
-// 	            $sWhere1.=" and cc.pref in ('".implode("','",$aVag)."')";
-// 	        } else {
-// 	            $sWherePref=array($aData['pref']);
-// 	            $sWhere1.=" and cc.pref='".$aData['pref']."' ";
-// 	        }
 	    }
-	    
+	    $sWhere_oe = $sWhere;
 	    $sWhere.= ' and a2.ID_src > 0';
 	    $sWhere2.=' and a1.ID_src > 0';
 	    
@@ -2185,8 +1974,8 @@ cat_alt_types.Description
     	        0 as is_replacement, 
     	        a1.ID_src as art_id, 
     	        a2.ID_src as art_id2,
-    	        s1.ID_src as id_tof1,
-    	        s2.ID_src as id_tof2,
+    	        s1.ID_src as id_sup1,
+    	        s2.ID_src as id_sup2,
 	            1 as ind
         	FROM ".DB_OCAT."cat_alt_crossing c
         	INNER JOIN ".DB_OCAT."cat_alt_articles a1 ON c.ID_art = a1.ID_art
@@ -2202,8 +1991,8 @@ cat_alt_types.Description
         		0 as is_replacement, 
         	    a2.ID_src as art_id, 
         	    a1.ID_src as art_id2,
-        	    s1.ID_src as id_tof1,
-    	        s2.ID_src as id_tof2,
+        	    s2.ID_src as id_sup1,
+    	        s1.ID_src as id_sup2,
         	    2 as ind
         	FROM ".DB_OCAT."cat_alt_crossing c
         	INNER JOIN ".DB_OCAT."cat_alt_articles a1 ON c.ID_art = a1.ID_art
@@ -2211,29 +2000,97 @@ cat_alt_types.Description
         	INNER JOIN ".DB_OCAT."cat_alt_suppliers as s1 on a1.ID_sup=s1.ID_sup
         	INNER JOIN ".DB_OCAT."cat_alt_suppliers as s2 on a2.ID_sup=s2.ID_sup
         	where 1=1
-        	".$sWhere2.$sLimit;
+        	".$sWhere2."
+        	    union
+        	select
+        	UPPER(o.oe_code) as  code_crs,
+        	UPPER(a1.Search) as  code,
+        	0 as is_replacement,
+        	a1.ID_src as art_id,
+        	0 as art_id2,
+        	s1.ID_src as id_sup1,
+        	m1.ID_src as id_sup2,
+        	3 as ind
+        	FROM ".DB_OCAT."cat_alt_original o
+        	INNER JOIN ".DB_OCAT."cat_alt_articles a1 ON a1.ID_art = o.ID_art
+        	INNER JOIN ".DB_OCAT."cat_alt_suppliers as s1 on a1.ID_sup=s1.ID_sup
+        	INNER JOIN ".DB_OCAT."cat_alt_manufacturer as m1 on o.oe_brand=m1.ID_src
+        	where 1=1
+        	".$sWhere_oe."
+        	    union
+        	select
+        	UPPER(a1.Search) as  code_crs,
+        	UPPER(o.oe_code) as  code,
+        	0 as is_replacement,
+           	0 as art_id,
+        	a1.ID_src as art_id2,
+        	m1.ID_src as id_sup1,
+       	    s1.ID_src as id_sup2,
+        	4 as ind
+        	FROM ".DB_OCAT."cat_alt_original o
+        	INNER JOIN ".DB_OCAT."cat_alt_articles a1 ON a1.ID_art = o.ID_art
+        	INNER JOIN ".DB_OCAT."cat_alt_suppliers as s1 on a1.ID_sup=s1.ID_sup
+        	INNER JOIN ".DB_OCAT."cat_alt_manufacturer as m1 on o.oe_brand=m1.ID_src
+        	where 1=1
+        	".$sWhere1oe.$sLimit;
 	    
 	    $aCrossTcd=TecdocDb::GetAll($sSqlTcd);
 	    $aCrossStop=Db::GetAssoc($sSqlStop);
 
 	    if($aCrossTcd) {
 	       $aVirtPrefAssoc = array();
-	       if(!$aCats) $aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name,c.is_cat_virtual,c.id_cat_virtual from cat as c where c.visible=1");
-	       
+	       $aCats=Db::GetAssoc("select c.id_sup,c.id,c.pref,c.title,c.image,c.name,c.is_cat_virtual,c.id_cat_virtual from cat as c where c.visible=1 and c.id_sup>0");
+	       $aCatsMfa=Db::GetAssoc("select c.id_mfa,c.id_sup,c.id,c.pref,c.title,c.image,c.name,c.is_cat_virtual,c.id_cat_virtual from cat as c where c.visible=1 and c.id_mfa > 0");
 	       $aCrossForStop=array();
 	       $aVirtualItemCodes=array();
+	       $aVagCatAssoc = array();
+	       $aCatCheckVirtual = array();
 	       foreach ($aCrossTcd as $sKey => $aValue) {
-	           $aCat1=$aCats[$aValue['id_tof1']];
-	           $aCat2=$aCats[$aValue['id_tof2']];
+	           $aCat1=$aCats[$aValue['id_sup1']];
+	           $aCat2=$aCats[$aValue['id_sup2']];
+	           $aCat3=$aCatsMfa[$aValue['id_sup2']];
+	           $aCat4=$aCatsMfa[$aValue['id_sup1']];
 	           
-	           $sPref=$aValue['ind']==1?$aCat1['pref']:$aCat2['pref'];
-	           $sPrefCrs=$aValue['ind']==2?$aCat1['pref']:$aCat2['pref'];
-	           
+	           if ($aValue['ind']==1) {
+	               $sPref=$aCat1['pref'];
+	               $sPrefCrs=$aCat2['pref'];
+	               $aCatCheckVirtual = $aCat1;
+	           }
+               elseif ($aValue['ind']==2) {
+                   $sPref=$aCat1['pref'];
+                   $sPrefCrs=$aCat2['pref'];
+	               $aCatCheckVirtual = $aCat2;
+               }
+               elseif ($aValue['ind']==3) {
+                   $sPref=$aCat1['pref'];
+                   $sPrefCrs=$aCat3['pref'];
+                   $aCatCheckVirtual = $aCat1;
+               }
+               elseif ($aValue['ind']==4) {
+                   $sPrefCrs=$aCat2['pref'];
+                   $sPref=$aCat4['pref'];
+                   $aCatCheckVirtual = $aCat4;
+               }
+                
 	           if(!$sPref || !$sPrefCrs) {
 	               unset($aCrossTcd[$sKey]);
 	               continue;
 	           }
-	           
+
+			   // если в запросе ItemCode, лишние кроссы текдока убрать
+	           if ($aData['aItemCode'] && !$aData['aItemCode'][$sPref.'_'.$aValue['code']]) {
+	               unset($aCrossTcd[$sKey]);
+	               continue;
+	           }
+
+	           if ($aData['pref'] && 
+	               (($sPref!=$aData['pref'] && !$aVagPref[$sPref])
+	                   ||
+	                ($sPref!=$aData['pref'] && !$aVagPref)
+                   )) {
+	               unset($aCrossTcd[$sKey]);
+	               continue;
+	           }
 	           // exclude cross stop
 	           if ($aCrossStop[$sPrefCrs."_".$aValue['code_crs']] && 
 	       		$aCrossStop[$sPrefCrs."_".$aValue['code_crs']] == $sPref."_".$aValue['code']) {
@@ -2248,46 +2105,65 @@ cat_alt_types.Description
 	           $aCrossTcd[$sKey]['pref']=$sPref;
 	           $aCrossTcd[$sKey]['pref_crs']=$sPrefCrs;
 	           
-	          if ($aCat2['is_cat_virtual']) {
-	          	$aVag=Db::getAll("Select c.* from cat c
-		    				where c.visible=1 and c.id_cat_virtual=".$aCat2['id']);
+	          if ($aCatCheckVirtual['is_cat_virtual']) {
+	          	if (isset($aVagCatAssoc[$aCatCheckVirtual['id']]))
+	          		$aVag = $aVagCatAssoc[$aCatCheckVirtual['id']];
+	          	else { 
+	          		$aVag=Db::getAll("Select c.* from cat c
+		    				where c.visible=1 and c.id_cat_virtual=".$aCatCheckVirtual['id']);
+	          		$aVagCatAssoc[$aCatCheckVirtual['id']] = $aVag;
+	          	}
 	          	if ($aVag) {
 	          		foreach ($aVag as $sKeyP => $aVagItem) {
 	          			// add virtual info stop
 	          			$aCrossForStop[]=$aVagItem['pref']."_".$aValue['code'];
-	          			if (!$aVirtPrefAssoc[$aCat2['pref']][$aVagItem['pref']])
-	          				$aVirtPrefAssoc[$aCat2['pref']][$aVagItem['pref']] = $aVagItem['pref']; 
-	          			if (!$aVirtPrefAssoc[$aVagItem['pref']][$aCat2['pref']])
-	          				$aVirtPrefAssoc[$aVagItem['pref']][$aCat2['pref']] = $aCat2['pref'];
+	          			if (!$aVirtPrefAssoc[$aCatCheckVirtual['pref']][$aVagItem['pref']])
+	          				$aVirtPrefAssoc[$aCatCheckVirtual['pref']][$aVagItem['pref']] = $aVagItem['pref']; 
+	          			if (!$aVirtPrefAssoc[$aVagItem['pref']][$aCatCheckVirtual['pref']])
+	          				$aVirtPrefAssoc[$aVagItem['pref']][$aCatCheckVirtual['pref']] = $aCatCheckVirtual['pref'];
 	          			
-	          			if ($aCrossTcd[$sKey]['pref']==$aData['pref'] &&
+	          		   if ($aCrossTcd[$sKey]['pref']==$aData['pref'] &&
 	          			"'".$aCrossTcd[$sKey]['code']."'"==$aData['sCode'] &&
+	          			$aVagItem['pref']!=$aCrossTcd[$sKey]['pref']) {
+	          				$aVirtualItem = $aCrossTcd[$sKey];
+	          				$aVirtualItem['pref'] = $aVagItem['pref'];
+	          				$aVirtualItem['item_code'] = $aVagItem['pref'].'_'.$aVirtualItem['code'];
+	          				$aVirtualItems[] = $aVirtualItem;
+	          			}elseif ($aCrossTcd[$sKey]['pref_crs']==$aData['pref'] &&
+	          			"'".$aCrossTcd[$sKey]['code_crs']."'"==$aData['sCode'] &&
 	          			$aVagItem['pref']!=$aCrossTcd[$sKey]['pref_crs']) {
 	          				$aVirtualItem = $aCrossTcd[$sKey];
-		          			$aVirtualItem['pref_crs'] = $aVagItem['pref'];
-		          			$aVirtualItem['item_code_crs'] = $aVagItem['pref'].'_'.$aVirtualItem['code_crs'];
-		          			$aVirtualItems[] = $aVirtualItem;
+	          				$aVirtualItem['pref_crs'] = $aVagItem['pref'];
+	          				$aVirtualItem['item_code_crs'] = $aVagItem['pref'].'_'.$aVirtualItem['code_crs'];
+	          				$aVirtualItems[] = $aVirtualItem;
 	          			}
 	          		}
 	          	}
 	          }
-	          elseif ($aCat2['id_cat_virtual']!=0) {
+	          elseif ($aCatCheckVirtual['id_cat_virtual']!=0) {
 	          	$aVag=Db::getAll("Select c.* from cat c
 		    				inner join cat c2 on c2.id = c.id_cat_virtual and c2.visible=1
-		    				where c.visible=1 and c.id_cat_virtual=".$aCat2['id_cat_virtual'].
+		    				where c.visible=1 and c.id_cat_virtual=".$aCatCheckVirtual['id_cat_virtual'].
 	          				" union select c.* from cat c 
-	          				where c.visible=1 and c.is_cat_virtual=1 and c.id=".$aCat2['id_cat_virtual']);
+	          				where c.visible=1 and c.is_cat_virtual=1 and c.id=".$aCatCheckVirtual['id_cat_virtual']);
 	          	if ($aVag) {
 	          		foreach ($aVag as $sKeyP => $aVagItem) {
 	          			// add virtual info stop
 	          			$aCrossForStop[]=$aVagItem['pref']."_".$aValue['code'];
-	          			if (!$aVirtPrefAssoc[$aCat2['pref']][$aVagItem['pref']])
-	          				$aVirtPrefAssoc[$aCat2['pref']][$aVagItem['pref']] = $aVagItem['pref'];
-						if (!$aVirtPrefAssoc[$aVagItem['pref']][$aCat2['pref']])
-	          				$aVirtPrefAssoc[$aVagItem['pref']][$aCat2['pref']] = $aCat2['pref'];
+	          			if (!$aVirtPrefAssoc[$aCatCheckVirtual['pref']][$aVagItem['pref']])
+	          				$aVirtPrefAssoc[$aCatCheckVirtual['pref']][$aVagItem['pref']] = $aVagItem['pref'];
+						if (!$aVirtPrefAssoc[$aVagItem['pref']][$aCatCheckVirtual['pref']])
+	          				$aVirtPrefAssoc[$aVagItem['pref']][$aCatCheckVirtual['pref']] = $aCatCheckVirtual['pref'];
 	          			
 	          			if ($aCrossTcd[$sKey]['pref']==$aData['pref'] &&
 	          			"'".$aCrossTcd[$sKey]['code']."'"==$aData['sCode'] &&
+	          			$aVagItem['pref']!=$aCrossTcd[$sKey]['pref']) {
+	          				$aVirtualItem = $aCrossTcd[$sKey];
+	          				$aVirtualItem['pref'] = $aVagItem['pref'];
+	          				$aVirtualItem['item_code'] = $aVagItem['pref'].'_'.$aVirtualItem['code'];
+	          				$aVirtualItems[] = $aVirtualItem;
+	          			}elseif ($aCrossTcd[$sKey]['pref_crs']==$aData['pref'] &&
+	          			"'".$aCrossTcd[$sKey]['code_crs']."'"==$aData['sCode'] &&
 	          			$aVagItem['pref']!=$aCrossTcd[$sKey]['pref_crs']) {
 	          				$aVirtualItem = $aCrossTcd[$sKey];
 	          				$aVirtualItem['pref_crs'] = $aVagItem['pref'];
@@ -2312,12 +2188,25 @@ cat_alt_types.Description
 	           }
 	       }*/
 	    }
+	    else { // добавить стоп кроссы по входящему коду
+	        if ($aCodes && $aCat)
+	        foreach ($aCodes as $sVal) {
+	            $aCrossForStop[]=$aCat['pref']."_".str_replace("'","",$sVal);
+	        }
+	    }
 	    sort($aCrossTcd);
 	    $aCrossCat=Db::GetAll($sSql);
+	    if(!$aCrossTcd) $aCrossTcd=array();
+	    if(!$aCrossCat) $aCrossCat=array();
 	    
 	    $aCatVirt=Db::GetAssoc("SELECT `pref`,`id`,`id_cat_virtual` FROM `cat` WHERE `id_cat_virtual`!=0 OR `is_cat_virtual`!=0");
 	    $aCatVirtIds=Db::GetAssoc("SELECT `id`,`pref`,`id_cat_virtual` FROM `cat` WHERE `id_cat_virtual`!=0 OR `is_cat_virtual`!=0");
 	    foreach ($aCrossCat as $iKeie=>$aCrossCatItem){
+	        // если в запросе ItemCode, лишние кроссы текдока убрать
+	        if ($aData['aItemCode'] && !$aData['aItemCode'][$aCrossCatItem['item_code']]) {
+	            unset($aCrossCat[$iKeie]);
+	            continue;
+	        }
 	        $spref1 = explode("_", $aCrossCatItem['item_code_crs']);
 	        if ($aCatVirt[$spref1[0]]!=array()){
 	            
@@ -2363,6 +2252,7 @@ cat_alt_types.Description
 	        }
 	    }
 	    
+		/* get original in sql ind=3,4
 	    if(Base::GetConstant('price:show_oe','1')==1 && $aData['sCode']) {
 	    	$sRequestCode = mb_strtoupper(Base::$aRequest['code'],'UTF-8');
 	    	$sSql="select
@@ -2373,12 +2263,12 @@ cat_alt_types.Description
             from ".DB_OCAT."cat_alt_original as c
             where 1=1 and (oe_code like ".$aData['sCode']." or code like ".$aData['sCode']." ) ";
 	    	$aOriginals=TecdocDb::GetAll($sSql);
-	    	if($aOriginals) $aCatAssoc=Db::GetAssoc("select id_tof,pref from cat where id_tof >0");
+	    	if($aOriginals) $aCatAssoc=Db::GetAssoc("select id_to f,pref from cat where id_to f >0");
 	    	// cut other brand original
 	    	$aPrefOriginals = array();
 	    	if ($aData['pref']) {
 	    		$sItemCode = $aData['pref'].'_'.$sRequestCode;
-	    		$iIdTof = Db::GetOne("select id_tof from cat where pref='".$aData['pref']."'");
+	    		$iIdTof = Db::GetOne("select id_to f from cat where pref='".$aData['pref']."'");
 	    		if ($iIdTof) {
 	    			if($aOriginals) foreach ($aOriginals as $aValue) {
 	    				if ($aValue['code']==$sRequestCode && $aValue['brand']==$iIdTof)
@@ -2392,7 +2282,7 @@ cat_alt_types.Description
 	    
 	    	$aItemCodeOriginal=array();
 	    	if($aOriginals) foreach ($aOriginals as $skeyOriginal => $aValueOriginal) {
-	    		// cut other brand original without id_tof
+	    		// cut other brand original without id_to f
 	    		if ($sItemCode &&
 	    		$aCatAssoc[$aValueOriginal['brand']]."_".$aValueOriginal['code'] != $sItemCode &&
 	    		$aCatAssoc[$aValueOriginal['oe_brand']]."_".$aValueOriginal['oe_code'] != $sItemCode
@@ -2432,7 +2322,7 @@ cat_alt_types.Description
 	    	if(!$aItemCodeOriginal) $aItemCodeOriginal=array();
 	    	if(!$aCrossTcd) $aCrossTcd=array();
 	    	$aCrossTcd=array_merge($aCrossTcd,$aItemCodeOriginal);
-	    }
+	    }*/
 	    // Get OE numbers end
 	    
 	    if($aCrossForStop && $aCrossTcd) {
@@ -2613,18 +2503,22 @@ cat_alt_types.Description
 	    }
 	    
 	    $sSql="
-        	select  a.ID_src as art_id, c.oe_code as number, s.ID_src as id_tof, 1 as is_original
+        	select  a.ID_src as art_id, c.oe_code as number, s.ID_src as id_mfa, 1 as is_original
         	from ".DB_OCAT."cat_alt_original as c
         	INNER JOIN ".DB_OCAT."cat_alt_articles a on a.ID_art=c.ID_art
-        	INNER JOIN ".DB_OCAT."cat_alt_suppliers as s on c.oe_Brand=s.id_src
+        	INNER JOIN ".DB_OCAT."cat_alt_manufacturer as s on c.oe_Brand=s.id_src
         	 ".$sJoin."
         	 where 1=1 ".$sWhere.$sLimit;
 	    
 	    $aOriginals=TecdocDb::GetAll($sSql);
 	    if($aOriginals) foreach ($aOriginals as $sKey => $aValue) {
-	       if(!$aCats) $aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
-	       $aOriginals[$sKey]['name']=$aCats[$aValue['id_tof']]['title'];
-	       $aOriginals[$sKey]['item_code']=$aCats[$aValue['id_tof']]['pref']."_".$aValue['number'];
+	       $aCats=Db::GetAssoc("select c.id_mfa,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1 and c.is_brand=1 ");
+	       if ($aCats[$aValue['id_mfa']]) {
+    	       $aOriginals[$sKey]['name']=$aCats[$aValue['id_mfa']]['title'];
+    	       $aOriginals[$sKey]['item_code']=$aCats[$aValue['id_mfa']]['pref']."_".$aValue['number'];
+	       }
+	       else 
+	           unset($aOriginals[$sKey]);
 	    }
 	    
 	    if(!$sWhere1) $sWhere1=" and 0=1";
@@ -2650,14 +2544,14 @@ cat_alt_types.Description
            from ".DB_OCAT."cat_alt_manufacturer man 
            inner join ".DB_OCAT."cat_alt_models m on m.ID_mfa=man.ID_mfa and m.ID_src in (".$iIdModel.")
 	       ");
-	    if($iIdTof) $iIdMake=Db::GetOne("select id from cat where id_tof='".$iIdTof."' ");
+	    if($iIdTof) $iIdMake=Db::GetOne("select id from cat where id_mfa='".$iIdTof."' ");
 	    
 	    return $iIdMake;
 	}
 	//-----------------------------------------------------------------------------------------------
 	public static function AssocArtIdItemCode($aData)
 	{
-	    $aData=TecdocDb::GetAssoc("select a.ID_src art_id_key, UPPER(a.Search) as item_code, s.ID_src as id_tof
+	    $aData=TecdocDb::GetAssoc("select a.ID_src art_id_key, UPPER(a.Search) as item_code, s.ID_src as id_sup
 			FROM ".DB_OCAT."cat_alt_articles a
 			join ".DB_OCAT."cat_alt_link_str_art lsa on lsa.ID_tree in ('".implode("','",$aData)."') and lsa.ID_art=a.ID_art
 			/*join ".DB_OCAT."cat_alt_link_art_inf as lai on lai.ID_art=a.ID_art
@@ -2667,15 +2561,15 @@ cat_alt_types.Description
 	    
 	    if($aData) {
 	        $aCat=array();
-	        foreach ($aData as $aValue) $aCat[$aValue['id_tof']]=$aValue['id_tof'];
+	        foreach ($aData as $aValue) $aCat[$aValue['id_sup']]=$aValue['id_sup'];
 	        
-	        $aBrands=Db::GetAssoc("select id_tof,pref from cat where id_tof in ('".implode("','", $aCat)."') ");
+	        $aBrands=Db::GetAssoc("select id_sup,pref from cat where id_sup in ('".implode("','", $aCat)."') ");
 	        if($aBrands) foreach ($aData as $sKey => $aValue) {
-	            if(!$aBrands[$aValue['id_tof']]) {
+	            if(!$aBrands[$aValue['id_sup']]) {
 	                unset($aData[$sKey]);
 	                continue;
 	            }
-	            $aData[$sKey]=$aBrands[$aValue['id_tof']]."_".$aValue['item_code'];
+	            $aData[$sKey]=$aBrands[$aValue['id_sup']]."_".$aValue['item_code'];
 	        }
 	    }
 	    
@@ -2888,7 +2782,7 @@ cat_alt_types.Description
 		, typ_id as id_model_detail
 	    from ".DB_TOF."tof__types
 	    inner join ".DB_TOF."tof__models on typ_mod_id = mod_id
-	    /*inner join cat as c on mod_mfa_id = c.id_tof*/
+	    /*inner join cat as c on mod_mfa_id = c.id_to f*/
 	      ".$sJoin."
 	    left outer join ".DB_TOF."tof__designations model_des
 	                 on ".DB_TOF."tof__types.typ_kv_model_des_id = model_des.des_id
@@ -2946,9 +2840,9 @@ cat_alt_types.Description
 	   where 1=1 and substring(typ_ctm,".$iCountryId.",1) = 1
 	    ".$sWhere." order by ifnull(lng_tex.tex_text, uni_tex.tex_text)";
 		
-		if(!$aCat) $aCat=Db::GetAssoc("select c.id_tof,c.id from cat as c where c.visible=1");
-		$aCatTitles=Db::GetAssoc("select c.id_tof,c.title from cat as c where c.visible=1");
-		$aCatName=Db::GetAssoc("select c.id_tof,c.id,c.name from cat as c where c.visible=1");		
+		if(!$aCat) $aCat=Db::GetAssoc("select c.id_mfa,c.id from cat as c where c.visible=1");
+		$aCatTitles=Db::GetAssoc("select c.id_mfa,c.title from cat as c where c.visible=1");
+		$aCatName=Db::GetAssoc("select c.id_mfa,c.id,c.name from cat as c where c.visible=1");		
 		 
 		$aTecdocModelDetail=TecdocDb::GetAll($sSql);
 		if($aTecdocModelDetail) foreach ($aTecdocModelDetail as $sKey => $aValue) {
@@ -2988,66 +2882,7 @@ cat_alt_types.Description
 		, substr(cat_alt_types.DateEnd,1,4) as year_end
 		, cat_alt_models.ID_src as id_model
 		, cat_alt_types.ID_src as id_model_detail
-		, REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-cat_alt_types.Description
-
-, 'CHEVR', 'CHEVROLET')
-, 'VAUXH', 'VAUXHALL')
-, 'MERCE', 'MERCEDES')
-, 'RENAU', 'RENAULT')
-, 'PROTO', 'PROTON')
-, 'ALFA', 'ALFAROMEO')
-, 'BENT', 'BENTLEY')
-, 'CADIL', 'CADILLAC')
-, 'CHRYS', 'CHRYSLER')
-, 'CITRO', 'CITROEN')
-, 'DAIHA', 'DAIHATSU')
-, 'FERRA', 'FERRARI')
-, 'HUMME', 'HUMMER')
-, 'INFIN', 'INFINITI')
-, 'JAGUA', 'JAGUAR')
-, 'LAMBO', 'LAMBORGHINI')
-, 'MASER', 'MASERATI')
-, 'NISSA', 'NISSAN')
-, 'PEUGE', 'PEUGEOT')
-, 'PONTI', 'PONTIAC')
-, 'PORSC', 'PORSCHE')
-, 'ROLLS', 'ROLLSROYCE')
-, 'SSANG', 'SSANGYONG')
-, 'SUBAR', 'SUBARU')
-, 'SUZUK', 'SUZUKI')
-, 'TOYOT', 'TOYOTA')
-, 'DAIML', 'DAIMLER')
-, 'MITSU', 'MITSUBISHI')
-, 'MITSUBISHIBISHI', 'MITSUBISHI') as name
+		, cat_alt_types.Description as name
 		, LEFT(KwHp, LOCATE('/', KwHp)-1) kw_from
 		, SUBSTR(KwHp, LOCATE('/', KwHp)+1) hp_from
 		, CCM as ccm, Body as body
@@ -3083,72 +2918,13 @@ cat_alt_types.Description
 	    }
 	
 	    $sSql="select 
-                    REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-REPLACE(
-t.Description
-
-, 'CHEVR', 'CHEVROLET')
-, 'VAUXH', 'VAUXHALL')
-, 'MERCE', 'MERCEDES')
-, 'RENAU', 'RENAULT')
-, 'PROTO', 'PROTON')
-, 'ALFA', 'ALFAROMEO')
-, 'BENT', 'BENTLEY')
-, 'CADIL', 'CADILLAC')
-, 'CHRYS', 'CHRYSLER')
-, 'CITRO', 'CITROEN')
-, 'DAIHA', 'DAIHATSU')
-, 'FERRA', 'FERRARI')
-, 'HUMME', 'HUMMER')
-, 'INFIN', 'INFINITI')
-, 'JAGUA', 'JAGUAR')
-, 'LAMBO', 'LAMBORGHINI')
-, 'MASER', 'MASERATI')
-, 'NISSA', 'NISSAN')
-, 'PEUGE', 'PEUGEOT')
-, 'PONTI', 'PONTIAC')
-, 'PORSC', 'PORSCHE')
-, 'ROLLS', 'ROLLSROYCE')
-, 'SSANG', 'SSANGYONG')
-, 'SUBAR', 'SUBARU')
-, 'SUZUK', 'SUZUKI')
-, 'TOYOT', 'TOYOTA')
-, 'DAIML', 'DAIMLER')
-, 'MITSU', 'MITSUBISHI')
-, 'MITSUBISHIBISHI', 'MITSUBISHI') as name, 
+                    t.Description as name, 
                     t.id_src as id, 
                     t.fuel, 
                     ifnull( substr(t.DateStart,1,4) ,0)
                     ,m.id_src as id_model
                     ,t.id_src as id_model_detail
-	                ,man.ID_src as id_tof
+	                ,man.ID_src as id_mfa
 	             from ".DB_OCAT."cat_alt_types as t 
 	             inner join ".DB_OCAT."cat_alt_models m on m.id_mod=t.id_mod
 	             inner join ".DB_OCAT."cat_alt_manufacturer man on m.ID_mfa=man.ID_mfa 
@@ -3157,7 +2933,7 @@ t.Description
 	        ";
 	    $aTecdocAuto=TecdocDb::GetRow($sSql);
 	    if($aTecdocAuto) {
-	        $aCat=Db::GetRow("select * from cat where id_tof='".$aTecdocAuto['id_tof']."' ");
+	        $aCat=Db::GetRow("select * from cat where id_mfa='".$aTecdocAuto['id_mfa']."' ");
 	        
 	        if($aCat) {
 	            $aTecdocAuto['brand']=$aCat['title'];
@@ -3173,7 +2949,7 @@ t.Description
 	                from cat_model as cm
             	    inner join cat_model_group as cmg on cmg.visible=1 and FIND_IN_SET(cm.tof_mod_id, cmg.id_models)
             	    where cm.visible=1
-            	    and cm.tof_mod_id ='".$aTecdocAuto['id_tof']."'
+            	    and cm.tof_mod_id ='".$aTecdocAuto['id_mfa']."'
             	    ";
 	            $aModelVisible=Db::GetRow($sSql);
 	             

@@ -28,6 +28,55 @@ class AManager extends AUser
 	{
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and u.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and um.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['login'])
+                    $this->sSearchSQL .= " and u.login = '" . $this->aSearch['login'] . "'";
+                if ($this->aSearch['email'])
+                    $this->sSearchSQL .= " and u.email = '" . $this->aSearch['email'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and u.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['login'])
+                    $this->sSearchSQL .= " and u.login like '%" . $this->aSearch['login'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and um.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['email'])
+                    $this->sSearchSQL .= " and u.email like '%" . $this->aSearch['email'] . "%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and u.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and u.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and u.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and u.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+            if ($this->aSearch['has_customer']=='1')	$this->sSearchSQL .= " and um.has_customer = '1'";
+            if ($this->aSearch['has_customer']=='0')	$this->sSearchSQL .= " and um.has_customer = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['has_customer']){
+                case '1':
+                    $this->sSearchSQL.=" and um.has_customer>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and um.has_customer>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$oTable=new Table();
 		$oTable->aColumn=array(
 		'id' => array('sTitle'=>'Id', 'sOrder'=>'u.id'),

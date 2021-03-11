@@ -22,7 +22,8 @@ class Cart extends Base
 			Base::GetConstant('user:is_salt_password',1));
 		}
 
-		if (Auth::$aUser['type_']!='manager' && $bNeedAuth) Auth::NeedAuth('customer');
+		if (Auth::$aUser['type_']!='manager' && $bNeedAuth && !Base::$aRequest['xajax']) 
+		    Auth::NeedAuth('customer');
 		Base::$aData['template']['bWidthLimit']=true;
 		Base::$bXajaxPresent=true;
 
@@ -153,7 +154,7 @@ class Cart extends Base
 	{
 		$aData=array(
 				'table'=>'delivery_type',
-				'where'=>" and t.visible=1 order by t.name",
+				'where'=>" and t.visible=1 order by t.num ",
 		);
 		if ($isAssoc) {
 			$aDeliveryType=Language::GetLocalizedAll($aData,false,'id,name,');
@@ -179,7 +180,7 @@ class Cart extends Base
 	{
 		$aData=array(
 				'table'=>'payment_type',
-				'where'=>" and t.visible=1 order by t.name",
+				'where'=>" and t.visible=1 order by t.num",
 		);
 		if ($isAssoc) {
 			$aPaymentType=Language::GetLocalizedAll($aData,false,'id,name,');
@@ -201,15 +202,17 @@ class Cart extends Base
 		    MultiLanguage::Redirect('/pages/cart_onepage_order_manager');
 		}
 
-		Resource::Get()->Add('/js/user.js',3);	
-		
+		Resource::Get()->Add('/js/user.js',3);
+		$_SESSION['current_cart']['delivery_info']=0;
+		$_SESSION['current_cart']['id_delivery_type'] = Base::$aRequest['id_delivery_type'];
 		$sCheckLoggedError=false;
 		$sCheckNewAccountError=false;
+		$bDeliveryAddress=true;
 		/* hack for fixing back button on end step */
 		$_SESSION['is_checked_account']=true;
 		$_SESSION['current_cart']['is_confirmed']=0;
-		if (!$_SESSION['current_cart']['id_delivery_type']) $_SESSION['current_cart']['id_delivery_type']=1;
-		
+		if (!$_SESSION['current_cart']['remark'])$_SESSION['current_cart']['remark']=Base::$aRequest['data']['remark'];
+
 		Cart::AssignPaymentType();
 
 		//подготовка popup
@@ -226,6 +229,14 @@ class Cart extends Base
 		if (Base::$aRequest['is_post']) {
 			if (Base::$aRequest['subaction']=='create_new_account'){
 			    
+			    if(Base::$aRequest['id_np_type']==1 && Base::$aRequest['id_delivery_type']==Base::GetConstant('cart:id_delivery',6)){
+			        if (Base::$aRequest['id_delivery_type']==Base::GetConstant('cart:id_delivery',6) &&
+			            (!Base::$aRequest['delivery_info']['np_city'] || Base::$aRequest['delivery_info']['np_city'] == 'Выберите город')
+			            || (!Base::$aRequest['delivery_info']['np_sklad'] || Base::$aRequest['delivery_info']['np_sklad'] == 'Выберите склад' ))
+			                $bDeliveryAddress = false;
+			    }
+
+			        
 			    //google capcha
 			    $capcha = $_POST['g-recaptcha-response'];
 			    $url_to_google_api = "https://www.google.com/recaptcha/api/siteverify";
@@ -236,11 +247,13 @@ class Cart extends Base
 				$sCheckNewAccountError=$this->NewAccountError();
 				if (!Base::$aRequest['data']['name'] /*|| !Base::$aRequest['data']['city']
 				|| !Base::$aRequest['data']['address']*/ || !Base::$aRequest['data']['phone'] || !$data->success
-				|| $sCheckNewAccountError
+				|| $sCheckNewAccountError || !$bDeliveryAddress
 				) {
 					if ($sCheckNewAccountError) {
 						$sError=$sCheckNewAccountError;
-					} else {
+					}elseif (!$bDeliveryAddress){
+					    $sError="Fill in the delivery address";
+					}  else {
 						$sError="Please, fill the required fields";
 					}
 					Base::$tpl->assign('aUser',Base::$aRequest['data']);
@@ -292,6 +305,17 @@ class Cart extends Base
 					// confirmation-end
 
 					$aCartPackageUpdate['customer_comment']=$aRequestUserCustomer['remark'];
+					if (!$_SESSION['current_cart']['id_delivery_type']) $_SESSION['current_cart']['id_delivery_type']=6;
+					
+					
+				   if(Base::$aRequest['id_np_type']==1){
+					     unset(Base::$aRequest['delivery_info']['np_address']);
+					     $_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					}else{
+					    unset(Base::$aRequest['delivery_info']['np_sklad']); 
+					    $_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					}
+					
 					Db::AutoExecute('cart_package',$aCartPackageUpdate,'UPDATE'
 					," id='".$_SESSION['current_cart_package']['id']."' ".Auth::$sWhere);
 
@@ -325,20 +349,29 @@ class Cart extends Base
 				}
 			}
 			if (Base::$aRequest['subaction']=='check_authorized_user') {
-				if ( (($_SESSION['current_cart']['price_delivery'] > 0) && (!Base::$aRequest['data']['name'] 
-				|| !Base::$aRequest['data']['city'] || !Base::$aRequest['data']['address'] || !Base::$aRequest['data']['phone'])
+			    
+			    if (Base::$aRequest['id_delivery_type']==Base::GetConstant('cart:id_delivery',6) && Base::$aRequest['id_np_type']==1){
+			    if (
+			        (!Base::$aRequest['delivery_info']['np_city'] || Base::$aRequest['delivery_info']['np_city'] == 'Выберите город')
+			        || (!Base::$aRequest['delivery_info']['np_sklad'] || Base::$aRequest['delivery_info']['np_sklad'] == 'Выберите склад' ))
+			    {
+			        $bDeliveryAddress = false;
+			    }
+			    }
+			    
+			    
+				if ( (($_SESSION['current_cart']['price_delivery'] > 0) && (!Base::$aRequest['data']['name'] || !Base::$aRequest['data']['phone'])
 				|| (Base::$aRequest['data']['check_order'] == 1 && Base::$aRequest['data']['check_order'] == 0))
 				
-				|| (($_SESSION['current_cart']['price_delivery'] == 0) && (!Base::$aRequest['data']['name'] 
-				|| !Base::$aRequest['data']['phone']) 
-				|| (Base::$aRequest['data']['check_order'] == 1 && Base::$aRequest['data']['own_auto_id'] == 0)) ) {
+				|| (($_SESSION['current_cart']['price_delivery'] == 0) && (!Base::$aRequest['data']['name'] || !Base::$aRequest['data']['phone']) 
+				|| (Base::$aRequest['data']['check_order'] == 1 && Base::$aRequest['data']['own_auto_id'] == 0)) || !$bDeliveryAddress) {
 					$sError="Please, fill the required fields";
 					Base::$tpl->assign('aUser',Base::$aRequest['data']);
 				}
 				else {
 					$aRequestUserCustomer=String::FilterRequestData(Base::$aRequest['data'],array(
-					'name','country','city','address','address2','zip','phone','phone2','remark'
-        			,'additional_field5','additional_field2','additional_field3','additional_field4'
+					'name','country','city','address','address2','zip','phone','phone2',
+                        /*'remark',*/'additional_field5','additional_field2','additional_field3','additional_field4'
         			,'id_user_customer_type','entity_type','entity_name','additional_field1'
 					));
 					//Debug::PrintPre($aRequestUserCustomer);
@@ -349,11 +382,20 @@ class Cart extends Base
 					
 					$_SESSION['current_cart']['own_auto_id'] = 0;
 					if (isset(Base::$aRequest['own_auto_id']))
-						$_SESSION['current_cart']['own_auto_id'] = Base::$aRequest['own_auto_id']; 
+						$_SESSION['current_cart']['own_auto_id'] = Base::$aRequest['own_auto_id'];
+					if (!$_SESSION['current_cart']['id_delivery_type']) $_SESSION['current_cart']['id_delivery_type']=Base::GetConstant('cart:id_delivery',6);
 
+					if(Base::$aRequest['id_np_type']==1){
+				       unset(Base::$aRequest['delivery_info']['np_address']);
+				       $_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					}else{
+					    unset(Base::$aRequest['delivery_info']['np_sklad']); 
+					    $_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					}
 					Db::Autoexecute('user_customer',$aRequestUserCustomer,'UPDATE',"id_user='".Auth::$aUser['id']."'");
 
-					//Base::Redirect("/?action=cart_payment_method");
+					$aRequestUser=String::FilterRequestData(Base::$aRequest['data'],array('email'));
+					Db::Autoexecute('user',$aRequestUser,'UPDATE',"id='".Auth::$aUser['id']."'");
 
 					$aPaymentType=Db::GetRow(Base::GetSql('PaymentType',array('id'=>Base::$aRequest['data']['id_payment_type'])));
                     //Base::Redirect("/?action=cart_payment_end&data[id_payment_type]=".$aPaymentType['id']);
@@ -378,6 +420,19 @@ class Cart extends Base
 		
 		//Добавление методов доставки в шаблон
 		$this->AssignDeliveryMethods();
+
+		//--------------------- nova poshta begin --------------------------
+	    
+	    $aCityTmp=DB::GetAssoc("SELECT id_np, city_ru as city FROM np_cities_new");
+	    $aCityTmpNP=array_combine(array_values($aCityTmp),array_values($aCityTmp));
+	    $aCities=array_merge([0=>'Выберите город'],$aCityTmpNP);
+		
+		$_SESSION['nova_poshta']['city']=$aCityTmp;
+		sort($aCities);
+		
+		Base::$tpl->assign('aCities',$aCities);
+// 		}
+		//--------------------- nova poshta end --------------------------
 
 		Base::$tpl->assign('dSubtotal',$dSubtotal);
 		Base::$tpl->assign('dTotal',$dSubtotal+Currency::PrintPrice($_SESSION['current_cart']['price_delivery']));	
@@ -456,6 +511,74 @@ class Cart extends Base
 		Base::$oContent->AddCrumb('Оформление заказа');
 		Base::$sText.=Base::$tpl->fetch("cart/cart_onepage_order.tpl");
 	}	
+	//--------------------------------------------------------------------------------------
+	public function ChangeCity() {
+
+	    if(Base::$aRequest['page']){
+            Base::$oResponse->AddScript("$('#np_sklad2').select2('destroy');");
+            
+            Base::$oResponse->addScript("$('#np_sklad2').parent().html(\"<div id='np_sklad2'></div>\");");
+	    } else {
+	        Base::$oResponse->AddScript("$('#np_sklad').select2('destroy');");
+	        
+	        Base::$oResponse->addScript("$('#np_sklad').parent().html(\"<div id='np_sklad'></div>\");");
+	    }
+
+	    if(Base::$aRequest['city']) {
+            include_once SERVER_PATH."/single/NovaPoshtaApi2.php";
+	        include_once SERVER_PATH."/single/NovaPoshtaApi2Areas.php";
+	        $oNP = new NovaPoshtaApi2(Base::GetConstant('novaposhta:key'));
+	
+	         
+// 	        $senderCity=$oNP->getCities2(Base::$aRequest['oblast']);
+// 	        $cities = $oNP->getCities();
+	        
+	        
+// 	        foreach ($cities['data'] as $aValue){
+// 	            Db::Execute("insert ignore into np_cities_new (city,city_ru,id_area, id_np)
+		
+// 			    values ('".$aValue['Description']."',
+// 			        '".$aValue['DescriptionRu']."',
+// 			        '".$aValue['CityID']."',
+// 			        '".$aValue['Ref']."'
+// 			            )");
+// 	        }
+	        
+	        $aWarehouse=array();
+	        $aWarehouse[0]="Выберите склад";
+	
+	        $sCity=Base::$aRequest['city'];
+	        $sCityRef= array_search($sCity, $_SESSION['nova_poshta']['city']);
+	
+	        $aWarehouses=$oNP->getWarehouses($sCityRef);
+	        if($aWarehouses['success']) {
+	            foreach ($aWarehouses['data'] as $aValue) {
+	                $iPos=strpos($aValue['Description'], "Поштомат");
+	                if($iPos===false) {
+	                    //отделения
+	                    $aWarehouse[$aValue['Description']]=$aValue['Description'];
+	                } else {
+	                    //почтоматы
+	                    $aPostomat[$aValue['Description']]=$aValue['Description'];
+	                }
+	            }
+	        }
+	        
+	        $_REQUEST['page']=Base::$aRequest['page'];
+	        Base::$tpl->assign('aWarehouse',$aWarehouse);
+	        $sOption=Base::$tpl->fetch('cart/select_np_sklad.tpl');
+	        
+	        if(Base::$aRequest['page']){
+	            Base::$oResponse->AddAssign('np_sklad'.Base::$aRequest['page'],'outerHTML',$sOption);
+	            Base::$oResponse->AddScript("$('#np_sklad".Base::$aRequest['page']."').on('change', function() {xajax_process_browse_url('./?action=cart_change_sklad&page=".Base::$aRequest['page']."&city='+$(this).val()+'&oblast='+$('#np_oblast".Base::$aRequest['page']."').val()+'&sklad='+$('#np_sklad".Base::$aRequest['page']."').val())});");
+                Base::$oResponse->AddScript("$('#np_sklad2').select2({width: '250px'});");
+	        }else{
+	            Base::$oResponse->AddAssign('np_sklad'.Base::$aRequest['page'],'outerHTML',$sOption);
+	            Base::$oResponse->AddScript("$('#np_sklad".Base::$aRequest['page']."').on('change', function() {xajax_process_browse_url('./?action=cart_change_sklad&page=".Base::$aRequest['page']."&city='+$(this).val()+'&oblast='+$('#np_oblast".Base::$aRequest['page']."').val()+'&sklad='+$('#np_sklad".Base::$aRequest['page']."').val())});");
+                Base::$oResponse->AddScript("$('#np_sklad').select2({width: '250px'});");
+	        }
+	    }
+	}
 	//-----------------------------------------------------------------------------------------------
 	public function CartOnePageOrderManager()
 	{
@@ -467,19 +590,29 @@ class Cart extends Base
 		$_SESSION['current_cart']['is_confirmed']=0;
 		$_SESSION['current_cart']['delivery_info']=0;
 
+		$_SESSION['current_cart']['id_delivery_type'] = Base::$aRequest['id_delivery_type'];
         $aName=Cart::GetUsersForFilter();
         
 		$sCheckLoggedError=false;
 		$sCheckNewAccountError=false;
-
+		$bDeliveryAddress = true;
+		
 		if (Base::$aRequest['is_post']) {
 			if (Base::$aRequest['subaction']=='create_new_account'){
 				$sCheckNewAccountError=$this->NewAccountManagerError();
+				
+				if (Base::$aRequest['id_delivery_type']==Base::GetConstant('cart:id_delivery',6) && 
+				    (!Base::$aRequest['delivery_info']['np_city'] || Base::$aRequest['delivery_info']['np_city'] == 'Выберите город')
+				    || (!Base::$aRequest['delivery_info']['np_sklad'] || Base::$aRequest['delivery_info']['np_sklad'] == 'Выберите склад' ))
+				        $bDeliveryAddress = false;
+				
 				if (!Base::$aRequest['data']['name'] || !Base::$aRequest['data']['phone'] 
-				|| $sCheckNewAccountError
+				|| $sCheckNewAccountError || !$bDeliveryAddress
 				) {
 					if ($sCheckNewAccountError) {
 						$sError=$sCheckNewAccountError;
+					} elseif (!$bDeliveryAddress){
+					    $sError="Fill in the delivery address";
 					} else {
 						$sError="Please, fill the required fields";
 					}
@@ -492,7 +625,15 @@ class Cart extends Base
 					Base::$aRequest['email']=$aRequestUser['email'];
 
 					$_SESSION['current_cart_package']['new_user']=User::DoNewAccount(true);
-					$_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+// 					$_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+
+					if(Base::$aRequest['id_np_type']==1){
+					    unset(Base::$aRequest['delivery_info']['np_address']);
+					    $_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					}else{
+					    unset(Base::$aRequest['delivery_info']['np_sklad']);
+					    $_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					}
 					
 					// recalc cart
 					User::RecalcCart($_SESSION['current_cart_package']['new_user'],1);
@@ -520,8 +661,19 @@ class Cart extends Base
 					}
 					if(Base::$aRequest['data']['old_login']>0)$_SESSION['current_cart_package']['new_user']=Base::$aRequest['data']['old_login'];
 					else $_SESSION['current_cart_package']['new_user']=Base::$aRequest['data']['old_name'];
+
+// 					$_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					if(Base::$aRequest['id_np_type']==1){
+					    unset(Base::$aRequest['delivery_info']['np_address']);
+					    $_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					}else{
+					    unset(Base::$aRequest['delivery_info']['np_sklad']);
+					    $_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					}
+					
+					
 					Cart::RecalcCartUser(Auth::$aUser['id_user'],$_SESSION['current_cart_package']['new_user']);
-					$_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
+					//$_SESSION['current_cart']['delivery_info']=Base::$aRequest['delivery_info'];
 
 					$aPaymentType=Db::GetRow(Base::GetSql('PaymentType',array('id'=>Base::$aRequest['data']['id_payment_type'])));
 					MultiLanguage::Redirect("/pages/cart_payment_end/?data[id_payment_type]=".$aPaymentType['id']);
@@ -567,6 +719,21 @@ class Cart extends Base
 		
 		//Добавление методов доставки в шаблон
 		Cart::AssignDeliveryMethods();
+
+		//--------------------- nova poshta begin --------------------------
+
+		$aCityTmp=DB::GetAssoc("SELECT id_np, city_ru as city FROM np_cities_new");
+	    $aCityTmpNP=array_combine(array_values($aCityTmp),array_values($aCityTmp));
+	    $aCities=array_merge([0=>'Выберите город'],$aCityTmpNP);
+		
+		$_SESSION['nova_poshta']['city']=$aCityTmp;
+		sort($aCities);
+		
+		Base::$tpl->assign('aCities',$aCities);
+		
+		
+// 		}
+		//--------------------- nova poshta end --------------------------
 
 		//Добавление методов оплаты в шаблон
 		Cart::AssignPaymentType();
@@ -702,63 +869,96 @@ class Cart extends Base
 	//-----------------------------------------------------------------------------------------------
 	public function AddCartItem($iNumber=1,$bRedirect=true,$sReference='')
 	{
-		if ($iNumber<=0) $iNumber=1;
-		if ((int)Base::$aRequest['number']>0) $iNumber=(int)Base::$aRequest['number'];
-		if (Base::$aRequest['reference']) $sReference=Base::$aRequest['reference'];
-
-		$a=Db::GetRow(Base::GetSql('Catalog/Price',array(
-		'id_provider'=>Base::$aRequest['id_provider']
-		, 'aItemCode'=>array(Base::$aRequest['item_code'])
-		, 'id_part'=>Base::$aRequest['id_part']
-		, 'customer_discount'=>Discount::CustomerDiscount(Auth::$aUser)
-		)));
-
-		if (!$a || $a['price']==0) {
-			if ($bRedirect) Base::Redirect('?action=cart_cart&table_error=cart_not_found');
-			else return;
-		}
-
-		$a['zzz_code'] = $a['id'];
-		$a['id_currency_user']=(Auth::$aUser['id_currency']?Auth::$aUser['id_currency']:1);
-		$a['price_currency_user'] = Currency::PrintPrice($a['price'],Auth::$aUser['id_currency'],2,"<none>")*$iNumber;
-		
-		unset($a['id']);
-		unset($a['post_date']);
-		$a['id_user']=Auth::$aUser['id'];
-		$a['session']=session_id();
-		$a['number']=$iNumber;
-		$a['customer_id']=mysql_real_escape_string($sReference);
-		$a['price_parent_margin']=$a['price_original']*Auth::$aUser['parent_margin']/100;
-		$a['price_parent_margin_second']=$a['price_original']*Auth::$aUser['parent_margin_second']/100;
-		$a['id_provider_ordered']=$a['id_provider'];
-		$a['provider_name_ordered']=$a['provider_name'];
-		//$a['price']=Currency::GetPriceWithoutSymbol($a['price']);
-		//$a['price_order']=Currency::GetPriceWithoutSymbol($a['price_order']);
-
-		$aExistingCart=Db::GetRow(Base::GetSql("Part/Search",array(
-		"type_"=>'cart',
-		"where"=>" and c.id_user='".Auth::$aUser['id']."' and c.item_code='".$a['item_code']."'
-			and c.id_provider='".$a['id_provider']."'"
-		)));
-		if ($aExistingCart) {
-			$iNewNumber=$aExistingCart['number']+$a['number'];
-			Db::AutoExecute('cart',array('number'=>$iNewNumber),'UPDATE'," id='".$aExistingCart['id']."'");
-		}
-		else Db::AutoExecute("cart", $a);
-
-		if (Base::$aRequest['xajax_request']) {
-			$bRedirect=false;
-			Base::$oResponse->AddScript("
-			     $('#".Base::$aRequest['link_id']."').find('a').addClass('inbasket');    
-		    ");
-		}
-		if ($bRedirect) Base::Redirect('?action=cart_cart');
-
-		$oContent=new Content();
-		$oContent->ParseTemplate(true);
-		
-		Cart::ShowPopupCart();
-	}
+        if ($iNumber <= 0)
+            $iNumber = 1;
+        if ((int) Base::$aRequest['number'] > 0)
+            $iNumber = (int) Base::$aRequest['number'];
+        if (Base::$aRequest['reference'])
+            $sReference = Base::$aRequest['reference'];
+        
+        $a = Db::GetRow(Base::GetSql('Catalog/Price', array(
+            'id_provider' => Base::$aRequest['id_provider'],
+            'aItemCode' => array(
+                Base::$aRequest['item_code']
+            ),
+            'id_part' => Base::$aRequest['id_part'],
+            'customer_discount' => Discount::CustomerDiscount(Auth::$aUser)
+            
+        )));
+        
+        
+        if (!$a || $a['price'] == 0) {
+            if ($bRedirect)
+                Base::Redirect('?action=cart_cart&table_error=cart_not_found');
+            else
+                return;
+        }
+        
+        $a['zzz_code']            = $a['id'];
+        $a['id_currency_user']    = (Auth::$aUser['id_currency'] ? Auth::$aUser['id_currency'] : 1);
+        $a['price_currency_user'] = Currency::PrintPrice($a['price'], Auth::$aUser['id_currency'], 2, "<none>") * $iNumber;
+        
+        unset($a['id']);
+        unset($a['post_date']);
+        
+        $a['id_user']                    = Auth::$aUser['id'];
+        $a['session']                    = session_id();
+        $a['number']                     = $iNumber;
+        $a['customer_id']                = mysql_real_escape_string($sReference);
+        $a['price_parent_margin']        = $a['price_original'] * Auth::$aUser['parent_margin'] / 100;
+        $a['price_parent_margin_second'] = $a['price_original'] * Auth::$aUser['parent_margin_second'] / 100;
+        $a['id_provider_ordered']        = $a['id_provider'];
+        $a['provider_name_ordered']      = $a['provider_name'];
+        //$a['price']=Currency::GetPriceWithoutSymbol($a['price']);
+        //$a['price_order']=Currency::GetPriceWithoutSymbol($a['price_order']);
+        
+        if (Base::$aRequest['in_basket'] == 1) {
+            $aExistingCart = Db::GetRow(Base::GetSql("Part/Search", array(
+                "type_" => 'cart',
+                "where" => " and c.id_user='" . Auth::$aUser['id'] . "' and c.item_code='" . $a['item_code'] . "'
+    			and c.id_provider='" . $a['id_provider'] . "'"
+            )));
+            
+            if ($aExistingCart) {
+                $iNewNumber = $aExistingCart['number'] + $a['number'];
+                Db::AutoExecute('cart', array(
+                    'number' => $iNewNumber
+                ), 'UPDATE', " id='" . $aExistingCart['id'] . "'");
+            } else
+            ///Добавляем в корзину
+                Db::AutoExecute("cart", $a);
+            
+            if (Base::$aRequest['xajax_request']) {
+                $bRedirect = false;
+                Base::$oResponse->AddScript("
+    			     $('#" . Base::$aRequest['link_id'] . "').find('a').addClass('inbasket');    
+    		    ");
+            }
+            if ($bRedirect)
+                Base::Redirect('?action=cart_cart');
+            
+            $oContent = new Content();
+            $oContent->ParseTemplate(true);
+            
+            Cart::ShowPopupCart();
+        } else {
+            Base::$aRequest['fast_order']['phone'] = Catalog::StripCode(Base::$aRequest['fast_order']['phone']);
+            
+            $sManagerlogin = Db::GetOne("select login from user where type_='manager' and login='" . Base::$aRequest['fast_order']['phone'] . "'");
+            
+            if (!Base::$aRequest['fast_order']['phone'] || !preg_match('/(067|068|096|097|098|050|066|095|099|063|073|093|091|092|094)([0-9]{7})/', Base::$aRequest['fast_order']['phone']) || $sManagerlogin == Base::$aRequest['fast_order']['phone']) {
+                Base::$oResponse->addAssign('check_phone', 'innerHTML', Language::GetText('Incorrect phone format.'));
+                Base::$oResponse->addScript("$('#user_phone1').val('');$('#check_phone').show();");
+            }elseif(!Base::$aRequest['fast_order']['name']){
+                Base::$oResponse->addAssign('check_phone', 'innerHTML', Language::GetText('Please write your name.'));
+            }else {
+                Db::AutoExecute("cart", $a);
+                $iIdCart = Db::InsertID();
+                Cart::OrderOneClick(Base::$aRequest['fast_order'], $iIdCart);
+                return;
+            }
+        }
+    }
 	//-----------------------------------------------------------------------------------------------
 	public function CartUpdateNumber()
 	{
@@ -1365,7 +1565,12 @@ class Cart extends Base
 			 
 			|| (($_SESSION['current_cart']['price_delivery'] == 0) && (!Base::$aRequest['data']['name'] 
 			|| !Base::$aRequest['data']['phone']) 
-			|| (Base::$aRequest['data']['chk_order'] == 1 && Base::$aRequest['data']['own_auto_id'] == 0)) ) {
+			|| (Base::$aRequest['data']['chk_order'] == 1 && Base::$aRequest['data']['own_auto_id'] == 0)) 
+
+			|| ($_SESSION['current_cart']['id_delivery_type']==6 && !Base::$aRequest['delivery_info']['np_oblast']
+			&& !Base::$aRequest['delivery_info']['np_city'] && !Base::$aRequest['delivery_info']['np_sklad'])
+			    
+			) {
 				$sError="Please, fill the required fields";
 				Base::$tpl->assign('aUser',Base::$aRequest['data']);
 			}
@@ -1502,6 +1707,9 @@ class Cart extends Base
 		'is_web_order' => (Auth::$aUser['type_']==manager ? 0 : 1),
 		'post_date' => date("Y-m-d H:i:s"),
 		'post_date_changed' => date("Y-m-d H:i:s"),
+	    'np_city'=> $_SESSION['current_cart']['delivery_info']['np_city'],
+	    'np_sklad'=> $_SESSION['current_cart']['delivery_info']['np_sklad'],
+		'np_address'=> $_SESSION['current_cart']['delivery_info']['np_address']
 		);
 		$aCartpackageInsert=String::FilterRequestData($aCartpackageInsert);
 		Db::AutoExecute('cart_package',$aCartpackageInsert);
@@ -1589,6 +1797,10 @@ class Cart extends Base
 
 		Base::$oContent->AddCrumb('Заказ оформлен');
 		Base::$sText.=Base::$tpl->fetch("cart/payment_end_button.tpl");
+		
+		if($aCartPackage['id_payment_type']==3) {
+		    Base::$sText.= Payment::LiqPayGetForm($aCartPackage['id'],$aCartPackage['price_total']);
+		}
 	}
 	//-----------------------------------------------------------------------------------------------
 	/**
@@ -1792,10 +2004,44 @@ class Cart extends Base
 		}
 		// --- search ---
 		
-		$oTable=new Table();
-		$oTable->sSql=Base::GetSql('CartPackage',array(
+		//FLB-28
+		$aCartPackage=Db::GetAll(Base::GetSql('CartPackage',array(
 		'where'=>" and cp.is_archive='0' and cp.id_user='".Auth::$aUser['id']."'".$sWhere,
-		));
+		)));
+		
+		
+// 		if((Auth::$aUser['id_customer_group']==1 || Auth::$aUser['id_customer_group']==30) ) {
+	    $liqpay = new LiqPay(Base::GetConstant('liqpay:public_key','i48066539671'), Base::GetConstant('liqpay:private_key','plKvI40SGyr8Opr8FxSucf6M8SG5DwiAqpUXVDkQ'));
+	    
+		    foreach ($aCartPackage as $key => $value) {
+		        if($value['id_payment_type']=='3' && $value['is_payed']=='0'){
+		            $res = $liqpay->api("request", array(
+		                'action'        => 'status',
+		                'version'       => '3',
+		                'order_id'      => 'order_id_'.$value['id']
+		            ));
+		            $res=json_encode($res);
+		            $res=json_decode($res, true);
+		            $aCartPackage[$key]['status_liq']=$res['status'];
+		            
+		            if ($aCartPackage[$key]['status_liq']=='success'){
+		                Db::Execute("update cart_package as cp set cp.is_payed='1' where cp.id=".$value['id']."");
+		            }else{
+		                $aCartPackage[$key]['html'] = Payment::LiqPayGetFormOrder($value['id'],$value['price_total']);
+		            } 
+		            
+		            
+		        }
+		    }
+// 		}
+		//end
+		
+		$oTable=new Table();
+		$oTable->sType                 = 'array';
+		$oTable->aDataFoTable          = $aCartPackage;
+// 		$oTable->sSql=Base::GetSql('CartPackage',array(
+// 		'where'=>" and cp.is_archive='0' and cp.id_user='".Auth::$aUser['id']."'".$sWhere,
+// 		));
 		$oTable->aOrdered="order by cp.post_date desc";
 		$oTable->aColumn=array(
 // 		'id'=>array('sTitle'=>'ID'),
@@ -1822,7 +2068,7 @@ class Cart extends Base
 		if (!Base::$aRequest['data']['user_agreement'])
 		return "You need to apply user agreemnt";
 
-		if (!Base::$aRequest['data']['login']||!Base::$aRequest['data']['password']||!Base::$aRequest['data']['email'])
+		if (!Base::$aRequest['data']['login']||!Base::$aRequest['data']['password'])
 		return "Please, enter all the fields";
 
 		if (Base::$aRequest['data']['password']!=Base::$aRequest['data']['verify_password'])
@@ -1834,16 +2080,17 @@ class Cart extends Base
 		if (strlen(Base::$aRequest['data']['password'])<4)
 		return "Password can't be less then 4 digits";
 
-		if (!String::CheckEmail(Base::$aRequest['data']['email']))
-		return "Please, check your email";
-
+		if(Base::$aRequest['data']['email']){
+    		if (!String::CheckEmail(Base::$aRequest['data']['email']))
+    		return "Please, check your email";
+    		
+    		$sQuery="select * from user where email='".Base::$aRequest['data']['email']."'";
+    		$aUser=Db::GetRow($sQuery);
+    		if ($aUser)	return "This email is already registered. Please use the link \"Forgot password\".";
+		}
 		$sQuery="select * from user where login='".Base::$aRequest['data']['login']."'";
 		$aUser=Db::GetRow($sQuery);
 		if ($aUser)	return "This login is already occupied. Please choose different one.";
-
-		$sQuery="select * from user where email='".Base::$aRequest['data']['email']."'";
-		$aUser=Db::GetRow($sQuery);
-		if ($aUser)	return "This email is already registered. Please use the link \"Forgot password\".";
 
 		return false;
 	}
@@ -2275,6 +2522,13 @@ class Cart extends Base
               check_phone();
             });");
 	    }
+	    else {
+	        Base::$tpl->assign('sTableMessage',Language::GetMessage("cart empty"));
+	        Base::$tpl->assign('sTableMessageClass','warning_p');
+	        $sCartPopup = Base::$tpl->fetch('cart/popup.tpl');
+	        Base::$oResponse->addAssign('popup-cart-body','innerHTML',$sCartPopup);
+	        Base::$oResponse->addScript("popupOpen('.js-popup-basket');");
+	    }
 	}
 	//-----------------------------------------------------------------------------------------------
 	//---AOT-40---------------------------------------------------------------------------------------------
@@ -2406,5 +2660,269 @@ class Cart extends Base
 	    Base::$sText.=$oForm->getForm();
 	    // Debug::PrintPre(Base::$aRequest);
 	}
+	//-------------------------------------------------------------------------------------------------
+	public function CheckLogin()
+	{
+	    $bChecked=true;
+	    if (!preg_match('/^[a-zA-Z0-9_]+$/',Base::$aRequest['login'])) $bChecked=false;
+	
+	    if ($bChecked) {
+	        $aUser=Db::GetRow("select * from user where login='".Base::$aRequest['login']."'");
+	        if ($aUser) $bChecked=false;
+	    }
+	
+	    Base::$tpl->assign('bChecked',$bChecked);
+	    Base::$oResponse->addAssign('check_login_image_id','innerHTML',Base::$tpl->fetch("user/check_login_image.tpl"));
+	}
+	//-----------------------------------------------------------------------------------------------
+	public function OrderOneClick($aFastOrder, $iIdCart)
+	{
+	    //для покупки в один клик* order 1 click
+	    if (!Base::$aRequest['xajax'])
+	        Base::Redirect("/pages/cart_cart");
+	
+	
+	
+	    if ($aFastOrder['phone']) {
+	        $iUserId      = '';
+	        $aCartListNew = Db::GetAll(Base::GetSql("Part/Search", array(
+	            "type_" => 'cart',
+	            "where" => " and c.id=" . $iIdCart
+	        )));
+	        // 	        Debug::PrintPre($aCartListNew);
+	        if ($aCartListNew) {
+	
+	            if (!Customer::IsTempUser(Auth::$aUser['login'])) {
+	                //normal user
+	                $iUserId = Auth::$aUser['id'];
+	
+	                if (Auth::$aUser['type_'] == 'manager') {
+	                    $is_web_order = 0;
+	                    //manager
+	                    $iUserId      = Db::GetOne("select id from user where login='" . $aFastOrder['phone'] . "' ");
+	                    if (!$iUserId) {
+	                        Base::$aRequest['data']['phone'] = $aFastOrder['phone'];
+	                        Base::$aRequest['data']['email'] = $aFastOrder['email'];
+	                        $aOrderUser                      = Cart::AutoCreateUser($aFastOrder['phone']);
+	                        $iUserId                         = $aOrderUser['id'];
+	                    } else {
+	                        // check user is manager
+	                        $isCustomer = Db::getOne("Select type_ from user where id=" . $iUserId . " and type_='customer'");
+	                        if (!$isCustomer)
+	                            Base::Redirect('/?action=cart_cart&table_error=phone_is_manager');
+	                    }
+	
+	                    // recalc cart
+	                    User::RecalcCart($iUserId, 1);
+	                    // reload cart with new prices
+	                    $aCartList = Db::GetAll(Base::GetSql("Part/Search", array(
+	                        "type_" => 'cart',
+	                        "where" => " and c.id_user=" . Auth::$aUser['id']
+	                    )));
+	
+	                } else {
+	                    $is_web_order = 1;
+	                    //update user phone
+	                    Db::Execute("update user_customer set phone='" . $aFastOrder['phone'] . "', name='" . $aFastOrder['name'] . "'  where id_user='" . $iUserId . "' ");
+	                }
+	            } else {
+	                //check login
+	                $iUserId = Db::GetOne("select id from user where login='" . $aFastOrder['phone'] . "' ");
+	                if (!$iUserId) {
+	                    //guest
+	                    $aOrderUser = Cart::AutoCreateUser($aFastOrder['phone']);
+	                    $iUserId    = $aOrderUser['id'];
+	                    Db::Execute("update user_customer set phone='" . $aFastOrder['phone'] . "', name='" . $aFastOrder['name'] . "'  where id_user='" . $iUserId . "' ");
+	
+	                }
+	            }
+	
+	            if ($iUserId) {
+	                $dPriceTotal = 0;
+	                $aUserCartId = array();
+	                foreach ($aCartListNew as $aValue) {
+	                    $dPriceTotal += Currency::PrintPrice($aValue['price'], null, 2, "<none>") * $aValue['number'];
+	                    $aUserCartId[] = $aValue['id'];
+	                }
+	
+	                Base::$aRequest['id_user']=$iUserId;
+	                
+	                $aCartpackageInsert = array(
+	                    'id_manager' => $aOrderUser['id_manager'] ? $aOrderUser['id_manager'] : Auth::$aUser['id_manager'],
+	                    'id_user' => $iUserId,
+	                    'price_total' => $dPriceTotal + 0,
+	                    'order_status' => 'new',
+	                    'id_delivery_type' => 0,
+	                    'id_payment_type' => 0,
+	                    'price_delivery' => 0,
+	                    'customer_comment' => Language::GetMessage('order_one_click'),
+	                    'is_need_check' => 0,
+	                    'id_own_auto' => 0,
+	                    'is_one_click' => 1
+	                );
+	
+	                $aCartpackageInsert = String::FilterRequestData($aCartpackageInsert);
+	                Db::AutoExecute('cart_package', $aCartpackageInsert);
+	                $iCartPackageId = Base::$db->Insert_ID();
+	                $aCartPackage   = Db::GetRow(Base::GetSql('CartPackage', array(
+	                    'id' => $iCartPackageId
+	                )));
+	
+	                Db::Execute("update cart set type_='order', id_cart_package='$iCartPackageId' ,order_status='pending', id_user='$iUserId'
+	                where id in (" . implode(',', $aUserCartId) . ")");
+	                Db::Execute("update user set is_temp=0 where login='" . $aFastOrder['phone'] . "'");
+	
+	                $aAllData   = array(
+	                    'phone' => $aFastOrder['phone'],
+	                    'cart_package' => $aCartPackage,
+	                    'cart_list' => $aCartListNew,
+	                    'id_user' => $iUserId
+	                );
+	                $sAllData   = serialize($aAllData);
+	                $iIdUserTmp = substr(md5($aOrderUser['login']), 0, 9);
+	                Db::AutoExecute('cart_package_tmp', array(
+	                'id_user_tmp' => $iIdUserTmp,
+	                'data' => $sAllData
+	                ));
+	
+	                if($aOrderUser){
+	                    $_SESSION['new_user']=$aOrderUser  ;
+	                } else{
+	                    $_SESSION['new_user']=0;
+	                }
+	                
+	                Base::$oResponse->AddScript("window.location.href='/pages/cart_package_one_click_end/" . $iIdUserTmp . "';");
+	            }
+	        } else {
+	            Base::$oResponse->AddScript("window.location.href='/pages/cart_cart';");
+	        }
+	    } else {
+	        Base::$oResponse->AddAssign('id_wrong_number', 'innerHTML', Language::GetMessage('the phone incorrect'));
+	    }
+	}
+	//-----------------------------------------------------------------------------------------------
+	public function OrderOneClickEnd()
+	{
+	    $iId_GeneralCurrencyCode = Db::getOne("select id from currency where id=1 ");
+	    $iIdUserTmp = trim(strip_tags(Base::$aRequest['id_user']));
+	    $sAllData   = Db::GetOne("select data from cart_package_tmp where id_user_tmp='" . $iIdUserTmp . "'");
+	
+	    if ($iIdUserTmp && $sAllData) {
+	
+	        Db::Execute("DELETE FROM `cart_package_tmp` WHERE `cart_package_tmp`.`id_user_tmp` ='" . $iIdUserTmp . "'");
+	
+	        $aAllData     = unserialize($sAllData);
+	        $sPhone       = $aAllData['phone'];
+	        $aCartPackage = $aAllData['cart_package'];
+	        $aCartListNew = $aAllData['cart_list'];
+	        $iUserId      = $aAllData['id_user'];
+	
+	        $aOrderUser = Db::GetRow($s = "select u.email as email, u2.email as manager_email
+	            from user as u
+	            inner join user_customer as uc on uc.id_user=u.id
+	            inner join user as u2 on u2.id=uc.id_manager
+	            where u.id='" . $iUserId . "'");
+	
+	        $bWork     = false;
+	        $sWorkDays = Base::GetConstant('global:work_days', '1,2,3,4,5,6');
+	        $sWorkTime = Base::GetConstant('global:work_time', '9.00-19.00');
+	        $iCurDay   = date('N', time());
+	
+	        if (strpos($sWorkDays, $iCurDay) !== false) {
+	            $bCheckTime = false;
+	            $iCurTime   = date('G.i', time());
+	            $aWorkTime  = explode(';', $sWorkTime);
+	            if (count($aWorkTime) > 1)
+	                foreach ($aWorkTime as $iK => $sVal) {
+	                    if ($bCheckTime)
+	                        break;
+	                    if ($iK == 0)
+	                        continue;
+	                    list($iTDay, $sTTime) = explode(':', $sVal);
+	                    if ($iTDay == $iCurDay) {
+	                        $bCheckTime = true;
+	                        list($iT1, $iT2) = explode('-', $sTTime);
+	                        if ($iCurTime > $iT1 && $iCurTime < $iT2)
+	                            $bWork = true;
+	                    }
+	                }
+	            if (!$bCheckTime) {
+	                list($iT1, $iT2) = explode('-', $aWorkTime[0]);
+	                if ($iCurTime > $iT1 && $iCurTime < $iT2)
+	                    $bWork = true;
+	            }
+	        }
+	
+	        if ($bWork) {
+	            $aTextTemplate = String::GetSmartyTemplate('order_one_click_work_end', array(
+	                'sPhone' => $sPhone,
+	                'aCartPackage' => $aCartPackage,
+	                'aCart' => $aCartListNew
+	            ));
+	        } else {
+	            $aTextTemplate = String::GetSmartyTemplate('order_one_click_rest_end', array(
+	                'sPhone' => $sPhone,
+	                'aCartPackage' => $aCartPackage,
+	                'aCart' => $aCartListNew
+	            ));
+	        }
+	
+	
+	        //order table section
+	
+	        $aUserCart=$aCartListNew;
+	        if ($aUserCart) foreach ($aUserCart as $iKey => $aValue) {
+	            $dSubtotal+=$aValue['number']*Currency::PrintPrice($aValue['price']);
+	            $aUserCart[$iKey]['number_price'] = $aValue['number']*Currency::PrintPrice($aValue['price']);
+	            $aUserCart[$iKey]['print_price_user'] = Currency::PrintPrice($aValue['price'],null,2,"<none>");
+	            $aUserCart[$iKey]['print_price'] = Currency::PrintPrice($aValue['price'],$iId_GeneralCurrencyCode,2,"<none>");
+	        }
+	        // 	        $aCartPackage['liqpay_html'] = Payment::LiqPayGetFormOrder($aValue['id'],$aValue['price_total']);
+	        Cart::CallParseCart($aUserCart);
+	        Base::$tpl->assign('aUserCart',$aUserCart);
+	        Base::$tpl->assign('dSubtotal',$dSubtotal);
+	        Base::$tpl->assign('dTotal',$dSubtotal+Currency::PrintPrice($_SESSION['current_cart']['price_delivery']));
+	
+	        // 	        Debug::PrintPre($aUserCart);
+	        Base::$sText .= $aTextTemplate['parsed_text'];
+	        Base::$sText=Base::$tpl->fetch('cart/text_fast_order.tpl');
+	        Base::$oContent->addCrumb('Заказ успешно оформлен');
+	
+	
+	
+	
+// 	        if ($aAllData['cart_package']['email'] || $aAllData['cart_package']['login'] ) {
+// 	            if($_SESSION['new_user']!=0){
+// 	                $aSmartyTemplate = String::GetSmartyTemplate('cart_package_details_order_one_click_new_customer', array(
+// 	                    'aCartPackage' => $aCartPackage,
+// 	                    'aCart' => $aUserCart,
+// 	                    'aUser' => $_SESSION['new_user']
+// 	                ));
+// 	                Mail::AddDelayed($aAllData['cart_package']['email']?$aAllData['cart_package']['email']:$aAllData['cart_package']['login'], Language::GetText("cart_package_details_order_one_click_new_customer").' '.$aCartPackage['id'], $aSmartyTemplate['parsed_text'], '', Base::GetConstant('mail:from_name', 'autohaus'), false);
+// 	            }else{
+// 	                $aSmartyTemplate = String::GetSmartyTemplate('cart_package_details_order_one_click', array(
+// 	                    'aCartPackage' => $aCartPackage,
+// 	                    'aCart' => $aUserCart
+// 	                ));
+// 	                Mail::AddDelayed($aAllData['cart_package']['email']?$aAllData['cart_package']['email']:$aAllData['cart_package']['login'], Language::GetText("cart_package_details_order_one_click").' '.$aCartPackage['id'], $aSmartyTemplate['parsed_text'], '', Base::GetConstant('mail:from_name', 'autohaus'), false);
+// 	            }
+// 	        }
+	
+	        if (Base::GetConstant("manager:enable_order_notification_on_email", "1")) {
+	            $aSmartyTemplate = String::GetSmartyTemplate('manager_mail_order_one_click', array(
+	                'aCartPackage' => $aCartPackage,
+	                'aCart' => $aUserCart
+	            ));
+	            Mail::AddDelayed(Language::getConstant('global:to_email'). ", " . Base::GetConstant('manager:email_recievers', 'info@mstarproject.com'), $aSmartyTemplate['name'] . " " . $aCartPackage['id'], $aSmartyTemplate['parsed_text'], '', Base::GetConstant('mail:from_name', 'autohaus'), false);
+	        }
+	
+	        if ($aCartPackage['id'] && Finance::HaveMoney($aCartPackage['price_total'], $aCartPackage['id_user'])) {
+	            $this->SendPendingWork($aCartPackage['id']);
+	        }
+	
+	    } else
+	        Base::Redirect("/pages/cart_cart");
+	}
+	//-----------------------------------------------------------------------------------------------
 }
 ?>

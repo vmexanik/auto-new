@@ -56,6 +56,7 @@ if(empty($_FILES[$sFileElementName]['tmp_name']) || $_FILES[$sFileElementName]['
 }
 else
 {
+    $sOriginalFileName = $_FILES['input_file']['name'];
     $sNewFileName = date('Y-m-d_').uniqid().'.tmp';
     if (file_exists($sUploadDir . $sNewFileName)){
         $sError =$sNewFileName . " already exists. ";
@@ -72,6 +73,6 @@ if ($sError) {
     $sError = 'Error: '.$sError;
 }
 
-echo "<script language='javascript' type='text/javascript'>window.top.window.StopUpload('$sBaseUpload','$sNewFileName', '$sError');</script>";
+echo "<script language='javascript' type='text/javascript'>window.top.window.StopUpload('$sBaseUpload','$sNewFileName','$sError','$sOriginalFileName');</script>";
 
 ?>

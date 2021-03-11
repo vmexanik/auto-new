@@ -22,6 +22,9 @@ body {
 .at-mid-header {
     background-color: @color9;
 }
+.at-search-panel {
+    background-color: @colorD !important;
+}
 .at-index-cat-thumb {
     background-color: @colorA;
 }
@@ -113,6 +116,9 @@ body {
     background-image: url("@image1");
 }
 .at-post-header {
+    background-color: @color3;
+}
+.at-nav .mob-toggle{
     background-color: @color3;
 }
 .at-nav > a {
@@ -410,7 +416,7 @@ body {
     background-image: url("@image1");
   }
   .at-block-search {
-    background-color: @color1;
+    background-color: @colorD;
   }
   .at-block-search .close {
     background: url("@image1") no-repeat -75px -300px;

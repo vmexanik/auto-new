@@ -477,7 +477,7 @@ class Search
 		Catalog::SortTable();
 
 		Base::$sText.=$oTable->GetTable("Sphinx search",'',' - "'.$this->sQuery.'"');
-		Base::$oContent->AddCrumb('Результат поиска');
+		Base::$oContent->AddCrumb(Language::GetMessage('result_search'));
 	}
 	//-----------------------------------------------------------------------------------------------
 	public function CallParse(&$aItem)

@@ -15,7 +15,7 @@ class CatalogManager extends Catalog
 	//-----------------------------------------------------------------------------------------------
 	public function EditName()
 	{
-		$aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
+		$aCats=Db::GetAssoc("select c.id_sup,c.id_mfa,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
 		
 		Auth::NeedAuth('manager');
 		Base::Message();
@@ -288,7 +288,7 @@ class CatalogManager extends Catalog
 			
 			unset($aField);
 			
-			$aField['add_image']=array('title'=>'add image','type'=>'span','id'=>'upload'.$aData['id'],'value'=>'<img src="/image/attach.png">');
+//			$aField['add_image']=array('title'=>'add image','type'=>'span','id'=>'upload'.$aData['id'],'value'=>'<img src="/image/attach.png">');
 			$aField['mainbody']=array('type'=>'span','id'=>'mainbody','value'=>'<span id="status" ></span>');
 			//$aField['files']=array('type'=>'span','id'=>'files'.$aData['id']);
 

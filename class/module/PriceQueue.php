@@ -136,7 +136,6 @@ class PriceQueue extends Price {
 		$iUserId = Auth::$aUser['id'] = 1;
 		
 		$this->sPrefixAction=$this->sPrefix."_get_mail_attachment";
-		//$aPriceProfile=Db::GetAll(Base::GetSql("Price/Profile",array('where'=>" and pp.name_file is not null and pp.name_file<>''")));
 
 		$oAccount=Mail::OpenAccount(Base::GetConstant("price:mail_server","pop.gmail.com"),Base::GetConstant("price:mail_port","993"),
 		Base::GetConstant("price:mail_login","testprice@i.ua"),Base::GetConstant("price:mail_password","21f1990"),
@@ -147,7 +146,11 @@ class PriceQueue extends Price {
 		for ($iMessage = 1; $iMessage <= $iMailCount; $iMessage++) {
 		$iMessage=1;
 		$aHeader=Mail::GetEmailHeader($oAccount,$iMessage);
-		if(!$aHeader) {print("not mail");return;}
+		if(!$aHeader) {
+		    Mail::DeleteEmail($oAccount,$iMessage);
+		    print("not mail");
+		    continue;
+		}
 		$sSubject=Mail::DecodeMimeString($aHeader['subject']);
 		$sFrom=Mail::GetSenderEmail($oAccount,$iMessage);
 
@@ -157,7 +160,6 @@ class PriceQueue extends Price {
 			if ($aAttachment[$i]['is_attachment']) {
 				unset($aData);
 
-				//$sExt=strtolower(end(explode(".",$aAttachment[$i]['name'])));
 				$aFilePart = pathinfo(mb_strtolower($aAttachment[$i]['name']));
 				$sExt=$aFilePart['extension'];
 				$sBasenameOriginal = $aAttachment[$i]['name'];
@@ -183,11 +185,7 @@ class PriceQueue extends Price {
 						$aFileExtract=File::ExtractForPrice($sLocalFile,SERVER_PATH.$this->sPathToFile);
 												
 						$sFileEnc=mb_detect_encoding($aFileExtract[0]['name']);
-						/*Debug::PrintPre("encoding in archive: ".$sFileEnc,false);
-						if(strpos($aFileExtract[0]['name'], '╨Ю╤Б╤В╨░╤В╨║╨')===false) $bPost=false;
-						else $bPost=true;*/
-
-						if($sFileEnc!='UTF-8'/* || $bPost*/){
+						if($sFileEnc!='UTF-8'){
 							$aFileExtract[0]['name']=iconv($sFileEnc,"UTF-8",$aFileExtract[0]['name']);
 							$sNewPatch=iconv($sFileEnc,"UTF-8",$aFileExtract[0]['path']);
 							
@@ -211,72 +209,8 @@ class PriceQueue extends Price {
 							);
 					}
 
-					//$sError = $oPrice->SaveFilesToQueue($aFileExtract, $sSource = 'mail', 0, $sSubject, $sFrom);
 					$sError = $oPrice->SaveFilesToQueueExtended($aFileExtract, $sSource = 'mail', 0, $sSubject, $sFrom);
-					//Mail::DeleteEmail($oAccount,$iMessage);
 				}
-				
-				/*
-				//$aData['id_user_provider']=$iPriceProfile;
-				$aData['id_user']=1;
-				$aData['file_name_original']=$aAttachment[$i]['name'];
-				$aData['source'] = 'email';
-				//$aData['id_price_profile']=$iPriceProfile;
-				if(!$aData['file_name_original']) continue;
-
-				Db::AutoExecute("price_queue",$aData);
-				$id=Db::InsertId();
-
-				if ($sExt=="zip" || $sExt=="rar") {
-
-					$aFile['path']=SERVER_PATH.$this->sPathToFile.$id.".".$sExt;
-					if (File::Write($aFile,$aAttachment[$i]['attachment'])) {
-						$aFileExtract=File::ExtractForPrice($aFile['path'],SERVER_PATH.$this->sPathToFile);
-					}
-					
-					if ($aFileExtract) foreach ($aFileExtract as $sKey => $aValue) {
-
-						$aData['file_name_original']=$aFileExtract[$sKey]['name'];
-						$aData['file_name']=$id."_".$sKey."_".$aFileExtract[$sKey]['name'];
-						$aData['file_path']=SERVER_PATH.$this->sPathToFile.$aData['file_name'];
-						rename($aFileExtract[$sKey]['path'],$aData['file_path']);
-
-						$aData['id_price_profile']=0;
-						$aData['id_user_provider']=0;
-						$aProfileInfo = $this->GetProfile($sType = 'mail', $aData['file_name'], $sSubject, $sFrom);
-						if ($aProfileInfo['id']) {
-							$aData['id_price_profile']=$aProfileInfo['id'];
-							$aData['id_user_provider']=$aProfileInfo['id_provider'];
-						}
-						
-						if ($sKey==0) {
-							Db::AutoExecute("price_queue",$aData,"UPDATE","id=".$id);
-						} else {
-							Db::AutoExecute("price_queue",$aData);
-						}
-						//unlink($aFile['path']);
-					}
-
-				} else {
-
-					$aData['file_name_original']=$aAttachment[$i]['name'];
-					$aData['file_name']=$id."_".$aAttachment[$i]['name'];
-					$aData['file_path']=SERVER_PATH.$this->sPathToFile.$aData['file_name'];
-
-					$aFile['path']=$aData['file_path'];
-					File::Write($aFile,$aAttachment[$i]['attachment']);
-
-					$aData['id_price_profile']=0;
-					$aData['id_user_provider']=0;
-					$aData['source'] = 'email';
-					$aProfileInfo = $this->GetProfile($sType = 'mail', $aData['file_name'], $sSubject, $sFrom);
-					if ($aProfileInfo['id']) {
-						$aData['id_price_profile']=$aProfileInfo['id'];
-						$aData['id_user_provider']=$aProfileInfo['id_provider'];
-					}
-					Db::AutoExecute("price_queue",$aData,"UPDATE","id=".$id);
-				}
-				*/
 			}
 		}
 		Mail::DeleteEmail($oAccount,$iMessage);

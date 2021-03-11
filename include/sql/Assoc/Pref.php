@@ -7,6 +7,10 @@ function SqlAssocPrefCall($aData) {
 //		$sWhere.=" and c.visible=1";
 //	}
 
+    if ($aData['visible']) {
+        $sWhere.=" and visible=1";
+    }
+    
 	if ($aData['is_brand']) {
 		$sWhere.=" and is_brand=1";
 	}

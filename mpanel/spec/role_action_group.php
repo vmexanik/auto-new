@@ -22,6 +22,21 @@ class ARoleActionGroup extends Admin
 	public function Index()
 	{
 		$this->PreIndex();
+
+        Base::$sText .= $this->SearchForm();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and rag.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and rag.name = '" . $this->aSearch['name'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and rag.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and rag.name like '%" . $this->aSearch['name'] . "%'";
+            }
+        }
 		
 		if(Base::$aRequest['action']=='role_action_group' && Base::$aRequest['id']){
 			Db::Execute('delete from role_action_group where id='.Base::$aRequest['id']);

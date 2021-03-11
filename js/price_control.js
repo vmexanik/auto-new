@@ -188,3 +188,42 @@ function check_install_cat_parse(id) {
 	data = btoa('id='+id+'&parser_before='+parser_before+'&parser_after='+parser_after+'&trim_left_by='+trim_left_by+'&trim_right_by='+trim_right_by);
 	xajax_process_browse_url('?action=price_control_check_install_cat_parse&data='+data);
 }
+
+//------
+function change_code(id) {
+	$('#info_change_code').html('');
+	id_provider = '';
+	new_code = '';
+	pref = '';
+	if($('#pref_'+id).val()!='')
+		pref = $('#pref_'+id).val(); 
+	if ($('#code_change_'+id).length!=0) 
+			new_code = $('#code_change_'+id).val();
+	if ($('#id_provider_'+id).length!=0) 
+			id_provider = $('#id_provider_'+id).val();
+
+	return_action='';
+	if ($('#return_action_'+id).length!=0) 
+		return_action = $('#return_action_'+id).val();
+		
+	/*is_chected_code = "0";
+	if ($('#checked_code_ok_'+id).val()=="1")
+		is_chected_code = "1";
+	*/
+	if (new_code=='' || pref=='' || id_provider=='') {
+		$('#info_change_code').html('<span style="color:red">Ошибка! Для создания замены нужно три заполненных параметра: Поставщик, Бренд, Код!</span>');
+	}
+	else {
+		data = btoa('id='+id+'&pref='+pref+'&new_code='+new_code+'&return_action='+return_action);
+		xajax_process_browse_url('?action=price_control_replace_code&data='+data);
+	}
+
+	/*else if (is_chected_code == "0") {
+			$('#info_change_code').html('<span style="color:red">Ошибка! Для создания замены нужно выполнить проверку товара!</span>');
+		 }
+		 else {
+			data = btoa('id='+id+'&pref='+pref+'&new_code='+new_code+'&return_action='+return_action);
+			xajax_process_browse_url('?action=price_replace_code&data='+data);
+		 }
+	 */
+}

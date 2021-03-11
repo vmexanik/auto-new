@@ -113,7 +113,7 @@ function SqlPartSearchCall($aData) {
 			and bem.id_buh=361 and u.id=bem.id_buh_subconto1 ";
 	}
 
-	$sSql="select cg.*,ua.*, u.*,uc.*, uc.name as customer_name
+	$sSql="select cg.*,ua.*, u.*,uc.*, uc.name as customer_name, cat.title as brand
 				".$sField."
 				, c.*, c.price/(1+".$dTax.") as price_without_ttc
 				, c.price_original*c.number as total_original, c.price_original
@@ -132,6 +132,7 @@ function SqlPartSearchCall($aData) {
 				, cpt.hide_tof_image
 				, ua_p.amount as provider_account_amount
 			 from cart c
+			 inner join cat on cat.pref = c.pref
 			 inner join user as u on c.id_user=u.id
 			 left join user_customer as  uc on uc.id_user=u.id
 			 left join customer_group as  cg on uc.id_customer_group=cg.id

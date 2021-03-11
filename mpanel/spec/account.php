@@ -23,6 +23,87 @@ class AAccount extends Admin
 	{
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and a.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['id_buh'])
+                    $this->sSearchSQL .= " and a.id_buh = '" . $this->aSearch['id_buh'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and a.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['account_id'])
+                    $this->sSearchSQL .= " and a.account_id = '" . $this->aSearch['account_id'] . "'";
+                if ($this->aSearch['holder_name'])
+                    $this->sSearchSQL .= " and a.holder_name = '" . $this->aSearch['holder_name'] . "'";
+                if ($this->aSearch['bank_name'])
+                    $this->sSearchSQL .= " and a.bank_name = '" . $this->aSearch['bank_name'] . "'";
+                if ($this->aSearch['bank_code'])
+                    $this->sSearchSQL .= " and a.bank_code = '" . $this->aSearch['bank_code'] . "'";
+                if ($this->aSearch['correspondent_account'])
+                    $this->sSearchSQL .= " and a.correspondent_account = '" . $this->aSearch['correspondent_account'] . "'";
+                if ($this->aSearch['holder_code'])
+                    $this->sSearchSQL .= " and a.holder_code = '" . $this->aSearch['holder_code'] . "'";
+                if ($this->aSearch['bank_mfo'])
+                    $this->sSearchSQL .= " and a.bank_mfo = '" . $this->aSearch['bank_mfo'] . "'";
+                if ($this->aSearch['amount'])
+                    $this->sSearchSQL .= " and a.amount = '" . $this->aSearch['amount'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and a.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['id_buh'])
+                    $this->sSearchSQL .= " and a.id_buh like '%" . $this->aSearch['id_buh'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and a.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['account_id'])
+                    $this->sSearchSQL .= " and a.account_id like '%" . $this->aSearch['account_id'] . "%'";
+                if ($this->aSearch['holder_name'])
+                    $this->sSearchSQL .= " and a.holder_name like '%" . $this->aSearch['holder_name'] . "%'";
+                if ($this->aSearch['bank_name'])
+                    $this->sSearchSQL .= " and a.bank_name like '%" . $this->aSearch['bank_name'] . "%'";
+                if ($this->aSearch['bank_code'])
+                    $this->sSearchSQL .= " and a.bank_code like '%" . $this->aSearch['bank_code'] . "%'";
+                if ($this->aSearch['correspondent_account'])
+                    $this->sSearchSQL .= " and a.correspondent_account like '%" . $this->aSearch['correspondent_account'] . "%'";
+                if ($this->aSearch['holder_code'])
+                    $this->sSearchSQL .= " and a.holder_code like '%" . $this->aSearch['holder_code'] . "%'";
+                if ($this->aSearch['bank_mfo'])
+                    $this->sSearchSQL .= " and a.bank_mfo like '%" . $this->aSearch['bank_mfo'] . "%'";
+                if ($this->aSearch['amount'])
+                    $this->sSearchSQL .= " and a.amount like '%" . $this->aSearch['amount'] . "%'";
+            }
+            if ($this->aSearch['date_from'])
+                $this->sSearchSQL .= " and UNIX_TIMESTAMP(a.post_date)>='".strtotime($this->aSearch['date_from'])."' ";
+            if ($this->aSearch['date_to'])
+                $this->sSearchSQL .= " and UNIX_TIMESTAMP(a.post_date)<='".strtotime($this->aSearch['date_to'])."'";
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and a.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and a.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and a.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and a.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+            if ($this->aSearch['is_active']=='1')	$this->sSearchSQL .= " and a.is_active = '1'";
+            if ($this->aSearch['is_active']=='0')	$this->sSearchSQL .= " and a.is_active = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['is_active']){
+                case '1':
+                    $this->sSearchSQL.=" and a.is_active>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and a.is_active>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$oTable=new Table();
 		$oTable->aColumn=array(
 		'id'=>array('sTitle'=>'Id','sOrder'=>'a.id'),
@@ -41,7 +122,7 @@ class AAccount extends Admin
 		'action'=>array(),
 		);
 		$this->SetDefaultTable($oTable);
-		Base::$sText.=$oTable->getTable();
+		Base::$sText .= $oTable->getTable();
 
 		$this->AfterIndex();
 	}

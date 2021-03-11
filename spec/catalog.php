@@ -131,42 +131,10 @@ switch (Base::$aRequest['action'])
 		$oObject->ViewOwnAuto();
 		break;
 
-	case $sPrefix."moto":
-	    $oObject->MotoBrands();
-	    break;
-
-	case $sPrefix."moto_model":
-	    $oObject->MotoModels();
-	    break;
-
-	case $sPrefix."moto_model_detail":
-	    $oObject->MotoDetails();
-	    break;
-
-	case $sPrefix."moto_assemblage":
-	    $oObject->MotoAssemblage();
-	    break;
-
 	case $sPrefix."change_part_param":
 		$oObject->ChangePartParam();
 		break;
 
-	case $sPrefix."truck":
-	    $oObject->TruckIndex();
-	    break;
-	
-	case $sPrefix."truck_model":
-	    $oObject->TruckModels();
-	    break;
-	
-	case $sPrefix."truck_model_detail":
-	    $oObject->TruckDetails();
-	    break;
-	
-	case $sPrefix."truck_assemblage":
-	    $oObject->TruckAssemblage();
-	    break;
-	
 	case $sPrefix."original":
 	    $oObject->Original();
 	    break;

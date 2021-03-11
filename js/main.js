@@ -78,33 +78,37 @@ $(function(){
         $('.jx3').matchHeight();
     });
 
-    // index banner
-    $('.js-index-banner').slick({
-        dots: true,
-        swipe: false,
-    	autoplay: true,
-//    	autoplaySpeed:3000,
-    });
+    if ((pgwBrowser.os.group == 'Android') || (pgwBrowser.os.group == 'Windows Phone') || (pgwBrowser.os.group == 'iOS') || (pgwBrowser.os.group == 'BlackBerry')) {
+	//not init for mobile
+    } else {
+	// index banner
+	$('.js-index-banner').slick({
+	    dots: true,
+	    swipe: false,
+	    autoplay: true,
+    //    	autoplaySpeed:3000,
+	});
 
-    //index blog slider
-    $('.js-blog-slider').slick({
-        slidesToShow: 3,
-        dots:true,
-        responsive: [
-            {
-                breakpoint: 668,
-                settings: {
-                    slidesToShow: 3
-                }
-            },
-            {
-                breakpoint: 569,
-                settings: {
-                    slidesToShow: 1
-                }
-            }
-        ]
-    });
+	//index blog slider
+	$('.js-blog-slider').slick({
+	    slidesToShow: 3,
+	    dots:true,
+	    responsive: [
+		{
+		    breakpoint: 668,
+		    settings: {
+			slidesToShow: 3
+		    }
+		},
+		{
+		    breakpoint: 569,
+		    settings: {
+			slidesToShow: 1
+		    }
+		}
+	    ]
+	});
+    }
 
     // custom selects
     $('.js-select').uniform({selectClass: 'at-select'});
@@ -194,6 +198,41 @@ $(function(){
                 dots: true,
                 infinite: true,
                 slidesToShow: 4,
+                slidesToScroll: 1,
+                autoplay: $auto,
+                responsive: [
+                    {
+                        breakpoint: 769,
+                        settings: {
+                            slidesToShow: 3
+                        }
+                    },
+                    {
+                        breakpoint: 668,
+                        settings: {
+                            slidesToShow: 2
+                        }
+                    },
+                    {
+                        breakpoint: 569,
+                        settings: {
+                            slidesToShow: 1
+                        }
+                    }
+                ]
+            });
+        });
+    }
+
+    if ($('.js-related-product-carousel .line').length) {
+        $('.js-related-product-carousel .line').each(function(index, e) {
+            var $auto = $(e).data('auto') ? true : false;
+
+            $(e).slick({
+                arrows: true,
+                dots: true,
+                infinite: true,
+                slidesToShow: 6,
                 slidesToScroll: 1,
                 autoplay: $auto,
                 responsive: [

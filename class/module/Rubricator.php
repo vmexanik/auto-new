@@ -88,7 +88,7 @@ class Rubricator extends Catalog
 		// ../rubricator/c/mercedes_sprinter_3_t_furgon_903_312_d_2.9_4x4_312_d_2.9_4x4-3906-17063
 		if (Base::$aRequest['data']['id_model']) {
 			$sCatFromModel = Db::getOne("Select c.name from cat c
-			        	inner join cat_model cm on cm.id_tof = c.id_tof
+			        	inner join cat_model cm on cm.id_mfa = c.id_mfa
 			        	where cm.tof_mod_id = ".Base::$aRequest['data']['id_model']);
 			if ($sCatFromModel)
 				$sCat = $sCatFromModel;
@@ -104,6 +104,10 @@ class Rubricator extends Catalog
 		$_REQUEST['model_group']=Base::$aRequest['model_group'];
 		if(!Base::$aRequest['data']['id_make'] && Base::$aRequest['cat']){
 		    Base::$aRequest['data']['id_make']=Db::GetOne("select id from cat where name='".Base::$aRequest['cat']."' ");
+		    if (!Base::$aRequest['data']['id_make']) {
+		    	Form::Error404(false);
+		    	return;
+		    }
 		    $_REQUEST['data']['id_make']=Base::$aRequest['data']['id_make'];
 		}
 		if(Base::$aRequest['data']['id_make'] && Base::$aRequest['data']['id_model'] && Base::$aRequest['data']['id_model_detail']) {
@@ -289,6 +293,28 @@ class Rubricator extends Catalog
 	//-----------------------------------------------------------------------------------------------
 	public function GetPart($sUrlGroup='',$iIdPriceGroup=0)
 	{
+	    if(Base::$aRequest['xajax']) {
+	        $sKey=Base::$aRequest['page_cache_key'];
+	        $aRequest=unserialize(file_get_contents(SERVER_PATH."/cache/rubricator/{$sKey}.cache"));
+	        
+	        Base::$aRequest=array_merge(Base::$aRequest,$aRequest);
+	    } else {
+	        $sRequest=serialize(Base::$aRequest);
+	        $sUniqFile="content_".md5($sRequest);
+	        @mkdir(SERVER_PATH."/cache/rubricator/", 0777, true);
+	        file_put_contents(SERVER_PATH."/cache/rubricator/{$sUniqFile}.cache",$sRequest);
+	         
+	        Base::$tpl->assign("sPriceTable","
+            <div id='{$sUniqFile}'>
+                <img src='/image/bar90.gif'>
+	            <script type='text/javascript'>
+                    setTimeout('xajax_process_browse_url(\'/?action=rubricator_get_part&page_cache_key={$sUniqFile}\');', 100);
+                </script>
+            </div>");
+	        
+	        return;
+	    }
+	    
 	    if(is_array($iIdPriceGroup) && ($iIdPriceGroup[0]==null||$iIdPriceGroup[0]==0)) {
 	        $iIdPriceGroup=0;
 	    }
@@ -364,7 +390,7 @@ class Rubricator extends Catalog
 			$this->sWhereParams=$sWhereParams;
 			
 
-			$iIdMfa=Db::GetOne("select id_tof from cat where id='".Base::$aRequest['data']['id_make']."' ");
+			$iIdMfa=Db::GetOne("select id_mfa from cat where id='".Base::$aRequest['data']['id_make']."' ");
 		    //price_group filter end		    
 		    
 		    if(!Base::$aRequest['groups']) Base::$aRequest['groups']=array();
@@ -421,7 +447,7 @@ class Rubricator extends Catalog
 		        $aData=array(
 		            'id_group'=>implode("','",Base::$aRequest['groups']),
 		            'id_part'=>implode("','",Base::$aRequest['parts']),
-		            'id_tof'=>Base::$aRequest['data']['id_tof'],
+		            'id_mfa'=>Base::$aRequest['data']['id_mfa'],
 		            'id_model'=>Base::$aRequest['data']['id_model'],
 		            'id_model_detail'=>Base::$aRequest['data']['id_model_detail'],
 		            'limit'=>Base::GetConstant('tubricator:brand_model','1000')
@@ -470,16 +496,17 @@ class Rubricator extends Catalog
 			    }
 			}
 			
-			//price group filter begin
-			if($iIdPriceGroup) {
-    			if(!is_array($iIdPriceGroup)) {
+		    //rubricator filter
+		    $iIdRubricator=Db::GetOne("select id from rubricator where url='".Base::$aRequest['category']."'");
+			if($iIdRubricator) {
+    			if(!is_array($iIdRubricator)) {
         			$sSql="select h.* from handbook as h
-        						inner join price_group_filter as pgf on pgf.id_handbook=h.id and pgf.id_price_group='".$iIdPriceGroup."'
-        						order by h.number asc";
+    						inner join rubricator_filter as rf on rf.id_handbook=h.id and rf.id_rubricator='".$iIdRubricator."'
+    						order by h.number asc";
     			} else {
     			    $sSql="select h.* from handbook as h
-        						inner join price_group_filter as pgf on pgf.id_handbook=h.id and pgf.id_price_group in('".implode("','", $iIdPriceGroup)."')
-        						order by h.number asc";
+    						inner join rubricator_filter as rf on rf.id_handbook=h.id and rf.id_rubricator in('".implode("','", $iIdRubricator)."')
+    						order by h.number asc";
     			}
 			} else {
 			    $sSql="select * from handbook where 1=0";
@@ -533,16 +560,17 @@ class Rubricator extends Catalog
 		                'aItemCode'=>$aItemCodesUnique
 		            );
 			        
-			        if(Base::$aRequest['data']['id_model_detail']) {
-			            //selected auto by rubricator
-			        } else {
-			            //auto not selected
-			            if(!is_array($iIdPriceGroup)) {
-			                $aParamsForFiterArray['id_price_group']=$iIdPriceGroup;
-			            } else {
-			                $aParamsForFiterArray['childs']=$iIdPriceGroup;
-			            }
-			        }
+//			        if(Base::$aRequest['data']['id_model_detail']) {
+//			            //selected auto by rubricator
+//			        } else {
+//			            //auto not selected
+//			            if(!is_array($iIdPriceGroup)) {
+//			                $aParamsForFiterArray['id_price_group']=$iIdRubricator;
+//			            } else {
+//			                $aParamsForFiterArray['childs']=$iIdRubricator;
+//			            }
+//			        }
+					$aParamsForFiterArray['bRubricatorFilter']=1;
 			        $sFullSql=Base::GetSql("Catalog/PriceForCount",$aParamsForFiterArray);
 			        $aFilter[$sKey]['params'][$sParamKey]['count']=Db::GetOne($sFullSql);
 			    }
@@ -657,7 +685,43 @@ class Rubricator extends Catalog
 			    $oTable->iRowPerPage=9;
 			}
 			
-			Base::$tpl->assign("sPriceTable",$oTable->GetTable());
+			$sPriceTable=$oTable->GetTable();
+			
+			if(Base::$aRequest['xajax']) {
+			    Base::$oResponse->addAssign(Base::$aRequest['page_cache_key'],'outerHTML',$sPriceTable);
+			    Base::$oResponse->AddScript("
+			        
+			      setTimeout(function(){
+if($('.js-selectbox').length){
+				$('.js-selectbox').selectBox({
+				  mobile: true,
+				});
+			      }
+			      $('.js-checkbox').uniform({checkboxClass: 'at-checkbox'});
+                     
+			      if(!$('html').hasClass('mobile')){
+				      $('.js-thumb-height').matchHeight();
+			      }
+			      $('.js-thumb-height .at-thumb-element').addClass('ready');
+			      $('.js-thumb-height .inner-wrap.see').matchHeight({byRow:0});
+			      
+	$('a.alltypes').click(function() {
+		if ($(this).parent().find('.hidden').length > 0) {
+			$(this).find('#state_show_all').hide();
+			$(this).find('#state_hide_all').show();
+		}
+		else {
+			$(this).find('#state_show_all').show();
+			$(this).find('#state_hide_all').hide();
+		}
+		$(this).parent().find('.hiddened').toggleClass('hidden');
+	});
+},100);
+			        
+			        ");
+			} else {
+			    Base::$tpl->assign("sPriceTable",$sPriceTable);
+			}
 
 			//SetMetaTagsPage
 			if($aFilterParams) foreach ($aFilterParams as $sKey => $sValue) {
@@ -720,6 +784,30 @@ class Rubricator extends Catalog
 	    if($aItem) {
 	        $this->PosPriceParse($aItem,false,false);
 	    }
+    
+        if(Auth::$aUser['type_']=='manager' && $aItem) {
+            $iIdRubricator = Db::GetOne("select id from rubricator where url='" . Base::$aRequest['category'] . "'");
+            $sSql = "select h.id, h.table_, h.name as krit_name
+                       from handbook as h
+                       inner join rubricator_filter as rf on rf.id_handbook=h.id and rf.id_rubricator='" . $iIdRubricator . "' ";
+            $aFilter = Db::GetAll($sSql);
+            foreach ($aItem as &$aValueItem) {
+                $aFilterRez = array();
+                if ($aFilter) foreach ($aFilter as $sKey => $aValueFilter) {
+                    $aParams = Db::GetAssoc("select id, name from " . $aValueFilter['table_'] . " where visible=1 order by name");
+                    if ($aParams) {
+                        $iPriceFilterId = Db::GetOne("select id_" . $aValueFilter['table_'] . " from price_group_param where item_code='" . $aValueItem['item_code'] . "'");
+                        $aFilterRez[$sKey]['krit_name'] = $aValueFilter['krit_name'];
+                        $aFilterRez[$sKey]['params'] = array("0" => "не выбрано") + $aParams;
+                        $aFilterRez[$sKey]['id'] = $aValueFilter['id'];
+                        $aFilterRez[$sKey]['krit_selected'] = $iPriceFilterId ? $iPriceFilterId : 0;
+                        $aFilterRez[$sKey]['table_'] = $aValueFilter['table_'];
+                    }
+                }
+                $aFilterRez = array_chunk($aFilterRez, 8);
+                $aValueItem['filters'] = $aFilterRez;
+            }
+        }
 
 		if(!Base::$aRequest['table']=='gallery'){
 	    $aTempItem=array();
@@ -1013,7 +1101,7 @@ class Rubricator extends Catalog
 
 			//404
 			if(!$aCategory) {
-			    Form::Error404(false);
+			    Form::Error404(Base::GetConstant('global:redirect_to_missing',1));
 			    return;
 			}
 			
@@ -1169,6 +1257,8 @@ class Rubricator extends Catalog
 		        if(!$aCategory['childs']) {
 		            Base::$sText.=Base::$tpl->fetch('rubricator/subcategory.tpl');
 		        }
+		    } else {
+		        $this->GetPart('',$aPriceGroups);
 		    }
 			if($aCategory['childs']) {
 			    Base::$sText.=Base::$tpl->fetch('rubricator/category.tpl');
@@ -1194,7 +1284,7 @@ class Rubricator extends Catalog
 	    $bSubcategoryExists=Db::GetOne("select id from rubricator where url like '".Base::$aRequest['category']."' ");
 	    if(!$bSubcategoryExists) {
 	        //may be it is subcategory and order_brand
-	        $aBrandTofAssoc=Db::GetAssoc("select name, id_tof from cat order by name");
+	        $aBrandTofAssoc=Db::GetAssoc("select name, id_sup from cat order by name");
 	        if(in_array(Base::$aRequest['order_brand'], array_keys($aBrandTofAssoc)) || in_array(Base::$aRequest['category'], array_keys($aBrandTofAssoc))) {
 	            //normal
 	        } else {
@@ -1349,6 +1439,7 @@ class Rubricator extends Catalog
 		        $this->GetPart('',$aPriceGroups);
 		        Base::$sText.=Base::$tpl->fetch('rubricator/subcategory.tpl');
 		    } else {
+		        $this->GetPart('',$aPriceGroups);
 		        Base::$sText.=Base::$tpl->fetch('rubricator/subcategory.tpl');
 		        //select auto
 		        Rubricator::GetAllModelsList();
@@ -1357,7 +1448,7 @@ class Rubricator extends Catalog
 	}
 	//-----------------------------------------------------------------------------------------------
 	public function GetAllModelsList() {
-	    $aBrands=Db::Getall("select id,name,title,image from cat where visible='1' and is_brand='1' ");
+	    $aBrands=Db::Getall("select id,name,title,image from cat where visible='1' and is_brand='1' order by title");
 	    if($aBrands) {
 	        $aBrandIdForModel=array();
 	        foreach ($aBrands as $sKey => $aCatValue) {
@@ -1385,6 +1476,13 @@ class Rubricator extends Catalog
 	                'url'=>str_replace("//", "/", mb_strtolower("/rubricator/".Base::$aRequest['category']."/c/".$aCatValue['name']."_".$aValue['code']."/"))
 	            );
 	            $aBrands[$sKey]['models'][]=$aDataModel;
+	        }
+	    }
+	    
+	    //unset empty
+	    if($aBrands) foreach ($aBrands as $sKey => $aCatValue) {
+	        if(!isset($aCatValue['models']) || count($aCatValue['models'])==0) {
+	            unset($aBrands[$sKey]);
 	        }
 	    }
 	    
@@ -2214,6 +2312,25 @@ class Rubricator extends Catalog
 	        }
 	    }
 	    Base::$tpl->assign('aCategory', $aCategory);
+	    Base::$aRequest['parts']=array();
+	    Base::$aRequest['groups']=array();
+	    $aPriceGroups=array();
+	    if($aCategory['childs']) {
+		foreach ($aCategory['childs'] as $aValue) {
+		    $aPriceGroups[]=$aValue['id_price_group'];
+		      
+		    $aPartsTmp=explode(",", $aValue['id_tree']);
+		    $aGroupsTmp=explode(",", $aValue['id_group']);
+		    if(!$aPartsTmp) $aPartsTmp=array();
+		    if(!$aGroupsTmp) $aGroupsTmp=array();
+		    Base::$aRequest['parts']=array_merge(Base::$aRequest['parts'],$aPartsTmp);
+		    Base::$aRequest['groups']=array_merge(Base::$aRequest['groups'],$aGroupsTmp);
+		}
+	    }
+	
+	    $this->GetPart('',$aPriceGroups);
+	    Base::$sText.=Base::$tpl->fetch('rubricator/category.tpl');
+	    
 	    $this->GetModels();
 	
 	    $aCatValue=Db::GetRow("select * from cat where name='".Base::$aRequest['cat']."' ");
@@ -2283,6 +2400,32 @@ class Rubricator extends Catalog
 	        Base::$tpl->assign('sAutoPreSelected',"c/".$aCatValue['name']."/");
 	        Base::$sText.=Base::$tpl->fetch('rubricator/category.tpl');
 	    } 
+	    
+	    $aPartsTmp=explode(",", $aSubCategory['id_tree']);
+	    $aGroupsTmp=explode(",", $aSubCategory['id_group']);
+	    Base::$aRequest['parts']=$aPartsTmp;
+	    Base::$aRequest['groups']=$aGroupsTmp;
+	    if($aSubCategoryLevel3) {
+	        foreach ($aSubCategoryLevel3 as $aChildValue) {
+	            $aPart=explode(",", $aChildValue['id_tree']);
+	            $aSelectedParts=array();
+	            if($aPart) foreach ($aPart as $sValue) $aSelectedParts[]=intval($sValue);
+	
+	            $aGroup=explode(",", $aChildValue['id_group']);
+	            $aSelectedGroups=array();
+	            if($aGroup) foreach ($aGroup as $sValue) $aSelectedGroups[]=intval($sValue);
+	
+	            if(!$aSelectedParts) $aSelectedParts=array();
+	            if(!$aSelectedGroups) $aSelectedGroups=array();
+	            if(!Base::$aRequest['parts']) Base::$aRequest['parts']=array();
+	            if(!Base::$aRequest['groups']) Base::$aRequest['groups']=array();
+	
+	            Base::$aRequest['parts']=array_merge(Base::$aRequest['parts'],$aSelectedParts);
+	            Base::$aRequest['groups']=array_merge(Base::$aRequest['groups'],$aSelectedGroups);
+	        }
+	    }
+	
+	    $this->GetPart('',$aPriceGroups);
 	    
 	    //crumbs
 	    Base::$oContent->AddCrumb($aCatValue['title'], "/rubricator/c/".$aCatValue['name']."/");

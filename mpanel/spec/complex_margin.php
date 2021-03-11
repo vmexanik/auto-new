@@ -21,6 +21,67 @@ class AComplexMargin extends Admin {
 	public function Index() {
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and t.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and t.name = '" . $this->aSearch['name'] . "'";
+                    if ($this->aSearch['currency'])
+                    $this->sSearchSQL .= " and t.currency = '" . $this->aSearch['currency'] . "'";
+                if ($this->aSearch['price_before'])
+                    $this->sSearchSQL .= " and t.price_before = '" . $this->aSearch['price_before'] . "'";
+                if ($this->aSearch['price_after'])
+                    $this->sSearchSQL .= " and t.price_after = '" . $this->aSearch['price_after'] . "'";
+                if ($this->aSearch['brand'])
+                    $this->sSearchSQL .= " and t.brand = '" . $this->aSearch['brand'] . "'";
+                if ($this->aSearch['provider'])
+                    $this->sSearchSQL .= " and t.provider = '" . $this->aSearch['provider'] . "'";
+                if ($this->aSearch['price_group'])
+                    $this->sSearchSQL .= " and t.price_group = '" . $this->aSearch['price_group'] . "'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and t.code = '" . $this->aSearch['code'] . "'";
+                if ($this->aSearch['margin'])
+                    $this->sSearchSQL .= " and t.margin = '" . $this->aSearch['margin'] . "'";
+
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and t.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and t.code like '%" . $this->aSearch['code'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and t.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['currency'])
+                    $this->sSearchSQL .= " and t.currency like '%" . $this->aSearch['currency'] . "%'";
+                if ($this->aSearch['price_before'])
+                    $this->sSearchSQL .= " and t.price_before like '%" . $this->aSearch['price_before'] . "%'";
+                if ($this->aSearch['price_after'])
+                    $this->sSearchSQL .= " and t.price_after like '%" . $this->aSearch['price_after'] . "%'";
+                if ($this->aSearch['brand'])
+                    $this->sSearchSQL .= " and t.brand like '%" . $this->aSearch['brand'] . "%'";
+                if ($this->aSearch['provider'])
+                    $this->sSearchSQL .= " and t.provider like '%" . $this->aSearch['provider'] . "%'";
+                if ($this->aSearch['price_group'])
+                    $this->sSearchSQL .= " and t.price_group like '%" . $this->aSearch['price_group'] . "%'";
+                if ($this->aSearch['margin'])
+                    $this->sSearchSQL .= " and t.currency like '%" . $this->aSearch['margin'] . "%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and t.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and t.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and t.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and t.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$this->initLocaleGlobal();
 		$oTable=new Table();
 		$oTable->aColumn=array(

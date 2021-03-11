@@ -20,6 +20,46 @@ class AExportXml extends Admin {
 	public function Index() {
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and ex.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and ex.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and ex.code = '" . $this->aSearch['code'] . "'";
+                if ($this->aSearch['limit_count'])
+                    $this->sSearchSQL .= " and ex.limit_count = '" . $this->aSearch['limit_count'] . "'";
+                if ($this->aSearch['filename'])
+                    $this->sSearchSQL .= " and ex.filename = '" . $this->aSearch['filename'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and ex.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and ex.code like '%" . $this->aSearch['code'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and ex.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['limit_count'])
+                    $this->sSearchSQL .= " and ex.limit_count like '%" . $this->aSearch['limit_count'] . "%'";
+                if ($this->aSearch['filename'])
+                    $this->sSearchSQL .= " and ex.filename like '%" . $this->aSearch['filename'] . "%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and ex.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and ex.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and ex.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and ex.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$oTable=new Table();
 		$sTablePref = 'ex.';
 		$oTable->aColumn=array(

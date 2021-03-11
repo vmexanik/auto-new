@@ -20,6 +20,34 @@ class ABanner extends Admin
 	public function Index()
 	{
 		$this->PreIndex();
+
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong',0)) {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and b.id = '".$this->aSearch['id']."'";
+                if ($this->aSearch['name'])	$this->sSearchSQL .= " and b.name = '".$this->aSearch['name']."'";
+                if ($this->aSearch['link'])	$this->sSearchSQL .= " and b.link = '".$this->aSearch['link']."'";
+            }
+            else {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and b.id like '%".$this->aSearch['id']."%'";
+                if ($this->aSearch['name'])	$this->sSearchSQL .= " and b.name like '%".$this->aSearch['name']."%'";
+                if ($this->aSearch['link'])	$this->sSearchSQL .= " and b.link like '%".$this->aSearch['link']."%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and b.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and b.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and b.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and b.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$oTable=new Table();
 		$oTable->aColumn=array(
 		'id'=> array('sTitle'=>'Id', 'sOrder'=>'b.id'),

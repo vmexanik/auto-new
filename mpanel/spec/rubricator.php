@@ -96,7 +96,21 @@ class ARubricator extends Admin {
 	{
 		if(Base::$aRequest['data']['id_tree']) Base::$aRequest['data']['id_tree']=implode(',',Base::$aRequest['data']['id_tree']);
 // 		if(isset(Base::$aRequest['data']['id_group'])) 
-		    Base::$aRequest['data']['id_group']=implode(',',Base::$aRequest['data']['id_group']);
+		    Base::$aRequest['data']['id_group']=implode(',',Base::$aRequest['data']['id_group']);	
+	
+
+		DB::Execute("delete from rubricator_filter where id_rubricator='".Base::$aRequest['data']['id']."'");
+		$aHandBook=Base::$aRequest['data']['handbook'];
+		if ($aHandBook){
+		    foreach ($aHandBook as $aItem){
+		        $aData=array(
+		            'id_handbook'=>$aItem,
+		            'id_rubricator'=>Base::$aRequest['data']['id'],
+		        );
+		        Db::AutoExecute('rubricator_filter',$aData);
+		    }
+		}
+
 	}
 	//-----------------------------------------------------------------------------------------------
 	public function BeforeAddAssign($aData) 
@@ -139,9 +153,9 @@ class ARubricator extends Admin {
 		$this->sScriptForAdd="$('#select_tree').select2().on('change', function() { 
 		    xajax_process_browse_url('/?action=rubricator_change_select_part&id=".$aData['id']."&id_tree='+$(this).val());
 	    });";
-		
+		if ($aData['id_tree']!='' && trim($aData['id_tree'])!='0')
 		$aGroup=TecdocDb::GetAssoc(" select
-	        grp.id_src as id_group, grp.Name as group_name
+	        grp.id_src as id_group, concat('[',grp.id_src,'] ',grp.Name) as group_name
 	        from ".DB_OCAT."cat_alt_groups as grp
 	        join ".DB_OCAT."cat_alt_link_str_grp as lsg on grp.id_grp=lsg.ID_grp
 	        where lsg.id_tree in (".$aData['id_tree'].")
@@ -152,13 +166,28 @@ class ARubricator extends Admin {
 	    Base::$tpl->assign ('aGroupSelected',$aGroupSelected);
 	    
 // 	    Base::$tpl->assign ( 'aPriceGroups', array("0"=>"не выбрано")+Db::GetAssoc("select id, name from price_group order by name") );
+
+		$aHandbook=Base::$db->GetAll('select * from handbook');
+	    Base::$tpl->assign('aHandbook',$aHandbook);
+	    
+	    $aPriceGroupFilter=Base::$db->GetAll("select * from rubricator_filter
+			where id_rubricator='".Base::$aRequest['id']."'");
+	    
+	    $aSelectedHandbook=array();
+	    if ($aPriceGroupFilter)
+	        foreach($aPriceGroupFilter as $key=>$value){
+	        $aSelectedHandbook[$value['id_handbook']]=$value['id_handbook'];
+	    }
+	    Base::$tpl->assign('aSelectedHandbook',$aSelectedHandbook);
 	}
 	//-----------------------------------------------------------------------------------------------
 	public function ChangeSelectPart() {
-	    
-	    
+
+		Base::$aRequest['id_tree'] = preg_replace('/^0,/m', '', Base::$aRequest['id_tree']);
+
+		if (Base::$aRequest['id_tree'])
 	    $aGroup=TecdocDb::GetAssoc(" select
-	        grp.id_src as id_group, grp.Name as group_name
+	        grp.id_src as id_group, concat('[',grp.id_src,'] ',grp.Name) as group_name
 	        from ".DB_OCAT."cat_alt_groups as grp 
 	        join ".DB_OCAT."cat_alt_link_str_grp as lsg on grp.id_grp=lsg.ID_grp
 	        where lsg.id_tree in (".Base::$aRequest['id_tree'].")

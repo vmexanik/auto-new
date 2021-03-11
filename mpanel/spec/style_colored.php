@@ -18,6 +18,24 @@ class AStyleColored extends Admin {
 	public function Index() {
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong',0)) {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and c.id = '".$this->aSearch['id']."'";
+                if ($this->aSearch['name'])	$this->sSearchSQL .= " and c.name = '".$this->aSearch['name']."'";
+                if ($this->aSearch['value'])	$this->sSearchSQL .= " and c.value = '".$this->aSearch['value']."'";
+                if ($this->aSearch['default'])	$this->sSearchSQL .= " and c.default = '".$this->aSearch['default']."'";
+                if ($this->aSearch['description'])	$this->sSearchSQL .= " and c.description = '".$this->aSearch['description']."'";
+            }
+            else {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and c.id like '%".$this->aSearch['id']."%'";
+                if ($this->aSearch['name'])	$this->sSearchSQL .= " and c.name like '%".$this->aSearch['name']."%'";
+                if ($this->aSearch['value'])	$this->sSearchSQL .= " and c.value like '%".$this->aSearch['value']."%'";
+                if ($this->aSearch['default'])	$this->sSearchSQL .= " and c.default like '%".$this->aSearch['default']."%'";
+                if ($this->aSearch['description'])	$this->sSearchSQL .= " and c.description like '%".$this->aSearch['description']."%'";
+            }
+        }
+
 		require_once(SERVER_PATH.'/class/core/Table.php');
 		$oTable=new Table();
 		$oTable->aColumn=array(

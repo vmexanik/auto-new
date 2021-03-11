@@ -170,7 +170,15 @@ class APriceGroup extends Admin {
 	    
 	    // becouse not rewrite id_price_group - BUS-40 
 	    Db::Execute("Delete from price_group_assign where id_price_group=0");
-
+	    // delete unknown link group
+	    $aIdUNK = Db::GetAssoc("SELECT pgs.id_price_group as key_,pgs.id_price_group 
+	        FROM `price_group_assign` pgs
+    	    left join price_group pg on pg.id = pgs.id_price_group
+    	    WHERE pg.id is null
+    	    group by pgs.id_price_group");
+	    if ($aIdUNK)
+	        Db::Execute("Delete from price_group_assign where id_price_group in (".implode(",",$aIdUNK).")");
+	    
 	    $iIdPriceGroup=Base::$aRequest['id'];
 	    $aPriceGroup = Db::GetRow("select * from price_group where id='".$iIdPriceGroup."' ");
 	    if($aPriceGroup) {

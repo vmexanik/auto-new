@@ -11,6 +11,9 @@ class PriceControl extends Base {
 	//-----------------------------------------------------------------------------------------------
 	public function __construct()
 	{
+		if (!(Base::$aGeneralConf['is_price_control_available'] && Base::$aGeneralConf['is_price_control_available'] == 1))
+			return; // blocked 
+
 	    if (!Base::$aData['price_control_allow'])
 		  Auth::NeedAuth('manager');
 
@@ -221,7 +224,7 @@ class PriceControl extends Base {
 		                 Base::$tpl->assign('aData',Base::$aRequest['data']);
 	        }
 	        elseif (Base::$aRequest['data']['cat_in'] && Db::GetOne("select * from change_code
-				     where cat_in='".mysql_real_escape_string(trim(Base::$aRequest['data']['cat_in']))."')
+				     where cat_in='".mysql_real_escape_string(trim(Base::$aRequest['data']['cat_in']))."'
 	                 and code='".Base::$aRequest['data']['code']."'
 	                 and pref_replace=(select pref from cat where id='".Base::$aRequest['data']['pref_replace']."')
 	                 and code_replace='".Base::$aRequest['data']['code_replace']."'")){
@@ -282,14 +285,17 @@ class PriceControl extends Base {
 	    Base::$sText.=$oForm->getForm();
 
 	    unset($aField); 
-	    $aField['search_login']=array('title'=>'Login','type'=>'select','options'=>array(""=>"")+Db::GetAssoc("select id, concat(title,' [',pref,']') name from cat order by title"),'name'=>'search[pref]','selected'=>Base::$aRequest['search']['pref'],'class'=>'js-select');
+	    unset($aData); 
+	    $aField['brand_cat']=array('title'=>'brand_cat','type'=>'select','options'=>array(""=>"")+Db::GetAssoc("select id, concat(title,' [',pref,']') name from cat order by title"),'name'=>'search[pref]','selected'=>Base::$aRequest['search']['pref'],'class'=>'js-select');
+	    $aField['cat_in']=array('title'=>'BrandIn','type'=>'input','value'=>Base::$aRequest['search']['cat_in'],'name'=>'search[cat_in]');
 	    $aField['code']=array('title'=>'Code','type'=>'input','value'=>Base::$aRequest['search']['code'],'name'=>'search[code]');
+	    $aField['brand_replace']=array('title'=>'brand_replace','type'=>'select','options'=>array(""=>"")+Db::GetAssoc("select id, concat(title,' [',pref,']') name from cat order by title"),'name'=>'search[brand_replace]','selected'=>Base::$aRequest['search']['pref'],'class'=>'js-select');
 	    $aField['code_replace']=array('title'=>'Code replace','type'=>'input','value'=>Base::$aRequest['search']['code_replace'],'name'=>'search[code_replace]');
-	    $aField['date_from']=array('title'=>'DFrom','type'=>'date','value'=>Base::$aRequest['search']['date_from']?Base::$aRequest['search']['date_from']:date("d.m.Y",time()),'name'=>'search[date_from]','id'=>'date_from','readonly'=>1,'onclick'=>"popUpCalendar(this, this, 'dd.mm.yyyy')");
+	    $aField['date_from']=array('title'=>'DFrom','type'=>'date','value'=>Base::$aRequest['search']['date_from']?Base::$aRequest['search']['date_from']:date("d.m.Y",time()),'name'=>'search[date_from]','id'=>'date_from','readonly'=>1,'onclick'=>"popUpCalendar(this, this, 'dd.mm.yyyy')",'checkbox'=>1);
 	    $aField['date_to']=array('title'=>'DTo','type'=>'date','value'=>Base::$aRequest['search']['date_to']?Base::$aRequest['search']['date_to']:date("d.m.Y",time()),'name'=>'search[date_to]','id'=>'date_to','readonly'=>1,'onclick'=>"popUpCalendar(this, this, 'dd.mm.yyyy')");
 	    $aField['manager']=array('title'=>'Manager','type'=>'select','options'=>array(""=>"")+Db::GetAssoc("Assoc/UserManager", array('all'=>1)),'name'=>'search[manager]','selected'=>Base::$aRequest['search']['manager'],'class'=>'js-select');
 	    $aField['provider']=array('title'=>'Provider','type'=>'select','options'=>$aProviderAssoc,'name'=>'search[id_provider]','selected'=>Base::$aRequest['search']['id_provider'],'class'=>'js-select', 'value' => Base::$aRequest['search']['id_provider']);
-	
+		// Debug::PrintPre($aField['code']);
 	    $aData=array(
 	        'sHeader'=>"method=get",
 	        //'sContent'=>Base::$tpl->fetch('price_profile/form_price_profile_search.tpl'),
@@ -312,8 +318,21 @@ class PriceControl extends Base {
 	    $aData=Base::$aRequest['search'];
 	
 	    if (Base::$aRequest['search']['code']) {
-	        $aData['aCode']=array(Catalog::StripCode(Base::$aRequest['search']['code']));
+	        $aData['code']=Base::$aRequest['search']['code'];
 	    }
+
+	    if (Base::$aRequest['search']['cat_in']) {
+	        $aData['cat_in']=Base::$aRequest['search']['cat_in'];
+	    }
+
+	    if (Base::$aRequest['search']['pref']) {
+	        $aData['pref']=Base::$aRequest['search']['pref'];
+	    }
+
+	    if (Base::$aRequest['search']['brand_replace']) {
+	        $aData['brand_replace']=Base::$aRequest['search']['brand_replace'];
+	    }
+
 	    if (Base::$aRequest['search']['code_replace']) {
 	        $aData['code_replace']=Base::$aRequest['search']['code_replace'];
 	    }
@@ -329,7 +348,7 @@ class PriceControl extends Base {
 	        $sWhere .=" and up.id_user = ".Base::$aRequest['search']['id_provider'];
 	
 	    $aData['where']=$sWhere;
-	    if($sWhere) {
+	    if($aData || $sWhere) {
 	        $oTable->sSql=Base::GetSql("CodeChange",$aData);
 	    } else {
 	        $oTable->sSql=("select cc.*, c.name, c2.name as name2, up.name as provider,
@@ -343,7 +362,7 @@ class PriceControl extends Base {
 	            ");
 	    }
 	    $oTable->aColumn=array(
-	        'name'=>array('sTitle'=>'Brand', 'sOrder'=>'c.name'),
+	        'name'=>array('sTitle'=>'brand_cat', 'sOrder'=>'c.name'),
 	        'cat_in'=>array('sTitle'=>'BrandIn'),
 	        'code'=>array('sTitle'=>'Code', 'sOrder'=>'cc.code'),
 	        'name2'=>array('sTitle'=>'Brand replace', 'sOrder'=>'name2'),
@@ -620,9 +639,9 @@ class PriceControl extends Base {
 	        return;
 	     
 	    $sWhereNTDConfirm = ' and (pf.id is null or pf.is_not_tecdoc_brand_need_confirm_code=1 or
-	       c.id_tof!=0)';
+	       c.id_sup!=0 or c.id_mfa!=0)';
 	    $sWhereNTDConfirmNot = ' and (pf.id is not null and pf.is_not_tecdoc_brand_need_confirm_code=0 and
-	       c.id_tof=0)'; 
+	       c.id_sup=0 and c.id_mfa=0)'; 
 	    
 	    if ($isAllBuffer) {
 	        $sWhere = " and pi.pref='".$sPref."'";
@@ -650,7 +669,7 @@ class PriceControl extends Base {
 	                inner join price_profile pp on pp.id = pq.id_price_profile
 	                where pq.id = ".$iIdPriceQueue);
 
-	            $sWhere = " and c.id_tof!=0 AND pi.pref IS NOT NULL AND pi.pref != '' and pi.id_price_queue=".$iIdPriceQueue;
+	            $sWhere = " and c.id_sup!=0 AND pi.pref IS NOT NULL AND pi.pref != '' and pi.id_price_queue=".$iIdPriceQueue;
 	            if ($isNeedConfirmCodeNonTecDoc) {
 	                //  не tecdoc установить подтверждены, если флаг
 	                Db::Execute("Update price_import pi
@@ -663,7 +682,7 @@ class PriceControl extends Base {
 	                $sWhere = " AND pi.pref IS NOT NULL AND pi.pref != '' and pi.id_price_queue=".$iIdPriceQueue;
 	            }
 	                 
-	            $iAll = Db::getOne("SELECT count(*) FROM price_import pi WHERE 1=1 ".$sWhere);
+	            $iAll = Db::getOne("SELECT count(*) FROM price_import pi inner join cat as c on c.pref=pi.pref WHERE 1=1 ".$sWhere);
 	    }
 	     
 	    $iPortion = Language::getConstant("limit_price_import_check_code",1000);
@@ -675,7 +694,7 @@ class PriceControl extends Base {
 	        }
 	        
 	        $aIds = array();
-	        $aData = Db::getAssoc($s="Select pi.id as key_, pi.*, c.id_tof, c.id_sync, cp.is_checked_code_ok as cp_is_checked_code_ok
+	        $aData = Db::getAssoc($s="Select pi.id as key_, pi.*, c.id_sup, c.id_mfa, c.id_sync, cp.is_checked_code_ok as cp_is_checked_code_ok
 	            from price_import pi
 	            inner join cat c on c.pref = pi.pref 
 	            left join cat_part cp on cp.item_code = pi.item_code
@@ -692,12 +711,15 @@ class PriceControl extends Base {
 	                continue;
 	            }
 	            // не текдок, пропускаем
-	            if (!$aValue['id_tof']) {
+	            if (!$aValue['id_sup'] && $aValue['id_mfa']) {
 	                $isCodeBad[$aValue['item_code']] = 1;
 	                continue;
 	            }
 	            
-	            $aItemCodes[$aValue['code']."_".$aValue['id_tof']] = $aValue['item_code'];
+	            if ($aValue['id_sup'])
+	               $aItemCodes[$aValue['code']."_".$aValue['id_sup']] = $aValue['item_code'];
+	            if ($aValue['id_mfa'])
+	               $aItemCodes[$aValue['code']."_".$aValue['id_mfa']] = $aValue['item_code'];
 	            if ($aValue['id_sync']!='') {
 	                $aIds = explode(",",$aValue['id_sync']);
 	                if ($aIds)
@@ -739,17 +761,18 @@ class PriceControl extends Base {
 	        
             // установить признак код ok
             if ($isCodeOk) 
-                Db::Execute($s="Update price_import pi set pi.is_code_ok=1, pi.is_checked_code=1 where 1=1 ".$sWhere.
+                Db::Execute($s="Update price_import pi inner join cat as c on c.pref=pi.pref set pi.is_code_ok=1, pi.is_checked_code=1 where 1=1 ".$sWhere.
                     " and pi.is_checked_code=0 and pi.item_code in ('".implode("','", array_keys($isCodeOk))."')");
 
 	        // установить признак - проверено остальным
 	        if ($isCodeBad)
-	        Db::Execute("Update price_import pi set pi.is_checked_code=1 where 1=1 ".$sWhere.
+	        Db::Execute("Update price_import pi inner join cat as c on c.pref=pi.pref set pi.is_checked_code=1 where 1=1 ".$sWhere.
 	            " and pi.is_checked_code=0 and pi.item_code in ('".implode("','", array_keys($isCodeBad))."')");
             	             
             if (!$isAllBuffer) {
                 $iWorked = Db::getOne("SELECT count(*)
                 FROM price_import pi
+                inner join cat as c on c.pref=pi.pref
                 WHERE 1=1 ".$sWhere." and pi.is_checked_code=1");
 
                 $fProgress = floatval(($iWorked / $iAll) * 100);
@@ -775,14 +798,15 @@ class PriceControl extends Base {
         Resource::Get()->Add('/js/select_search.js');
 
         $aField['code']=array('title'=>'CodeInPrice','type'=>'input','value'=>Base::$aRequest['code_in'],'name'=>'code_in');
-        $aField['brand']=array('title'=>'BrandIn','type'=>'input','value'=>Base::$aRequest['brand_in'],'name'=>'brand_in');
+        // $aField['brand']=array('title'=>'BrandIn','type'=>'input','value'=>Base::$aRequest['brand_in'],'name'=>'brand_in');
+        $aField['brand']=array('title'=>'BrandIn','type'=>'select','options'=>array(""=>"")+Db::GetAssoc("select cat_in, cat_in as name from price_import_locked group by cat_in order by cat_in"),'name'=>'cat_in','selected'=>Base::$aRequest['search']['pref'],'class'=>'js-select');
 
         $aProviderAssoc = Db::getAssoc("Select up.id_user, up.name
     	from user u
     	inner join user_provider up on u.id = up.id_user
     	where u.type_='provider' and u.visible order by up.name");
         $aField['provider']=array('title'=>'Provider','type'=>'select','options'=>array('' => Language::getMessage('not selected'))+$aProviderAssoc,'name'=>'id_provider','selected'=>Base::$aRequest['id_provider'],'class'=>'select_name_provider js-select');
-
+        $aField['manager']=array('title'=>'Manager','type'=>'select','options'=>array(""=>"")+Db::GetAssoc("Assoc/UserManager", array('all'=>1)),'name'=>'search[manager]','selected'=>Base::$aRequest['search']['manager'],'class'=>'js-select');
         $aField['date_from']=array('title'=>'DFrom','type'=>'date','value'=>Base::$aRequest['search']['date_from']?Base::$aRequest['search']['date_from']:date("Y-m-1",time()),'name'=>'search[date_from]','id'=>'date_from','readonly'=>1,'onclick'=>"popUpCalendar(this, this, 'yyyy-mm-dd')",'checkbox'=>1);
         $aField['date_to']=array('title'=>'DTo','type'=>'date','value'=>Base::$aRequest['search']['date_to']?Base::$aRequest['search']['date_to']:date("Y-m-d",time()),'name'=>'search[date_to]','id'=>'date_to','readonly'=>1,'onclick'=>"popUpCalendar(this, this, 'yyyy-mm-dd')");
 
@@ -808,8 +832,11 @@ class PriceControl extends Base {
         if (Base::$aRequest['id_provider'])
             $sWhere .= " and pil.id_provider=".Base::$aRequest['id_provider'];
 
-        if (Base::$aRequest['brand_in'])
-            $sWhere .= " and pil.cat_in like '%".Base::$aRequest['brand_in']."%'";
+        if (Base::$aRequest['cat_in'])
+            $sWhere .= " and pil.cat_in like '%".Base::$aRequest['cat_in']."%'";
+
+        if (Base::$aRequest['search']['manager'])
+            $sWhere .= " and pil.id_manager='".Base::$aRequest['search']['manager']."'";
 
         if (Base::$aRequest['search']['date']) {
             $sDateFrom=DateFormat::FormatSearch(Base::$aRequest['search']['date_from'],"Y-m-d 00:00:00");
@@ -1242,7 +1269,7 @@ class PriceControl extends Base {
 	    if (!Base::$aRequest['id'])
 	        Base::Redirect($sReturnUrl);
 	     
-	    $aPi = Db::getRow("Select pi.*,up.name as name_provider, c.id_tof
+	    $aPi = Db::getRow("Select pi.*,up.name as name_provider, c.id_sup, c.id_mfa
             from price_import pi
             inner join user_provider up on up.id_user = pi.id_provider
             inner join cat c on c.pref=pi.pref
@@ -1288,7 +1315,7 @@ class PriceControl extends Base {
 	    if (!Base::$aRequest['id'])
 	        Base::Redirect($sReturnUrl);
 	
-	    $aPi = Db::getRow("Select pi.*,up.name as name_provider, c.id_tof
+	    $aPi = Db::getRow("Select pi.*,up.name as name_provider, c.id_sup, c.id_mfa
 	        from price_import pi
             inner join user_provider up on up.id_user = pi.id_provider
 	        inner join cat c on c.pref = pi.pref
@@ -1324,6 +1351,91 @@ class PriceControl extends Base {
 	    Base::$sText.=Base::$tpl->fetch('price_control/edit_code.tpl');
 	}
 	//------------------------------------------------------------------------------------
+	public function ReplaceCode () {
+	    if (!Base::$aRequest['data']) {
+	        Base::$oResponse->addScript("window.location='/pages/price_control'");
+	        return;
+	    }
+	    $sData = base64_decode(Base::$aRequest['data']);
+	    $aData=explode("&", $sData);
+	    if (!$aData) {
+	        Base::$oResponse->addScript("window.location='/pages/price_control'");
+	        return;
+	    }
+	    $aParam = array();
+	    foreach ($aData as $sValue) {
+	        list($name,$val) = explode('=',$sValue);
+	        $aParam[$name] = $val;
+	    }
+	    if (!$aParam['id']) {
+	        Base::$oResponse->addScript("window.location='/pages/price_control'");
+	        return;
+	    }
+	    $aPi = Db::getRow("Select pi.*,up.name as name_provider 
+	        from price_import pi
+            inner join user_provider up on up.id_user = pi.id_provider
+            where pi.id=".$aParam['id']);
+	    
+	    if (!$aPi || $aPi['is_code_ok']==1 || !$aPi['cat'] || !$aPi['id_provider'] || !$aPi['code_in']) {
+	        Base::$oResponse->addScript("window.location='/pages/price_control'");
+	        return;
+	    }
+
+	    $isTecDoc = Db::getOne("Select 1 from cat where pref='".$aParam['pref']."' and (id_sup>0 or id_mfa>0) ");
+	    if ($isTecDoc) {
+	       $isCheckCode = PriceControl::CheckCodeOneTecdoc($aParam['pref'],$aParam['new_code']);
+	       if (!$isCheckCode) {
+	           Base::$oResponse->AddAssign('info_change_code','innerHTML',
+	           '<span style="color:red">Такой код и бренд не найдены в Текдок!</span>');
+	           Base::$oResponse->addScript("$('#checked_code_ok_".$aParam['id']."').val('0');");
+	           return;
+	       }
+	    }
+	    else { // добавляем подтверждение на код и бренд не текдока
+	        $cpid = Db::getOne("Select id from cat_part where item_code = '".$aParam['pref']."_".$aParam['new_code']."'");
+	        if ($cpid)
+	           Db::Execute("Update cat_part set is_checked_code_ok=1, is_checked_code_ok_date='".
+	               date("Y-m-d H:i:s")."', is_checked_code_ok_manager=".Auth::$aUser['id_user'].
+	               " where id=".$cpid);
+	        else 
+	            Db::Execute("Insert into cat_part (item_code,code,pref,is_checked_code_ok,is_checked_code_ok_date,is_checked_code_ok_manager)
+	                VALUES ('".$aParam['pref']."_".$aParam['new_code']."','".$aParam['new_code']."','".$aParam['pref']."',1,'".date("Y-m-d H:i:s")."',".Auth::$aUser['id_user'].")");
+	    }
+
+	    $iIdProvider = $aPi['id_provider'];
+	    $aProvider[$iIdProvider] = $iIdProvider;
+	    
+	    Db::Execute("Insert into change_code (pref_replace, code_replace, id_provider, post_date, manager, cat_in, code, pref) values
+		('".$aParam['pref']."','".$aParam['new_code']."','".$iIdProvider."','".date("Y-m-d H:i:s")."','".Auth::$aUser['id_user'].
+			"','".mysql_real_escape_string($aPi['cat'])."','".mysql_real_escape_string($aPi['code_in'])."','".mysql_real_escape_string($aPi['pref'])."')
+		on duplicate key update id_provider=values(id_provider), cat_in=values(cat_in),code=values(code),
+			    pref_replace = values(pref_replace), code_replace = values(code_replace), pref = values(pref)");
+
+	    // обновить буфер
+	    Db::Execute("Update price_import set pref='".$aParam['pref']."', code='".$aParam['new_code'].
+	       "', item_code='".$aParam['pref'].'_'.$aParam['new_code']."', is_code_ok=1, is_checked_code=1
+	        where code_in='".mysql_real_escape_string($aPi['code_in']).
+	       "' and cat='".mysql_real_escape_string($aPi['cat_in'])."' and id_provider in (".implode(",",$aProvider).")");
+	    
+	    // перенести в прайс, удалить из буфера
+	    $sWhere = " and (((pq.is_processed=2 and pq.progress=100) and t.id_price_queue is not null) or t.id_price_queue is null) ";
+	    $sWhere .= " and code_in='".mysql_real_escape_string($aPi['code_in']).
+	       "' and cat='".mysql_real_escape_string($aPi['cat_in'])."' and id_provider in (".implode(",",$aProvider).")";
+	        
+	    PriceControl::OnlyInstallPrice($sWhere,$aParam['pref']);
+	    PriceControl::ClearImportPref($sWhere,$aParam['pref']);
+	    
+	    // удалить из буфера
+	    /*Db::Execute("Delete from price_import where code_in='".mysql_real_escape_string($aPi['code_in']).
+	    "' and cat='".mysql_real_escape_string($aPi['cat_in'])."' and id_provider in (".implode(",",$aProvider).")");
+	   */
+	    
+	    if ($aParam['return_action'])
+	        Base::$oResponse->addScript("window.location='".urldecode($aParam['return_action'])."'");
+	    else
+	        Base::$oResponse->addScript("window.location='/pages/price_control'");
+	}
+	//------------------------------------------------------------------------------------
 	public function CheckCode () {
 	    if (!Base::$aRequest['data']) {
 	        Base::$oResponse->addScript("window.location='/pages/price_control'");
@@ -1352,7 +1464,7 @@ class PriceControl extends Base {
 	        return;
 	    }
 	
-	    $isTecDoc = Db::getOne("Select id_tof from cat where pref='".$aParam['pref']."'");
+	    $isTecDoc = Db::getOne("Select if(id_sup,id_sup,id_mfa) from cat where pref='".$aParam['pref']."'");
 	     
 	    $isCheckCode = PriceControl::CheckCodeOneTecdoc($aParam['pref'],$aParam['new_code']);
 	    if (!$isCheckCode && $isTecDoc) {
@@ -1383,7 +1495,7 @@ class PriceControl extends Base {
 	    if ($isOk)
 	        return 1;
 	
-	    $sIdTof = Db::getOne("Select id_tof from cat where pref='".$sPref."'");
+	    $sIdTof = Db::getOne("Select if(id_sup,id_sup,id_mfa) from cat where pref='".$sPref."'");
 	    if (!$sIdTof)
 	        return 0;
 	     
@@ -1469,7 +1581,7 @@ class PriceControl extends Base {
 	        Base::$oResponse->addScript("window.location='/pages/price_control'");
 	        return;
 	    }
-	    $aPi = Db::getRow("Select pi.*,up.name as name_provider, c.title as brand, c.id_tof
+	    $aPi = Db::getRow("Select pi.*,up.name as name_provider, c.title as brand, c.id_sup,c.id_mfa
 	        from price_import pi
             inner join user_provider up on up.id_user = pi.id_provider
 	        inner join cat c on c.pref = pi.pref
@@ -1503,22 +1615,22 @@ class PriceControl extends Base {
 	    //
 	     
 	    $isCheckCode = PriceControl::CheckCodeOneTecdoc($aPi['pref'],$sCode);
-	    if (!$isCheckCode && $aPi['id_tof']) {
+	    if (!$isCheckCode && ($aPi['id_sup'] || $aPi['id_mfa'])) {
 	        Base::$oResponse->AddAssign('info_change_code','innerHTML',
 	        '<span style="color:red">Такой код [ <b>'.$sCode.'</b> ] для бренда [ '.$aPi['brand'].' ] не найден в Текдок!</span>');
 	        Base::$oResponse->addScript("$('#checked_code_ok_".$aParam['id']."').val('0');");
 	    }
-	    elseif(!$isCheckCode && !$aPi['id_tof']) {
+	    elseif(!$isCheckCode && !$aPi['id_sup'] && !$aPi['id_mfa']) {
 	        Base::$oResponse->AddAssign('info_change_code','innerHTML',
 	        '<span style="color:red">Такой код [ <b>'.$sCode.'</b> ] для бренда [ '.$aPi['brand'].' ] не подтвержден!</span>');
 	        Base::$oResponse->addScript("$('#checked_code_ok_".$aParam['id']."').val('0');");
 	    }
-	    elseif ($isCheckCode && $aPi['id_tof']) {
+	    elseif ($isCheckCode && ($aPi['id_sup'] || $aPi['id_mfa'])) {
 	        Base::$oResponse->AddAssign('info_change_code','innerHTML',
 	        '<span style="color:green">Такой код [<b> '.$sCode.' </b>] для бренда [ '.$aPi['brand'].' ] есть в базе Текдок!</span>');
 	        Base::$oResponse->addScript("$('#checked_code_ok_".$aParam['id']."').val('1');");
 	    }
-	    elseif ($isCheckCode && !$aPi['id_tof']) {
+	    elseif ($isCheckCode && !$aPi['id_sup'] && !$aPi['id_mfa']) {
 	        Base::$oResponse->AddAssign('info_change_code','innerHTML',
 	        '<span style="color:green">Такой код [<b> '.$sCode.' </b>] для бренда [ '.$aPi['brand'].' ] подтвержден!</span>');
 	        Base::$oResponse->addScript("$('#checked_code_ok_".$aParam['id']."').val('1');");
@@ -1546,7 +1658,7 @@ class PriceControl extends Base {
 	        return;
 	    }
 	    $aPi = Db::getRow("Select pi.*,up.name as name_provider, c.title as brand,
-	        c.id_tof
+	        c.id_sup, c.id_mfa
 	        from price_import pi
             inner join user_provider up on up.id_user = pi.id_provider
 	        inner join cat c on c.pref = pi.pref
@@ -1585,47 +1697,6 @@ class PriceControl extends Base {
 	    //
 	    $sCode = Catalog::StripCode($sCode);
 	     
-	    /*$isCheckCode = PriceControl::CheckCodeOneTecdoc($aPi['pref'],$sCode);
-	    if (!$isCheckCode && $aPi['id_tof']) {
-	        Base::$oResponse->AddAssign('info_change_code','innerHTML',
-	        '<span style="color:red">Такой код [ <b>'.$sCode.'</b> ] для бренда [ '.$aPi['brand'].' ] не найден в Текдок!</span>');
-	        Base::$oResponse->addScript("$('#checked_code_ok_".$aParam['id']."').val('0');");
-	    }
-	    else {
-	        // для не текдока подтверждаем код
-	        if (!$aPi['id_tof']) {
-	            $cpid = Db::getOne("Select id from cat_part where item_code = '".$aPi['pref']."_".$sCode);
-	            if ($cpid)
-	                Db::Execute("Update cat_part set is_checked_code_ok=1, is_checked_code_ok_date='".
-	                    date("Y-m-d H:i:s")."', is_checked_code_ok_manager=".Auth::$aUser['id_user'].
-	                    " where id=".$cpid);
-	            else
-	                Db::Execute("Insert into cat_part (item_code,code,pref,is_checked_code_ok,is_checked_code_ok_date,is_checked_code_ok_manager)
-    	                VALUES ('".$aPi['pref'].'_'.$sCode."','".$sCode."','".$aPi['pref']."',1,'".date("Y-m-d H:i:s")."',".Auth::$aUser['id_user'].")");
-	        }
-	        Db::Execute("Update cat set parser_before='".$parser_before."', parser_after='".$parser_after.
-	        "', trim_left_by='".$trim_left_by."', trim_right_by='".$trim_right_by."'
-	        where pref='".$aPi['pref']."'");
-	         
-	        // обновить буфер
-	        Db::Execute("Update price_import set code='".$sCode.
-	        "', item_code='".$aPi['pref'].'_'.$sCode."', is_code_ok=1, is_checked_code=1
-	        where code_in='".mysql_real_escape_string($aPi['code_in']).
-		        "' and pref='".$aPi['pref']."' and id_provider in (".implode(",",$aProvider).")");
-	
-	        // перенести в прайс, удалить из буфера
-	        $sWhere = " and (((pq.is_processed=2 and pq.progress=100) and t.id_price_queue is not null) or t.id_price_queue is null) ";
-	        $sWhere .= " and code_in='".mysql_real_escape_string($aPi['code_in']).
-	        "' and pref='".$aPi['pref']."' and id_provider in (".implode(",",$aProvider).")";
-	
-	        Price::OnlyInstallPrice($sWhere,$aPi['pref']);
-	        Price::ClearImportPref($sWhere,$aPi['pref']);
-	         
-	        if ($aParam['return_action'])
-	            Base::$oResponse->addScript("window.location='".urldecode($aParam['return_action'])."'");
-	            else
-	                Base::$oResponse->addScript("window.location='/pages/manager_analize_buffer_price'");
-	    }*/
         $cpid = Db::getOne("Select id from cat_part where item_code = '".$aPi['pref']."_".$sCode);
         if ($cpid)
             Db::Execute("Update cat_part set is_checked_code_ok=1, is_checked_code_ok_date='".
@@ -1701,8 +1772,8 @@ class PriceControl extends Base {
             Base::$oResponse->addScript("window.location='/pages/price_control'");
             return;
         }
-        $aPi = Db::getRow("Select pi.*,up.name as name_provider, up.stock_room, c.title as brand,
-	        c.id_tof, cp.id as cpid
+        $aPi = Db::getRow("Select pi.*,up.name as name_provider, c.title as brand,
+	        c.id_sup, c.id_mfa, cp.id as cpid
 	        from price_import pi
             inner join user_provider up on up.id_user = pi.id_provider
 	        inner join cat c on c.pref = pi.pref

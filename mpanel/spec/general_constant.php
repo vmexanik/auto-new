@@ -22,8 +22,22 @@ class AGeneralConstant extends Admin {
 	}
 	//-----------------------------------------------------------------------------------------------
 	public function Index() {
-		//Base::$sText .= Base::$tpl->fetch("mpanel/general_constant/before_table.tpl"); 
+//		Base::$sText .= Base::$tpl->fetch("mpanel/general_constant/_before_table.tpl");
 		$this->PreIndex();
+
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong',0)) {
+                if ($this->aSearch['key'])$this->sSearchSQL .= " and c.key = '".$this->aSearch['key']."'";
+                if ($this->aSearch['value'])	$this->sSearchSQL .= " and c.value = '".$this->aSearch['value']."'";
+                if ($this->aSearch['description'])	$this->sSearchSQL .= " and c.description = '".$this->aSearch['description']."'";
+            }
+            else {
+                if ($this->aSearch['key'])$this->sSearchSQL .= " and c.key like '%".$this->aSearch['key']."%'";
+                if ($this->aSearch['value'])	$this->sSearchSQL .= " and c.value like '%".$this->aSearch['value']."%'";
+                if ($this->aSearch['description'])	$this->sSearchSQL .= " and c.description like '%".$this->aSearch['description']."%'";
+            }
+        }
 
 		require_once(SERVER_PATH.'/class/core/Table.php');
 		$oTable=new Table();

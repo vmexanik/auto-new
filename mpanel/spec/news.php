@@ -25,6 +25,46 @@ class ANews extends Admin
 	{
 		$this->PreIndex ();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and n.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and n.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['short'])
+                    $this->sSearchSQL .= " and n.short = '" . $this->aSearch['short'] . "'";
+                if ($this->aSearch['num'])
+                    $this->sSearchSQL .= " and n.num = '" . $this->aSearch['num'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and n.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and n.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['short'])
+                    $this->sSearchSQL .= " and n.short like '%" . $this->aSearch['short'] . "%'";
+                if ($this->aSearch['num'])
+                    $this->sSearchSQL .= " and n.num like '%" . $this->aSearch['num'] . "%'";
+            }
+            if ($this->aSearch['date_from'])
+                $this->sSearchSQL .= " and UNIX_TIMESTAMP(n.post_date)>='".strtotime($this->aSearch['date_from'].' 00:00:00')."' ";
+            if ($this->aSearch['date_to'])
+                $this->sSearchSQL .= " and UNIX_TIMESTAMP(n.post_date)<='".strtotime($this->aSearch['date_to'].' 23:59:59')."'";
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and n.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and n.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and n.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and n.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$oTable = new Table ( );
 		$oTable->aColumn = array ();
 		$oTable->aColumn ['id'] = array ('sTitle' => 'Id', 'sOrder' => 'n.id' );

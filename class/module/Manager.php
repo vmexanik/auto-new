@@ -3744,7 +3744,8 @@ class Manager extends Base
 			$aField['country']=array('title'=>'country','type'=>'input','value'=>$aData['country'],'name'=>'data[country]');
 			$aField['description']=array('title'=>'Description','type'=>'textarea','name'=>'data[description]','value'=>$aData['description']);
 			$aField['descr']=array('title'=>'Descr','type'=>'textarea','name'=>'data[descr]','value'=>$aData['descr'],'class'=>'ckeditor');
-			$aField['id_tof']=array('title'=>'id_tof','type'=>'input','value'=>$aData['id_tof'],'name'=>'data[id_tof]');
+			$aField['id_sup']=array('title'=>'id_sup','type'=>'input','value'=>$aData['id_sup'],'name'=>'data[id_sup]');
+			$aField['id_mfa']=array('title'=>'id_mfa','type'=>'input','value'=>$aData['id_mfa'],'name'=>'data[id_mfa]');
 			$aField['is_brand_hidden']=array('type'=>'hidden','name'=>'data[is_brand]','value'=>'0');
 			$aField['is_brand']=array('title'=>'is_brand','type'=>'checkbox','name'=>'data[is_brand]','value'=>'1','checked'=>$aData['is_brand']);
 			$aField['is_main_hidden']=array('type'=>'hidden','name'=>'data[is_main]','value'=>'0');

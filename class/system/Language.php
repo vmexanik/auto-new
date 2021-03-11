@@ -104,7 +104,7 @@ class Language extends Base
 			Language::$aTranslateMessage[$sKey]['content']=$sKey;
 			return $sKey;
 		}
-		return Language::$aTranslateMessage[$sKey]['content'];
+		return stripslashes(Language::$aTranslateMessage[$sKey]['content']);
 	}
 	//-----------------------------------------------------------------------------------------------
 	public static function GetDMessage($sKey, $sPage = "")

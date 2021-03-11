@@ -23,6 +23,25 @@ class ATranslateText extends Admin {
 	public function Index() {
 		$this->PreIndex ();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and t.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and t.code = '" . $this->aSearch['code'] . "'";
+                if ($this->aSearch['content'])
+                    $this->sSearchSQL .= " and t.content = '" . $this->aSearch['content'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and t.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and t.code like '%" . $this->aSearch['code'] . "%'";
+                if ($this->aSearch['content'])
+                    $this->sSearchSQL .= " and t.content like '%" . $this->aSearch['content'] . "%'";
+            }
+        }
+
 		require_once (SERVER_PATH . '/class/core/Table.php');
 		$oTable = new Table ( );
 		$oTable->aColumn = array ();

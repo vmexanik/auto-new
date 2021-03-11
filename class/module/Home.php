@@ -23,8 +23,8 @@ class Home extends Base
 		$aMenu=$oRubricator->GetRubricatorMenu();
 		Base::$tpl->assign('sAutoPreSelected',Base::$tpl->_tpl_vars['sSelectedCarUrlRubricator']);
 		Base::$tpl->assign('aMainRubric', $aMenu);
-		Base::$sText.=Base::$tpl->fetch('home/index.tpl');
-		Base::$sText.=Base::$tpl->fetch('home/levam.tpl');
+		//Base::$sText.=Base::$tpl->fetch('home/index.tpl');
+		//Base::$sText.=Base::$tpl->fetch('home/levam.tpl');
 		Base::$sText.=Base::$tpl->fetch('rubricator/index.tpl');
 		
 		if(!$_COOKIE['id_model_detail']){
@@ -47,7 +47,7 @@ class Home extends Base
 	//-----------------------------------------------------------------------------------------------
 	public function GetPopularProducts() {
 		$aPopularProducts=Db::GetAll("select * from popular_products where visible=1 ORDER BY RAND()  ");
-		
+//		Debug::PrintPre($aPopularProducts,1);
 		if($aPopularProducts) foreach ($aPopularProducts as $sKey => $aData){
 		    $sSql=Base::GetSql('Catalog/Price',array(
 			    'customer_discount'=>Discount::CustomerDiscount(Auth::$aUser),

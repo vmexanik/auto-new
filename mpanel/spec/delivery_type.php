@@ -17,6 +17,42 @@ class ADeliveryType extends Admin {
 	public function Index() {
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and dt.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and dt.code = '" . $this->aSearch['code'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and dt.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['price'])
+                    $this->sSearchSQL .= " and dt.price = '" . $this->aSearch['price'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and dt.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and dt.code like '%" . $this->aSearch['code'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and dt.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['price'])
+                    $this->sSearchSQL .= " and dt.price like '%" . $this->aSearch['price'] . "%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and dt.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and dt.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and dt.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and dt.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		require_once(SERVER_PATH.'/class/core/Table.php');
 		$oTable=new Table();
 		$this->initLocaleGlobal();
@@ -32,9 +68,7 @@ class ADeliveryType extends Admin {
 		'action' => array(),
 		);
 		$this->SetDefaultTable($oTable);
-		$oTable->sSql=Base::GetSql("DeliveryType",array('code'=>'without'));
 		Base::$sText.=$oTable->getTable();
-
 		$this->AfterIndex();
 	}
 }

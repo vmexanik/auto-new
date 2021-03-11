@@ -1,5 +1,6 @@
 <?
 require_once (SERVER_PATH . '/class/core/Admin.php');
+
 class ACat extends Admin {
 	//-----------------------------------------------------------------------------------------------
 	function ACat() {
@@ -10,6 +11,7 @@ class ACat extends Admin {
 		$this->sWinHead = Language::getDMessage ('Catalog list');
 		$this->sPath = Language::GetDMessage('>>Auto catalog >');
 		$this->aCheckField = array ('name', 'pref', 'title');
+		$this->aUniqueField = array('id_sup', 'id_mfa');
 		//$this->aFCKEditors = array ('descr');
 		$this->sBeforeAddMethod='BeforeAdd';
 		$this->Admin ();
@@ -29,16 +31,16 @@ class ACat extends Admin {
 				if ($this->aSearch['name'])	$this->sSearchSQL .= " and c.name = '".$this->aSearch['name']."'";
 				if ($this->aSearch['pref'])	$this->sSearchSQL .= " and c.pref = '".$this->aSearch['pref']."'";
 				if ($this->aSearch['title'])	$this->sSearchSQL .= " and c.title = '".$this->aSearch['title']."'";
-				if ($this->aSearch['id_tof'])	$this->sSearchSQL .= " and c.id_tof = '".$this->aSearch['id_tof']."'";
-				
+				if ($this->aSearch['id_sup'])	$this->sSearchSQL .= " and c.id_sup = '".$this->aSearch['id_sup']."'";
+				if ($this->aSearch['id_mfa'])	$this->sSearchSQL .= " and c.id_mfa = '".$this->aSearch['id_mfa']."'";
 			}
 			else {
 			    if ($this->aSearch['id'])$this->sSearchSQL .= " and c.id like '%".$this->aSearch['id']."%'";
 			    if ($this->aSearch['name'])	$this->sSearchSQL .= " and c.name like '%".$this->aSearch['name']."%'";
 			    if ($this->aSearch['pref'])	$this->sSearchSQL .= " and c.pref like '%".$this->aSearch['pref']."%'";
 			    if ($this->aSearch['title'])	$this->sSearchSQL .= " and c.title like '%".$this->aSearch['title']."%'";    
-			    if ($this->aSearch['id_tof'])	$this->sSearchSQL .= " and c.id_tof like '%".$this->aSearch['id_tof']."%'";
-			    
+			    if ($this->aSearch['id_sup'])	$this->sSearchSQL .= " and c.id_sup like '%".$this->aSearch['id_sup']."%'";
+			    if ($this->aSearch['id_mfa'])	$this->sSearchSQL .= " and c.id_mfa like '%".$this->aSearch['id_mfa']."%'";
 			}
 			if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and c.visible = '1'";
 			if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and c.visible = '0'";
@@ -100,8 +102,9 @@ class ACat extends Admin {
 		'title' => array('sTitle'=>'Title', 'sOrder'=>$this->sTablePrefix.'.title'),
 		'image' => array('sTitle'=>'Image', 'sOrder'=>$this->sTablePrefix.'.image'),
 		'image_tecdoc' => array('sTitle'=>'Image tecdoc', 'sOrder'=>$this->sTablePrefix.'.image_tecdoc'),
-		'id_tof' => array('sTitle'=>'Id tof', 'sOrder'=>$this->sTablePrefix.'.id_tof'),
-		'is_brand' => array('sTitle'=>'Is brand', 'sOrder'=>$this->sTablePrefix.'.is_brand'),
+	    'id_sup' => array('sTitle'=>'id_sup', 'sOrder'=>$this->sTablePrefix.'.id_sup'),
+	    'id_mfa' => array('sTitle'=>'id_mfa', 'sOrder'=>$this->sTablePrefix.'.id_mfa'),
+	    'is_brand' => array('sTitle'=>'Is brand', 'sOrder'=>$this->sTablePrefix.'.is_brand'),
 		'is_vin_brand' => array('sTitle'=>'Is vin brand', 'sOrder'=>$this->sTablePrefix.'.is_vin_brand'),
 		'is_main' => array('sTitle'=>'Is main', 'sOrder'=>$this->sTablePrefix.'.is_main'),
 		'virtual_title' => array('sTitle'=>'Virtual', 'sOrder'=>'cv.title'),
@@ -270,7 +273,7 @@ class ACat extends Admin {
 		$iCntPrice = Db::getOne("Select count(*) from price where pref='".$aCat['pref']."'");
 		Base::$tpl->assign('iCntPrice',$iCntPrice);
 		
-		$aCats=Db::getAssoc("Select id,concat(title,' (',pref,') ',' id_tof=',id_tof) from cat where id!=".Base::$aRequest['id']." order by title");
+		$aCats=Db::getAssoc("Select id,concat(if(title!='',title,''),' (',pref,') ',' id_sup=',if(id_sup,id_sup,'0'),' id_mfa=',if(id_mfa,id_mfa,'0')) from cat where id!=".Base::$aRequest['id']." order by title");
 		Base::$tpl->assign('aCatReplace',$aCats);
 		
 		// from Admin - ProcessTemplateForm

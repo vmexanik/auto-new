@@ -60,7 +60,7 @@ class Catalog extends Base
 	public function ViewModel()
 	{
 		$this->aCat=Db::GetRow("select * from cat where name='".Base::$aRequest['cat']."'");
-		Base::$aRequest['data']['id_tof']=$this->aCat['id_tof'];
+		Base::$aRequest['data']['id_mfa']=$this->aCat['id_mfa'];
 		
 		if(strpos($_SERVER['REQUEST_URI'],'/?')!==FALSE && count(Base::$aRequest)<=3 && Base::$aRequest['cat']) {
 			$sUrl='/cars/'.Base::$aRequest['cat'];
@@ -233,8 +233,8 @@ class Catalog extends Base
 	    else
 	        Base::$aRequest['car_select']['model'] = Base::$aRequest['model_group'];
 	    
-	    $aCat=Db::GetAssoc("select c.id_tof,c.id from cat as c where c.visible=1");
-	    $aCatTitles=Db::GetAssoc("select c.id_tof,c.title from cat as c where c.visible=1");
+	    $aCat=Db::GetAssoc("select c.id_mfa,c.id from cat as c where c.visible=1");
+	    $aCatTitles=Db::GetAssoc("select c.id_mfa,c.title from cat as c where c.visible=1");
 	    $aSelectedModelGroup=Db::GetRow("select * from cat_model_group where code='".Base::$aRequest['model_group']."' and id_make='".Base::$aRequest['data']['id_make']."' ");
 	
 	    Base::$tpl->assign('model_preselected', trim(str_replace(strtoupper(Base::$aRequest['cat']), "", $aSelectedModelGroup['name'])));
@@ -458,9 +458,9 @@ class Catalog extends Base
 	public function ViewModelDetail($bShow=false)
 	{
 		$this->aCat=Db::GetRow("select * from cat where name='".Base::$aRequest['cat']."'");
-		Base::$aRequest['data']['id_tof']=$this->aCat['id_tof'];
+		Base::$aRequest['data']['id_mfa']=$this->aCat['id_mfa'];
 		Base::$aRequest['data']['id_make']=$this->aCat['id'];
-		$this->aCats=Db::GetAssoc("select c.id_tof,c.id from cat as c where c.visible=1");
+		$this->aCats=Db::GetAssoc("select c.id_mfa,c.id from cat as c where c.visible=1");
 		$this->aModel=TecdocDb::GetModel(Base::$aRequest['data']);
 		
 		if(strpos($_SERVER['REQUEST_URI'],'/?')!==FALSE && !Base::$aRequest['data']['art_id']) {
@@ -480,7 +480,7 @@ class Catalog extends Base
 		$aModelAsoc=TecdocDb::GetModelAssoc(
 		     array(
 		        "id_make"=>Base::$aRequest['data']['id_make'], 
-		        "id_tof"=>Base::$aRequest['data']['id_tof'], 
+		        "id_mfa"=>Base::$aRequest['data']['id_mfa'], 
 		        "sOrder"=>" order by name"
 		     )
 		);
@@ -566,7 +566,7 @@ class Catalog extends Base
 	                foreach ($aVag as $aValVag){
 	                    $aAs=TecdocDb::GetArt(array(
 	                        'code'=>Base::$aRequest['data']['code'],
-	                        'id_tof'=>$aValVag['id_tof']
+	                        'id_sup'=>$aValVag['id_sup']
 	                    ));
 	                    if($aAs > 0) {
     	                    if(Base::$aRequest['data']['art_id']==""&&$aAs!="")
@@ -586,7 +586,7 @@ class Catalog extends Base
 	                foreach ($aVag as $aValVag){
 	                    $aAs=TecdocDb::GetArt(array(
 	                        'code'=>Base::$aRequest['data']['code'],
-	                        'id_tof'=>$aValVag['id_tof']
+	                        'id_sup'=>$aValVag['id_sup']
 	                    ));
 	                    if($aAs > 0) {
     	                    if(Base::$aRequest['data']['art_id']==""&&$aAs!="")
@@ -673,7 +673,7 @@ class Catalog extends Base
 	    $oTable->aColumn['engine']=array('sTitle'=>'engine', 'sClass'=>'cell-body');
 	    
 	    $oTable->aCallback=array($this,'CallParseModelDetail');
-	   	$oTable->iRowPerPage=2000;
+	   	$oTable->iRowPerPage=5000;
 	    $oTable->bStepperVisible=false;
 	    $oTable->sDataTemplate='catalog/row_modeldetail.tpl';
 	    //$oTable->aOrdered=" order by name ";
@@ -709,7 +709,7 @@ class Catalog extends Base
 	//-----------------------------------------------------------------------------------------------
 	public function ViewAssemblage()
 	{
-		$this->aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
+		$this->aCats=Db::GetAssoc("select c.id_mfa,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
 	    $this->aCat=Db::GetRow("select * from cat as c where name='".Base::$aRequest['cat']."' ");
 	    if(!Base::$aRequest['data']['id_make']) Base::$aRequest['data']['id_make']=$this->aCat['id'];
 	    if(!Base::$aRequest['data']['id_make'] && Base::$aRequest['data']['id_model']) Base::$aRequest['data']['id_make']=TecdocDb::GetIdMakeByIdModel(Base::$aRequest['data']['id_make']);
@@ -724,7 +724,7 @@ class Catalog extends Base
 			'id_model_detail'=>Base::$aRequest['data']['id_model_detail'],
 			'id_make'=>Base::$aRequest['data']['id_make']
 			),
-		    array($this->aCat['id_tof']=>$this->aCat['id'])
+		    array($this->aCat['id_mfa']=>$this->aCat['id'])
 		);
 	    
 	    Base::$aRequest['data']['id_model']=$this->aModelDetail['id_model'];
@@ -797,7 +797,7 @@ class Catalog extends Base
 			'cat'=>Base::$aRequest['cat'],
 			'model'=>$aModel,
 			'model_detail'=>$aModelDetail,
-			'aCat'=>array($this->aCat['id_tof']=>$this->aCat['id']),
+			'aCat'=>array($this->aCat['id_mfa']=>$this->aCat['id']),
 			'data[id_make]'=>Base::$aRequest['data']['id_make'],
 			'data[id_model]'=>Base::$aRequest['data']['id_model'],
 			//'data[id_brand]'=>$aValue['id_model'],
@@ -1246,8 +1246,8 @@ class Catalog extends Base
 
 					case "id_model_detail":
 						if(!$this->aModelDetail) {
-    					    if(!$this->aCat) $aCat=Db::GetAssoc("select c.id_tof,c.id from cat as c where c.visible=1 and name='".Base::$aRequest['cat']."' ");
-    					    else $aCat=array($this->aCat['id_tof']=>$this->aCat['id']);
+    					    if(!$this->aCat) $aCat=Db::GetAssoc("select c.id_mfa,c.id from cat as c where c.visible=1 and name='".Base::$aRequest['cat']."' ");
+    					    else $aCat=array($this->aCat['id_mfa']=>$this->aCat['id']);
     					        
     					    $aRow=TecdocDb::GetModelDetail($aData,$aCat);
 					    } else $aRow=$this->aModelDetail;
@@ -1502,13 +1502,13 @@ class Catalog extends Base
             where 1=1 and (oe_code like ".$sCode." or code like ".$sCode." ) ";
     		$aOriginals=TecdocDb::GetAll($sSql);
     		
-    		if($aOriginals) $aCatAssoc=Db::GetAssoc("select id_tof,pref from cat where id_tof >0");
+    		if($aOriginals) $aCatAssoc=Db::GetAssoc("select id_to f,pref from cat where id_sup >0");
 
     		// cut other brand original
     		$aPrefOriginals = array();
     		if ($this->sPref) {
     			$sItemCode = $this->sPref.'_'.Base::$aRequest['code'];
-    			$iIdTof = Db::GetOne("select id_tof from cat where pref='".$this->sPref."'");
+    			$iIdTof = Db::GetOne("select id_to f from cat where pref='".$this->sPref."'");
     			if ($iIdTof) {
 	    			if($aOriginals) foreach ($aOriginals as $aValue) {
 	    				if ($aValue['code']==Base::$aRequest['code'] && $aValue['brand']==$iIdTof)
@@ -1522,7 +1522,7 @@ class Catalog extends Base
     		
     		$aItemCodeOriginal=array();
     		if($aOriginals) foreach ($aOriginals as $skeyOriginal => $aValueOriginal) {
-    			// cut other brand original without id_tof
+    			// cut other brand original without id_to f
     			if ($sItemCode && 
     				$aCatAssoc[$aValueOriginal['brand']]."_".$aValueOriginal['code'] != $sItemCode &&
     				$aCatAssoc[$aValueOriginal['oe_brand']]."_".$aValueOriginal['oe_code'] != $sItemCode
@@ -1557,7 +1557,7 @@ class Catalog extends Base
 		// Get OE numbers end
 		*/
 		
-		if ($this->sPref && $this->aCode[0]) {
+		/*if ($this->sPref && $this->aCode[0]) {
 		    $this->aItemCodeCross[$this->sPref."_".$this->aCode[0]]=$this->sPref."_".$this->aCode[0];
 		    $aCat = Db::GetRow("select * from cat where pref='".$this->sPref."'");
 		    if ($aCat['is_cat_virtual']){
@@ -1567,7 +1567,7 @@ class Catalog extends Base
 		            $this->aItemCodeCross[$aValueVirtual['pref']."_".$this->aCode[0]]=$this->sPref."_".$this->aCode[0];
 		        }
 		    }
-		}
+		}*/
 		if ($this->aCodeCross) {
 /*			$aVag=array("AU","SC","SE","VW","VAG");
 			foreach ($this->aCodeCross as $k => $v) {
@@ -1708,7 +1708,7 @@ class Catalog extends Base
 			$this->aCats = array();
 			$aCatTmp = Db::GetAll("SELECT * FROM cat where visible = 1");
 			foreach($aCatTmp as $aCatValue){
-				$this->aCats[$aCatValue['id_tof']] = $aCatValue;
+				$this->aCats[$aCatValue['id_sup']] = $aCatValue;
 			}
 			$aUnique = array_unique($this->aItemCodeCross);
 			foreach ($aUnique as $sKey => $sValue) {
@@ -1925,7 +1925,7 @@ class Catalog extends Base
                     inner join cat c on c.pref = p.pref and c.visible=1 
 				    where p.price > 0
 				    /* раскоментить если нужно and CONVERT(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(p.stock,'>',''),',','.'),'Н','1'),'-',''),'M','1'), '<',''),'+',''),'++',''),'+++',''),'есть','1'),'X',''),'XX',''),'XXX',''), SIGNED) > 0 */
-				    where p.item_code='".$aValue['pref']."_".$aValue['code']."' ");
+				    and p.item_code='".$aValue['pref']."_".$aValue['code']."' ");
 					
 					if (!$iPrice && !$aValue['has_price']) {
 					    unset($aItem[$sKey]);
@@ -1939,7 +1939,7 @@ class Catalog extends Base
                     inner join cat c on c.pref = p.pref and c.visible=1
 				    where p.price > 0
 				    /* раскоментить если нужно and CONVERT(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(p.stock,'>',''),',','.'),'Н','1'),'-',''),'M','1'), '<',''),'+',''),'++',''),'+++',''),'есть','1'),'X',''),'XX',''),'XXX',''), SIGNED) > 0 */
-				    where p.item_code='".$aValue['pref']."_".$aValue['code']."' ");
+				    and p.item_code='".$aValue['pref']."_".$aValue['code']."' ");
 			    
 			    if (!$iPrice && !$aValue['has_price']) {
 			        unset($aItem[$sKey]);
@@ -2020,7 +2020,7 @@ class Catalog extends Base
 						if (!$this->aCats){
 							$aCatTmp=Db::GetAll("select * from cat as c where c.visible=1");
 							foreach($aCatTmp as $sKeyCat => $aValueCat)
-								$this->aCats[$aValueCat['id_tof']] = $aValueCat;
+								$this->aCats[$aValueCat['id_sup']] = $aValueCat;
 						}
 					    $aPartInfo=TecdocDb::GetPartInfo(array(
 					        'item_code'=>$this->sPref."_".$this->aCode[0]
@@ -2037,7 +2037,7 @@ class Catalog extends Base
 							elseif ($aCat['image_tecdoc'])
 							 	$sImage = Base::$aGeneralConf['TecDocUrl']."/imgbank/tcd/".$aCat['image_tecdoc'];							 
 								
-							$aTmpTop[]=array("id_brand"=>$aCat['id_tof'],
+							$aTmpTop[]=array("id_brand"=>$aCat['id_sup'],
 							"code"=>Catalog::StripCode($aPartInfo['code']),
 							"name_translate"=>$aPartInfo['name'],
 							"brand"=>$aPartInfo['brand'],
@@ -2065,7 +2065,7 @@ class Catalog extends Base
 								
 								$aTmpTop[]=array(
 									'brand'=>$aCat['title'], 
-									'id_brand'=>$aCat['id_tof'], 
+									'id_brand'=>$aCat['id_sup'], 
 									'code'=>$this->aCode[0],
 									'hide_code'=>$bHideCode,
 									'pref'=>$aCat['pref'],
@@ -2726,9 +2726,13 @@ class Catalog extends Base
 	function ViewInfoPart() {
 	    Base::$sText.=Base::$tpl->fetch('price_profile/popup.tpl');
 
-	    $this->aCats=Db::GetAssoc("select c.id_tof,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
-	    $this->aCat=Db::GetRow("select * from cat as c where name='".Base::$aRequest['cat_name']."' ");
-	    
+	    $this->aCats=Db::GetAssoc("select c.id_sup,c.id,c.pref,c.title,c.image,c.name from cat as c where c.visible=1");
+	    $this->aCat=Db::GetRow("select * from cat as c where name='".Base::$aRequest['cat_name']."' and c.visible=1");
+	    if (!$this->aCat) {
+	    	Base::Redirect("/missing");
+	    	return;
+	    }
+	    	
 		Base::$bXajaxPresent=true;
 		Base::$aRequest['code']=Catalog::StripCode(Base::$aRequest['code']);
 
@@ -2739,7 +2743,7 @@ class Catalog extends Base
 			Base::$aRequest['item_code']=Base::$aRequest['pref'].'_'.Base::$aRequest['code'];
 		}
 		if(Base::$aRequest['pref'] && !Base::$aRequest['id_brand']){
-		    Base::$aRequest['id_brand']=$this->aCat['id_tof'];
+		    Base::$aRequest['id_brand']=$this->aCat['id_sup'];
 		}
 
 		if(strpos($_SERVER['REQUEST_URI'], '?')!==FALSE) {
@@ -2751,7 +2755,7 @@ class Catalog extends Base
 		if (Base::$aRequest['code'] && Base::$aRequest['id_brand'] && !Base::$aRequest['art_id']) {
 		    Base::$aRequest['art_id']=TecdocDb::GetArt(array(
 		        'code'=>Base::$aRequest['code'],
-		        'id_tof'=>Base::$aRequest['id_brand']
+		        'id_sup'=>Base::$aRequest['id_brand']
 		    ));
 		}
 
@@ -2777,7 +2781,7 @@ class Catalog extends Base
 	    	    foreach ($aVag as $aValVag){
     	    	    $aAs=TecdocDb::GetArt(array(
     	    	    'code'=>Base::$aRequest['code'],
-    	    	    'id_tof'=>$aValVag['id_tof']
+    	    	    'id_sup'=>$aValVag['id_sup']
     	    	    ));
     	    	    if(Base::$aRequest['art_id']==""&&$aAs!=''&&$aAs!=0)
     	    	          Base::$aRequest['art_id'].=$aAs;
@@ -2796,7 +2800,7 @@ class Catalog extends Base
 	    	    foreach ($aVag as $aValVag){
                     $aAs=TecdocDb::GetArt(array(
     	    	    'code'=>Base::$aRequest['code'],
-    	    	    'id_tof'=>$aValVag['id_tof']
+    	    	    'id_sup'=>$aValVag['id_sup']
     	    	    ));
                     if(Base::$aRequest['art_id']==""&&$aAs!=''&&$aAs!=0)
                         Base::$aRequest['art_id'].=$aAs;
@@ -2838,10 +2842,13 @@ class Catalog extends Base
 			$this->CallParsePrice($aRow,true);
 			if ($aRow[0]['separator'] && $aRow[1]['item_code'])
 				array_shift($aRow);
-			Base::$tpl->assign('aRowPrice',$aRow[0]);
+			Base::$tpl->assign('aRowPricePart',$aRow);
+			
+// 			Debug::PrintPre($aRow);
+			
 			
 			// build crumbs
-			if($aPartInfo['art_id'] && $this->aCat['id_tof']) {
+			if($aPartInfo['art_id'] && $this->aCat['id_sup']) {
 			    $aTree=TecdocDb::GetAssoc("
                             select lsg.ID_tree,g.id_src
                     FROM ".DB_OCAT."cat_alt_link_art lta
@@ -2849,35 +2856,44 @@ class Catalog extends Base
                     join ".DB_OCAT."cat_alt_groups as g on lsg.ID_grp=g.id_grp
                     join ".DB_OCAT."cat_alt_articles a on a.ID_art=lta.ID_art
                     join ".DB_OCAT."cat_alt_suppliers s on lta.ID_sup=s.ID_sup
-                    where a.id_src = '".$aPartInfo['art_id']."' and s.ID_src = ".$this->aCat['id_tof']);
+                    where a.id_src = '".$aPartInfo['art_id']."' and s.ID_src = ".$this->aCat['id_sup']);
+			}
 			
-			    if($aTree) {
-			        $aWhere='';
-			        foreach ($aTree as $iTree => $iGrp) {
-			            $aWhere[]="(FIND_IN_SET('".$iTree."',id_tree) and FIND_IN_SET('".$iGrp."',id_group))";
-			        }
-			
-			        $aRubricLast=Db::GetRow("
-                                    select distinct * from rubricator
-                                    where ".implode(" or \n", $aWhere)
-			        );
-			        if($aRubricLast['level']=='3') {
-			            $aRubric2=Db::GetRow("
-                                    select * from rubricator
-                                    where id='".$aRubricLast['id_parent']."'
-                                ");
-			
-			            $sRubricPrev=Db::GetRow("
-                                    select * from rubricator
-                                    where id='".$aRubric2['id_parent']."'
-                                ");
-			        } elseif($aRubricLast['level']=='2') {
-			            $sRubricPrev=Db::GetRow("
-                                    select * from rubricator
-                                    where id='".$aRubricLast['id_parent']."'
-                                ");
-			        }
-			    }
+			if($aPartInfo['id_cat_part']) {
+			    $aTreeSite=Db::GetAssoc("
+			        select id_tree, id_group from cat_tree_link where id_cat_part='".$aPartInfo['id_cat_part']."'
+		        ");
+			}
+			    
+			if($aTree || $aTreeSite) {
+		        $aWhere='';
+		        foreach ($aTree as $iTree => $iGrp) {
+		            $aWhere[]="(FIND_IN_SET('".$iTree."',id_tree) and FIND_IN_SET('".$iGrp."',id_group))";
+		        }
+		        foreach ($aTreeSite as $iTree => $iGrp) {
+		            $aWhere[]="(FIND_IN_SET('".$iTree."',id_tree) and FIND_IN_SET('".$iGrp."',id_group))";
+		        }
+		
+		        $aRubricLast=Db::GetRow("
+                                select distinct * from rubricator
+                                where ".implode(" or \n", $aWhere)
+		        );
+		        if($aRubricLast['level']=='3') {
+		            $aRubric2=Db::GetRow("
+                                select * from rubricator
+                                where id='".$aRubricLast['id_parent']."'
+                            ");
+		
+		            $sRubricPrev=Db::GetRow("
+                                select * from rubricator
+                                where id='".$aRubric2['id_parent']."'
+                            ");
+		        } elseif($aRubricLast['level']=='2') {
+		            $sRubricPrev=Db::GetRow("
+                                select * from rubricator
+                                where id='".$aRubricLast['id_parent']."'
+                            ");
+		        }
 			}
 			
 			if (Base::$tpl->_tpl_vars['sSelectedCarUrlRubricator'] && Base::$tpl->_tpl_vars['sAutoName'])
@@ -2967,7 +2983,13 @@ class Catalog extends Base
 			//LNB-57 show price group characteristic begin
 		    $aFilter = array();
     	    if (MultiLanguage::IsLocale()) {
-    	        $sIdHandbook=Db::GetOne("select GROUP_CONCAT(pgf.id_handbook) as id_handbook from price_group_filter as pgf where pgf.id_price_group='".$aRow[0]['id_price_group']."'");
+    	        $sIdHandbook=Db::GetOne("select GROUP_CONCAT(pgf.id_handbook) as id_handbook from price_group_filter as pgf where 
+                                                                                         pgf.id_price_group='".$aRow[0]['id_price_group']."'
+    	        
+    	        union 
+    	        
+    	        select GROUP_CONCAT(rbf.id_handbook) as id_handbook from rubricator_filter as rbf where  rbf.id_rubricator='".$aRubricLast['id']."' 
+    	        ");
     	        if($sIdHandbook){
         	        $aDataLocale=array(
         	            'table'=>'handbook',
@@ -2986,7 +3008,13 @@ class Catalog extends Base
     	        }
     	    }else {
 			    $sSql="select h.id,h.table_,h.name as krit_name from handbook as h
-						inner join price_group_filter as pgf on pgf.id_handbook=h.id and pgf.id_price_group='".$aRow[0]['id_price_group']."' ";
+						inner join price_group_filter as pgf on pgf.id_handbook=h.id and pgf.id_price_group='".$aRow[0]['id_price_group']."' 
+						
+						union all 
+						
+						select h.id,h.table_,h.name as krit_name from handbook as h
+						inner join rubricator_filter as rbf on rbf.id_handbook=h.id and rbf.id_rubricator='".$aRubricLast['id']."' 
+						";
         	    $aFilter=Db::GetAll($sSql);
     	    }
 			if($aFilter) foreach ($aFilter as $sKey => $aValue) {
@@ -3059,7 +3087,7 @@ class Catalog extends Base
 			));
 			
 			if(Base::GetConstant('catalog:show_oe','1')==1 && $aPartInfo['code'] && $aPartInfo['pref']) {
-			    $iIdTof=Db::GetOne("select id_tof from cat where pref='".$aPartInfo['pref']."' ");
+			    $iIdTof=Db::GetOne("select id_mfa from cat where pref='".$aPartInfo['pref']."' ");
 			    if($iIdTof) {
 			        $bHaveOeLink=TecdocDb::GetOne("select id_oe from ".DB_OCAT."cat_alt_original 
 			            where oe_code='".$aPartInfo['code']."' 
@@ -3100,8 +3128,23 @@ class Catalog extends Base
 			$oTable->bHeaderVisible = false;
 			$oTable->sTemplateName='table/index2.tpl';
 			Base::$tpl->assign('sTableOriginal',$oTable->getTable());
-			
-			Base::$sText.=Base::$tpl->fetch('catalog/info_part.tpl');
+            Base::$sText.=Base::$tpl->fetch('catalog/info_part.tpl');
+
+            //Related
+            $relatedProducts=Db::GetAll("SELECT code_related FROM related_products WHERE code='".$aPartInfo['code']."'");
+            if($relatedProducts) {
+                $sSql=Base::GetSql('Catalog/Price',array(
+                    'aCode'=> array_column($relatedProducts,'code_related'),
+                ));
+                $sSql=str_replace("and 0=1", '', $sSql);
+                $aPrice=Db::GetAll($sSql);
+                $this->CallParsePrice($aPrice, true);
+                unset($aPrice[0]);
+//                Debug::PrintPre($aPrice,1);
+
+                Base::$tpl->assign('aRelatedProducts',$aPrice);
+                Base::$sText.=Base::$tpl->fetch('catalog/related_products.tpl');
+            }
 			
 			Content::SetMetaTagsPage('buy:',array(
 			    'code' => $aPartInfo['code'],
@@ -3117,12 +3160,6 @@ class Catalog extends Base
 		// JPN-144 get art_id
 		// Knecht LX8 = 1372083
 		if(!Base::$aRequest['art_id']) {
-// 			Base::$aRequest['art_id']=Db::GetOne("
-// 			select a.ID_src
-// 			from ".DB_OCAT."cat_alt_articles a
-// 			INNER JOIN ".DB_OCAT."cat_alt_suppliers as s on a.ID_sup=s.ID_sup
-// 			inner join cat as c on c.id_tof=s.ID_src and c.pref='".Base::$aRequest['pref']."' 
-// 			where a.Search = '".Base::$aRequest['code']."'");
 		    Base::$aRequest['art_id']=TecdocDb::GetArt(array(
 		        'code'=>Base::$aRequest['code'],
 		        'pref'=>Base::$aRequest['pref']
@@ -3231,7 +3268,7 @@ class Catalog extends Base
 		            foreach ($aVag as $aValVag){
 		                $aAs=TecdocDb::GetArt(array(
 		                    'code'=>Base::$aRequest['code'],
-		                    'id_tof'=>$aValVag['id_tof']
+		                    'id_sup'=>$aValVag['id_sup']
 		                ));
 		                if(Base::$aRequest['art_id']==""&&$aAs!="")
 		                    Base::$aRequest['art_id'].=$aAs;
@@ -3250,7 +3287,7 @@ class Catalog extends Base
 		            foreach ($aVag as $aValVag){
 		                $aAs=TecdocDb::GetArt(array(
 		                    'code'=>Base::$aRequest['code'],
-		                    'id_tof'=>$aValVag['id_tof']
+		                    'id_sup'=>$aValVag['id_sup']
 		                ));
 		                if(Base::$aRequest['art_id']==""&&$aAs!="")
 		                    Base::$aRequest['art_id'].=$aAs;
@@ -3308,17 +3345,13 @@ class Catalog extends Base
 		$this->aCode = preg_split("/[\s,;]+/", Catalog::StripCode(Base::$aRequest['code']));
 		$sCode = "'".implode("','",$this->aCode)."'";
 	
-// 		$this->aCodeCross=Base::$db->GetAll(Base::GetSql('OptiCatalog/Cross',array(
-// 				'sCode'=>$sCode,
-// 				'pref'=>$this->sPref
-// 		)));
 		$this->aCodeCross=TecdocDb::GetCross(array(
 		    'sCode'=>$sCode,
 		    'pref'=>$this->sPref
 		),$this->aCats);
 		
-		// Get OE numbers begin
-		if(Base::GetConstant('price:show_oe','1')==1) {
+		// Get OE numbers begin - now in GetCross
+		/*if(Base::GetConstant('price:show_oe','1')==1) {
 		    $sSql="select
     		    oe_code,
     		    code,
@@ -3328,13 +3361,13 @@ class Catalog extends Base
             where 1=1 and (oe_code like ".$sCode." or code like ".$sCode." ) ";
 		    $aOriginals=TecdocDb::GetAll($sSql);
 		
-		    if($aOriginals) $aCatAssoc=Db::GetAssoc("select id_tof,pref from cat where id_tof >0");
+		    if($aOriginals) $aCatAssoc=Db::GetAssoc("select id_to f,pref from cat where id_to f >0");
 		    
 		    // cut other brand original
 		    $aPrefOriginals = array();
 		    if ($this->sPref) {
 				$sItemCode = $this->sPref.'_'.Base::$aRequest['code'];
-		    	$iIdTof = Db::GetOne("select id_tof from cat where pref='".$this->sPref."'");
+		    	$iIdTof = Db::GetOne("select id_to f from cat where pref='".$this->sPref."'");
 		    	if ($iIdTof) {
 		    		if($aOriginals) foreach ($aOriginals as $aValue) {
 		    			if ($aValue['code']==Base::$aRequest['code'] && $aValue['brand']==$iIdTof)
@@ -3348,7 +3381,7 @@ class Catalog extends Base
 		    
 		    $aItemCodeOriginal=array();
 		    if($aOriginals) foreach ($aOriginals as $skeyOriginal => $aValueOriginal) {
-    			// cut other brand original without id_tof
+    			// cut other brand original without id_to f
     			if ($sItemCode && 
     				$aCatAssoc[$aValueOriginal['brand']]."_".$aValueOriginal['code'] != $sItemCode &&
     				$aCatAssoc[$aValueOriginal['oe_brand']]."_".$aValueOriginal['oe_code'] != $sItemCode
@@ -3376,9 +3409,9 @@ class Catalog extends Base
 		    if(!$aItemCodeOriginal) $aItemCodeOriginal=array();
 		    if(!$this->aCodeCross) $this->aCodeCross=array();
 		    $this->aCodeCross=array_merge($this->aCodeCross,$aItemCodeOriginal);
-		}
+		}*/
 		// Get OE numbers end
-	
+		if(!$this->aCodeCross) $this->aCodeCross=array();
 		$sId="";
 		if ($this->sPref && $this->aCode[0]) {
 		    $this->aItemCodeCross[$this->sPref."_".$this->aCode[0]]=$this->sPref."_".$this->aCode[0];
@@ -4046,7 +4079,7 @@ class Catalog extends Base
 		static $sPrefMers;
 		
 		if (!$sPrefMers) 
-			$sPrefMers = Db::GetOne("SELECT pref FROM `cat` WHERE id_tof = 553"); // MERCEDES || MERCEDESBENZ
+			$sPrefMers = Db::GetOne("SELECT pref FROM `cat` WHERE id_mfa = ".Language::getConstant("mercedes:id_src_tecdoc",74)); // MERCEDES || MERCEDESBENZ
 		
 		if ($aData['pref'] && $aData['code'] && $aData['pref_crs'] && $aData['code_crs']
 		&& !(strcasecmp($aData['code'],$aData['code_crs'])==0 && $aData['pref']==$aData['pref_crs'])
@@ -4343,7 +4376,7 @@ class Catalog extends Base
 		if (Base::$aRequest['data']['id_make'] && Base::$aRequest['data']['id_model']
 		&& Base::$aRequest['data']['id_model_detail']) {
 
-			if (0) {
+			/*if (0) {
 				$aTree=Db::GetAll(Base::GetSql("OptiCatalog/Assemblage",Base::$aRequest['data']+array(
 				//'bTreeFilter'=>true,
 				"order"=>" order by str_sort "
@@ -4357,7 +4390,7 @@ class Catalog extends Base
 
 				Base::$oResponse->addAssign('select_part','innerHTML',
 				Base::$tpl->fetch($this->sPrefix."/select_part.tpl"));
-			}
+			}*/
 		}
 	}
 	//-----------------------------------------------------------------------------------------------
@@ -4674,256 +4707,6 @@ class Catalog extends Base
 		Base::Redirect('/pages/catalog/');
 	}
 	//-----------------------------------------------------------------------------------------------
-	public function MotoBrands() {
-	    $sSql="select Replace(mfa.Name,' MOTORCYCLES','') as title, mfa.id_src as id
-    	    from ".DB_OCAT."cat_alt_manufacturer as mfa
-    	    inner join ".DB_OCAT."cat_alt_types as t on t.id_mfa=mfa.id_mfa and t.body='Мотоцикл' 
-	        group by mfa.id_src
-	        order by mfa.Name";
-	    $aData=TecdocDb::GetAll($sSql);
-	    
-        $oTable=new Table();
-        $oTable->bHeaderVisible=false;
-        $oTable->iGallery=4;
-        $oTable->iRowPerPage=10000;
-        $oTable->sStepperAlign='center';
-        $oTable->bStepperVisible = false;
-        $oTable->sTemplateName='gallery.tpl';
-        //$oTable->sSql =$sSql;
-        $oTable->sType="array";
-        $oTable->aDataFoTable=$aData;
-        
-        $oTable->sClass .= ' catalog-brands-table mobile-table';
-        $oTable->bIsGallery= true;
-        $oTable->sNoItem='No items';
-        $oTable->aColumn['item']=array('sTitle'=>'Name','sWidth'=>'20%');
-        $oTable->sDataTemplate = "catalog/row_moto_brands.tpl";
-        
-        Base::$sText.=$oTable->getTable();
-	}
-	//-----------------------------------------------------------------------------------------------
-	public function MotoModels() {
-	    $sSql="select mfa.Name as title, mfa.id_src as id_tof, cm.id_src as id_model, cm.Name as name 
-	        ,substr(cm.DateStart,1,2) as month_start, 
-	        substr(cm.DateStart,4,4) as year_start
-    		,substr(cm.DateEnd,1,2) as month_end, 
-	        substr(cm.DateEnd,4,4) as year_end
-	        
-    	    from ".DB_OCAT."cat_alt_manufacturer as mfa
-	        inner join ".DB_OCAT."cat_alt_models as cm on cm.id_mfa=mfa.id_mfa and mfa.id_src='".Base::$aRequest['brand']."' 
-    	    inner join ".DB_OCAT."cat_alt_types as t on t.id_mod=cm.id_mod and t.body='Мотоцикл'
-	        group by cm.id_src
-	        order by cm.Name";
-	    $aData=TecdocDb::GetAll($sSql);
-	    
-	    $oTable=new Table();
-	    $oTable->sType='array';
-	    $oTable->aDataFoTable=$aData;
-	    
-	    $oTable->aColumn['name']=array('sTitle'=>'Make','sWidth'=>'75%');
-	    $oTable->aColumn['year']=array('sTitle'=>'Year','sWidth'=>'25%');
-	    
-	    //$oTable->aCallback=array($this,'CallParseModel');
-	    $oTable->iRowPerPage=500;
-	    $oTable->sDataTemplate='catalog/row_moto_model.tpl';
-	    Base::$sText.=$oTable->getTable();
-	}
-	//-----------------------------------------------------------------------------------------------
-	public function MotoDetails() {
-	    $sSql="select mfa.Name as title, mfa.id_src as id_tof, cm.id_src as id_model, t.id_src as id_model_detail, t.Name as name
-	        , substr(t.DateStart,5,2) as month_start
-             , substr(t.DateStart,1,4) as year_start
-    		, substr(t.DateEnd,5,2) as month_end
-    		, substr(t.DateEnd,1,4) as year_end
-    
-    		, t.ID_src as id_model_detail
-    		, t.Description as name
-    		, LEFT(KwHp, LOCATE('/', KwHp)-1) kw_from
-    		, SUBSTR(KwHp, LOCATE('/', KwHp)+1) hp_from
-    		, CCM as ccm, Body as body
-    		, t.ID_src as typ_id
-	    
-    	    from ".DB_OCAT."cat_alt_manufacturer as mfa
-	        inner join ".DB_OCAT."cat_alt_models as cm on cm.id_mfa=mfa.id_mfa and mfa.id_src='".Base::$aRequest['brand']."' and cm.id_src='".Base::$aRequest['model']."'
-    	    inner join ".DB_OCAT."cat_alt_types as t on t.id_mod=cm.id_mod and t.body='Мотоцикл'
-	        group by t.id_src
-	        order by t.Name";
-	    $aData=TecdocDb::GetAll($sSql);
-	    
-	    $oTable=new Table();
-	    $oTable->sClass .= " model-detail-table mobile-table";
-	    
-	    $oTable->sType='array';
-	    $oTable->aDataFoTable=$aData;
-	    
-	    $oTable->aColumn['name']=array('sTitle'=>'Make','sWidth'=>'55%', 'sClass'=>'cell-name');
-	    $oTable->aColumn['year']=array('sTitle'=>'Yaer','sWidth'=>'5%', 'sClass'=>'cell-years');
-	    $oTable->aColumn['power_kw']=array('sTitle'=>'Power<br>KW','sWidth'=>'5%', 'sClass'=>'cell-power-kw');
-	    $oTable->aColumn['power_hp']=array('sTitle'=>'Power<br>HP','sWidth'=>'5%', 'sClass'=>'cell-power-hp');
-	    $oTable->aColumn['V']=array('sTitle'=>'V','sWidth'=>'5%', 'sClass'=>'cell-volume');
-	    $oTable->aColumn['assemblage']=array('sTitle'=>'assemblage','sWidth'=>'30%', 'sClass'=>'cell-body');
-	    
-	    $oTable->iRowPerPage=500;
-	    $oTable->sDataTemplate='catalog/row_moto_modeldetail.tpl';
-	    Base::$sText.=$oTable->GetTable();
-	}
-	//-----------------------------------------------------------------------------------------------
-	public function MotoAssemblage() {
-		Resource::Get()->Add('/css/tree.css',1);
-		Resource::Get()->Add('/js/tree.js');
-		
-		if(Base::$aRequest['id_lang']) $iIdLng=Base::$aRequest['id_lang'];
-		else {
-		    $iIdLng=4;
-		    $_REQUEST['id_lang']=4;
-		}
-		
-		$aParams=Base::$aRequest;
-		unset($aParams['id_lang']);
-		unset($aParams['action']);
-		$sUrl='/pages/catalog_moto_assemblage/?';
-		$aUrl=array();
-		foreach ($aParams as $sKey => $sValue) $aUrl[]=$sKey."=".$sValue;
-		$sUrl.=implode("&", $aUrl);
-		Base::$tpl->assign('sUrlWithoutLang',$sUrl);
-		
-// 		$aLangAssoc=Db::GetAssoc("SELECT l.lng_id, t.TEX_TEXT
-//             FROM ".DB_TOF."`tof__languages` as l
-//             left join ".DB_TOF."tof__designations as d on l.lng_des_id=d.des_id and d.DES_LNG_ID=4
-//             left join ".DB_TOF."tof__des_texts as t on d.DES_TEX_ID=t.TEX_ID
-//             where l.lng_id<>255
-// 		");
-// 		Base::$tpl->assign('aLangAssoc',$aLangAssoc);
-		
-	    TecdocDb::SetWhere($sWhere, Base::$aRequest, 'level', 't');
-	    TecdocDb::SetWhere($sWhere, Base::$aRequest, 'id_parent', 't');
-	    
-	    $sSql="select t.ID_src as id,
-            t.Level+1 str_level,
-            t.Sort str_sort,
-            0 expand,
-            CONCAT(UCASE(MID(t.Name,1,1)),MID(t.Name,2)) as data,
-            t.ID_parent str_id_parent,
-            0 color
-            from ".DB_OCAT."cat_alt_tree t
-              
-            INNER JOIN (
-            SELECT link.ID_tree
-            FROM ".DB_OCAT."`cat_alt_link_typ_art` ltyp
-            INNER JOIN ".DB_OCAT."cat_alt_link_str_grp link ON link.`ID_grp` = ltyp.`ID_grp`
-            INNER JOIN ".DB_OCAT."cat_alt_types t on ltyp.`ID_typ`=t.ID_typ and  t.ID_src='".Base::$aRequest['model_detail']."'
-            GROUP BY link.ID_tree
-            )groups ON t.ID_tree = groups.ID_tree
-                
-            where t.Level > 0
-            ".$sWhere."
-            order by t.Name";
-	    
-	    $aTreeItem=array();
-	    $aTreeAll=TecdocDb::GetAll($sSql);
-	    $aTree=array();
-	    if ($aTreeAll) foreach ($aTreeAll as $aValue) {
-	        $aTree[$aValue['id']]=$aValue;
-	    }
-	    unset($aTreeAll);
-	    
-	    //show tecdoc names begin
-// 	    $aNames=Db::GetAssoc("
-// 	        select str_id as id,tex_text as data
-// 	        from ".DB_TOF."tof__search_tree
-//             join ".DB_TOF."tof__designations  on str_des_id=des_id and  des_lng_id = ".$iIdLng."
-//             join ".DB_TOF."tof__des_texts on des_tex_id=tex_id
-	        
-// 	        where str_id in ('".implode("','", array_keys($aTree))."')
-// 	        ");
-// 	    if($aNames) foreach ($aTree as $sKey => $aValue) {
-// 	        if($aNames[$sKey]) $aTree[$sKey]['data']=$aNames[$sKey];
-// 	    }
-	    //show tecdoc names end
-	    
-	    if (Base::$aRequest['id_part']) $this->SetSelectedPart($aTree, Base::$aRequest['id_part']);
-	    
-	    if ($aTree) foreach ($aTree as $aValue) {
-	        $aTreeItem[$aValue['str_id_parent']][]=array(
-	            "selected"=>$aValue['selected'],
-	            "name"=>$aValue['data'],
-	            "id"=>$aValue['id'],
-	            "level"=>$aValue['str_level'],
-	            "id_parend"=>$aValue['str_id_parent'],
-	            "url"=>'/pages/catalog_moto_assemblage/?brand='.Base::$aRequest['brand'].'&model='.Base::$aRequest['model'].'&model_detail='.Base::$aRequest['model_detail'].'&id_part='.$aValue['id']
-	        );
-	    }
-	    
-	    Base::$tpl->assign("sTecdocTree",$this->outTree($aTreeItem, 13771, 0));
-	    
-	    if (Base::$aRequest['id_part'])
-	    {   
-	        $sSql="select a.ID_src art_id, UPPER(a.Search) art_article_nr
-			, a.Name as name
-	        , s.ID_src as id_tof
-	        , s.Search as make
-	        , REPLACE(s.Search,'&','') as cat_name
-	        , s.Search as brand
-	        , UPPER(a.Search) as code
-	        , 0 as price
-	        , concat( '".Base::$aGeneralConf['TecDocUrl']."/imgbank/tcd/' , g.path) as img_path
-	            
-			FROM ".DB_OCAT."cat_alt_link_typ_art lta
-			join ".DB_OCAT."cat_alt_types t on lta.ID_typ=t.ID_typ and t.ID_src = '".Base::$aRequest['model_detail']."'
-			join ".DB_OCAT."cat_alt_link_str_grp lsg on lsg.ID_tree = '".Base::$aRequest['id_part']."' and lsg.ID_grp=lta.ID_grp
-			join ".DB_OCAT."cat_alt_articles a on a.ID_art=lta.ID_art
-			join ".DB_OCAT."cat_alt_suppliers s on lta.ID_sup=s.ID_sup
-			join ".DB_OCAT."cat_alt_images g on a.ID_art = g.ID_art and g.path not like 'pdf%'
-            	where 1=1
-            ".$sWhere;
-	        $aData=TecdocDb::GetAll($sSql);
-	        
-	        //show tecdoc names begin
-// 	        if($aData) {
-// 	            $aArts=array();
-// 	            foreach ($aData as $aValue) $aArts[$aValue['art_id']]=$aValue['art_id'];
-	            
-//     	        $aNames=Db::GetAssoc("
-//     	           select cta.art_id, dest.tex_text as name
-//     	           from ".DB_TOF."tof__articles as cta
-//                    inner join ".DB_TOF."tof__designations as des on cta.art_complete_des_id = des.des_id  and des.des_lng_id = ".$iIdLng." 
-//                    inner join ".DB_TOF."tof__des_texts dest on des.des_tex_id=dest.tex_id
-//     	           where cta.art_id in ('".implode("','", $aArts)."')
-//     	        ");
-    	        
-//     	        if($aNames) foreach ($aData as $sKey => $aValue) {
-//     	            if($aNames[$aValue['art_id']]) $aData[$sKey]['name']=$aNames[$aValue['art_id']];
-//     	        }
-    	        
-// 	        }
-	        //show tecdoc names end
-	        
-	        $oTable=new Table();
-	        $oTable->sType='array';
-	        $oTable->aDataFoTable=$aData;
-	        
-	        $oTable->aColumn['name']=array('sTitle'=>'Name','sWidth'=>'40%', 'sClass'=>'cell-name');
-	        $oTable->aColumn['make']=array('sTitle'=>'Make','sWidth'=>'10%', 'sClass'=>'cell-brand');
-	        $oTable->aColumn['code']=array('sTitle'=>'Code','sWidth'=>'10%', 'sClass'=>'cell-code');
-	        $oTable->aColumn['pic']=array('sTitle'=>'Pic','sWidth'=>'10%', 'sClass'=>'cell-image');
-	        $oTable->aColumn['price']=array('sTitle'=>'Price','sWidth'=>'10%', 'sClass'=>'cell-price');
-	        $oTable->aColumn['action']=array('sClass'=>'cell-action');
-	        	
-	        $oTable->sClass .= " row-part-table";
-	    
-	        $oTable->iRowPerPage=500;
-	        $oTable->sDataTemplate='catalog/row_part.tpl';
-	        
-	        $oTable->bStepperVisible=false;
-	        $oTable->sNoItem='No price items';
-	    
-			Base::$tpl->assign('sTablePrice',$oTable->getTable());
-		}
-	    
-	    
-	    Base::$sText.=Base::$tpl->fetch('catalog/new_tree_assemblage.tpl');
-	}
-	//-----------------------------------------------------------------------------------------------
 	function mb_ucfirst($str, $enc = 'utf-8') {
 	    return mb_strtoupper(mb_substr($str, 0, 1, $enc), $enc).mb_substr($str, 1, mb_strlen($str, $enc), $enc);
 	}
@@ -5035,281 +4818,6 @@ class Catalog extends Base
 	
 		Base::$tpl->assign('sSeoUrl',"/".$sSeoUrl);
 	
-	}
-	//-----------------------------------------------------------------------------------------------
-	public function TruckIndex() {
-	    $aCats=Db::GetAll(Base::GetSql("Cat",array(
-	        'is_brand'=>1,
-	        'visible'=>1,
-	    )));
-	    if($aCats) {
-	       $aAssocCat=TecdocDb::GetAssoc("select mfa.ID_Src, mfa.ID_Src as tof
-		        from ".DB_OCAT."cat_alt_manufacturer_mfa as mfa
-		        where mfa.MFA_cv = 1 ");
-	       if($aAssocCat) {
-	           foreach ($aCats as $sKey => $aValue) {
-	               if(!in_array($aValue['id_tof'], $aAssocCat)) unset($aCats[$sKey]);
-	           }
-	           sort($aCats);
-	       } else {
-	           $aCats=array();
-	       }
-       }
-	     
-	    $oTable=new Table();
-	    $oTable->bHeaderVisible=false;
-	    $oTable->iGallery=4;
-	    $oTable->iRowPerPage=10000;
-	    $oTable->sStepperAlign='center';
-	    $oTable->bStepperVisible = false;
-	    $oTable->sTemplateName='gallery.tpl';
-	    //$oTable->sSql =$sSql;
-	    $oTable->sType="array";
-	    $oTable->aDataFoTable=$aCats;
-	    
-	    $oTable->sClass .= ' catalog-brands-table mobile-table';
-	    $oTable->bIsGallery= true;
-	    $oTable->sNoItem='No items';
-	    $oTable->aColumn['item']=array('sTitle'=>'Name','sWidth'=>'20%');
-	    $oTable->sDataTemplate = "catalog/row_truck_brands.tpl";
-	    
-	    Base::$sText.=$oTable->getTable();
-	}
-	//-----------------------------------------------------------------------------------------------
-	public function TruckModels() {
-	    $sSelectedCatName=Db::GetOne("select title from cat where id_tof='".Base::$aRequest['brand']."'");
-	    Base::$oContent->AddCrumb(Language::GetMessage('Catalog truck'),'/?action=catalog_truck');
-	    Base::$oContent->AddCrumb($sSelectedCatName,'');
-	    
-	    $aDataForSql['id_tof'] = Base::$aRequest['brand'];
-		$aDataForSql['engines'] = 1;
-		$aDataForSql['join'] = "INNER JOIN ".DB_OCAT."cat_alt_models_mod as camd on camd.ID_src = m.ID_src";
-	    $aDataForSql['where'] = " AND camd.MOD_cv = 1 ";
-	     
-	    $oTable=new Table();
-	    $oTable->sType='array';
-		$oTable->aDataFoTable=TecdocDb::GetModels($aDataForSql);
-	     
-	    $oTable->aColumn['name']=array('sTitle'=>'Make','sWidth'=>'50%');
-		$oTable->aColumn['engines']=array('sTitle'=>'engines','sWidth'=>'25%');
-	    $oTable->aColumn['year']=array('sTitle'=>'Year','sWidth'=>'25%');
-	     
-	    //$oTable->aCallback=array($this,'CallParseModel');
-	    $oTable->iRowPerPage=500;
-	    $oTable->sDataTemplate='catalog/row_truck_model.tpl';
-	    Base::$sText.=$oTable->getTable();
-	}
-	//-----------------------------------------------------------------------------------------------
-	public function TruckDetails() {
-	    
-	    $aModel=TecdocDb::GetModel(array(
-	        'id_tof'=>Base::$aRequest['brand'],
-	        'id_model'=>Base::$aRequest['model'],
-	        'is_truck'=>1
-	    ));
-	    $sSelectedCatName=Db::GetOne("select title from cat where id_tof='".Base::$aRequest['brand']."'");
-	    
-	    Base::$oContent->AddCrumb(Language::GetMessage('Catalog truck'),'/?action=catalog_truck');
-	    Base::$oContent->AddCrumb($sSelectedCatName,'/?action=catalog_truck_model&brand='.Base::$aRequest['brand'].'/');
-	    Base::$oContent->AddCrumb($aModel['name'],'');
-	    
-	    $oTable=new Table();
-	    $oTable->sClass .= " model-detail-table mobile-table";
-	    
-	    $oTable->sType='array';
-	    $oTable->aDataFoTable=TecdocDb::GetModelDetails(array(
-	        'id_tof'=>Base::$aRequest['brand'],
-	        'id_model'=>Base::$aRequest['model'],
-	        'is_truck'=>1
-	    ));
-	    
-	    $oTable->aColumn['name']=array('sTitle'=>'Make','sWidth'=>'55%', 'sClass'=>'cell-name');
-	    $oTable->aColumn['year']=array('sTitle'=>'Yaer','sWidth'=>'5%', 'sClass'=>'cell-years');
-	    $oTable->aColumn['power_kw']=array('sTitle'=>'Power<br>KW','sWidth'=>'5%', 'sClass'=>'cell-power-kw');
-	    $oTable->aColumn['power_hp']=array('sTitle'=>'Power<br>HP','sWidth'=>'5%', 'sClass'=>'cell-power-hp');
-	    $oTable->aColumn['V']=array('sTitle'=>'V','sWidth'=>'5%', 'sClass'=>'cell-volume');
-	    $oTable->aColumn['fuel']=array('sTitle'=>'catalog fuel','sWidth'=>'10%');
-	    $oTable->aColumn['engines']=array('sTitle'=>'catalog engines','sWidth'=>'10%');
-        $oTable->aColumn['max_weight']=array('sTitle'=>'catalog max_weight','sWidth'=>'5%');
-        $oTable->aColumn['axle']=array('sTitle'=>'catalog axle','sWidth'=>'5%');
-        $oTable->aColumn['model_des']=array('sTitle'=>'catalog model_des','sWidth'=>'5%');
-	        
-// 	    $oTable->aCallback=array($this,'CallParseModelDetail');
-	    $oTable->iRowPerPage=200;
-	    $oTable->sDataTemplate='catalog/row_truck_model_detail.tpl';
-	    Base::$sText.=$oTable->GetTable();
-	}
-	//-----------------------------------------------------------------------------------------------
-	public function TruckAssemblage() {
-	    
-	    $aModel=TecdocDb::GetModel(array(
-	        'id_tof'=>Base::$aRequest['brand'],
-	        'id_model'=>Base::$aRequest['model'],
-	        'is_truck'=>1
-	    ));
-	    $aModelDetail=TecdocDb::GetModelDetail(array(
-	        'id_tof'=>Base::$aRequest['brand'],
-	        'id_model'=>Base::$aRequest['model'],
-	        'id_model_detail'=>Base::$aRequest['id_model_detail'],
-	    ));
-	    $sSelectedCatName=Db::GetOne("select title from cat where id_tof='".Base::$aRequest['brand']."'");
-	    
-	    Base::$oContent->AddCrumb(Language::GetMessage('Catalog truck'),'/?action=catalog_truck');
-	    Base::$oContent->AddCrumb($sSelectedCatName,'/?action=catalog_truck_model&brand='.Base::$aRequest['brand'].'/');
-	    Base::$oContent->AddCrumb($aModel['name'],'/?action=catalog_truck_model_detail&brand='.Base::$aRequest['brand'].'&model='.$aModel['mod_id']);
-	    Base::$oContent->AddCrumb($aModelDetail['name'],'');
-	    
-	    $aTree=TecdocDb::GetTreeTruck(array(
-	        'id_tof'=>Base::$aRequest['brand'],
-	        'id_model'=>Base::$aRequest['model'],
-	        'id_model_detail'=>Base::$aRequest['id_model_detail']
-	    ));
-	    
-	    if ($aTree) foreach ($aTree as $sKey => $aValue) {
-	        if($aValue['id']=='13771' || $aValue['str_id_parent']=='13771') {
-	            unset($aTree[$sKey]);
-	            continue;
-	        }
-	        if ($aValue['str_level']==2) $aIdIcon[]=$aValue['id'];
-	        $aTreeAssoc[$aValue['id']]=$aValue;
-	    }
-	    
-	    Base::$tpl->assign("aTree",$aTree);
-	    
-	    
-	    if (Base::$aRequest['part'])
-	    {
-	        array_pop(Base::$oContent->aCrumbs);
-	        Base::$oContent->AddCrumb($aModelDetail['name'],'/?action=catalog_truck_assemblage&brand='.Base::$aRequest['brand'].'&model='.$aModel['mod_id'].'&id_model_detail='.$aModelDetail['id_model_detail']);
-	        Base::$oContent->AddCrumb($aTreeAssoc[Base::$aRequest['part']]['data'],'');
-	        
-	        Base::$bRightSectionVisible=false;
-	        Base::$tpl->assign('bRightPartCatalog',true);
-	    
-	    
-	        $oTable=new Table();
-	        $oTable->sType='array';
-	        $oTable->aDataFoTable=TecdocDb::GetTreeParts(array(
-	            'id_model_detail'=>Base::$aRequest['id_model_detail'],
-	            'id_part'=>Base::$aRequest['part']
-	        ),$this->aCats,1);
-	        	
-	        Base::$oContent->ShowTimer('PartDetail');
-	    
-	        $oTable->aColumn['name']=array('sTitle'=>'Name','sWidth'=>'40%', 'sClass'=>'cell-name');
-	        $oTable->aColumn['make']=array('sTitle'=>'Make','sWidth'=>'10%', 'sClass'=>'cell-brand');
-	        $oTable->aColumn['code']=array('sTitle'=>'Code','sWidth'=>'10%', 'sClass'=>'cell-code');
-	        $oTable->aColumn['pic']=array('sTitle'=>'Pic','sWidth'=>'10%', 'sClass'=>'cell-image','nosort'=>1);
-	        $oTable->aColumn['price']=array('sTitle'=>'Price','sWidth'=>'10%', 'sClass'=>'cell-price');
-	        $oTable->aColumn['action']=array('sClass'=>'cell-action','nosort'=>1);
-	        	
-	        $oTable->sClass .= " row-part-table";
-	    
-	        $oTable->iRowPerPage=Language::getConstant('catalog_assemblage:limit_page_items',25);
-	        $oTable->sDataTemplate='catalog/row_part.tpl';
-// 	        $oTable->aCallback=array($this,'CallParsePart');
-            $oTable->aCallbackAfter=array($this,'ParseTruckPartsImages');
-	        $oTable->aOrdered=" ";
-	        $oTable->bStepperVisible=true;
-	        $oTable->iRowPerPage=10;
-	        $oTable->sNoItem='No price items';
-	        $oTable->sTemplateName = 'catalog/goods_table.tpl';
-	    
-	        Base::$tpl->assign('sTablePrice',$oTable->getTable());
-	        	
-// 	        Content::SetMetaTagsPage('tecdoc_tree_part:',array(
-// 	            'part' => $aTreeAssoc[Base::$aRequest['data']['id_part']]['data'],
-// 	                'modification' => $this->aModelDetail['name'],
-// 	                'model' => $this->aModel['name'],
-// 	                    'brand' => $this->aCat['name'],
-// 	        ));
-        } else {
-//     	    Content::SetMetaTagsPage('tecdoc_tree:',array(
-//     	        'modification' => $this->aModelDetail['name'],
-//     	        'model' => $this->aModel['name'],
-//     	        'brand' => $this->aCat['name'],
-//     	    ));
-    	}
-    	
-    	$aCod = array();
-    	if (!Base::$aRequest['part']) {
-    	    foreach($aTree as $aValue) {
-    	        if ($aValue['str_id_parent'] == $iDefault_select_node) {
-    	            if ($aValue['seourl'])
-    	                $sPath = $aValue['seourl'];
-    	            else
-    	                $sPath = '/?action=catalog_part_view&data[id_make]='.Base::$aRequest['brand'].
-    	                '&data[id_model]='.Base::$aRequest['model'].
-    	                '&data[id_model_detail]='.Base::$aRequest['id_model_detail'].
-    	                '&data[id_part]='.$aValue['id'].'&data[sort]='.Base::$aRequest['data']['sort'];
-    	
-    	            Base::Redirect($sPath);
-    	        }
-    	    }
-    	}
-    	else {
-    	    // get all parent id in tree for current id_part
-    	    $this->getAllParent($aTree, Base::$aRequest['part'], 2002, $aCod);
-    	}
-    	
-    	Base::$tpl->assign("sNeed_aCod", 'none');
-    	// check if need add code
-    	if (isset($_COOKIE['cookie_id_model_detail']) && isset(Base::$aRequest['id_model_detail']) &&
-    	    Base::$aRequest['id_model_detail'] == $_COOKIE['cookie_id_model_detail']) {
-	        Base::$tpl->assign("sNeed_aCod", 'add');
-	    } elseif (!isset($_COOKIE['cookie_id_model_detail']) || (isset($_COOKIE['cookie_id_model_detail']) &&
-	        isset(Base::$aRequest['id_model_detail']) &&
-	        Base::$aRequest['id_model_detail'] != $_COOKIE['cookie_id_model_detail'])) {
-	        setcookie("cookie_id_model_detail", Base::$aRequest['id_model_detail'], 0, '/');
-	        Base::$tpl->assign("sNeed_aCod", 'replace');
-	    }
-	
-	    // get url without sort for jscript
-	    $aParams=array("action"=>Base::$aRequest['action'],
-	        'data[id_make]'=>Base::$aRequest['brand'],
-	        'data[id_model]'=>Base::$aRequest['model'],
-	        'data[id_model_detail]'=>Base::$aRequest['id_model_detail'],
-	        'data[id_part]'=>Base::$aRequest['part'],
-	        'data[name_part]'=>$sNamePart,
-	    );
-	    $sUrl="";
-	    $iCount=count($aParams);
-	    $iCurrent=0;
-	    foreach ($aParams as $sKey => $aValue) {
-	        $sUrl.=$sKey."=".$aValue;
-	        if ($iCurrent<$iCount-1) {
-	            $sUrl.="&";
-	        }
-	        $iCurrent++;
-	    }
-	
-	    Base::$tpl->assign("sUrl",$sUrl);
-	    Base::$tpl->assign("aCod",$aCod);
-	    
-    	Resource::Get()->Add('/libp/mpanel/dtree/dtree.js',1);
-		Base::$sText.=Base::$tpl->fetch('catalog/truck_tree_assemblage.tpl');
-	}
-	//-----------------------------------------------------------------------------------------------
-	public function ParseTruckPartsImages(&$aItem) {
-	    $aCodeTecdoc=array();
-	    $aCodePic=array();
-	    if ($aItem) {
-	        foreach ($aItem as $sKey => $aValue) {
-	            if($aValue['art_id'] && !$aValue['hide_tof_image']) $aCodeTecdoc[]=$aValue['art_id'];
-	            else $aCodePic[]=$aValue['id_cat_part'];
-	        }
-	    }
-	    $aGraphic=TecdocDb::GetImages(array(
-	        'aIdGraphic'=>$aCodeTecdoc,
-	        'aIdCatPart'=>$aCodePic
-	    ),$this->aCats);
-	    
-	    if($aGraphic) foreach ($aItem as $sKey => $aValue) {
-	        if ($aGraphic[$aValue['item_code']])
-	        {
-	            $aItem[$sKey]['image']=$aGraphic[$aValue['item_code']];
-	        }
-	    }
 	}
 	//-----------------------------------------------------------------------------------------------
 	public function Original() {

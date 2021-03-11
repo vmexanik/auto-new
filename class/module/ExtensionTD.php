@@ -493,7 +493,7 @@ class ExtensionTD extends Base
 	    $aPref=array(""=>"")+Db::GetAssoc("select c.pref, c.title from cat_pref cp inner join cat c on c.id=cp.cat_id order by c.name");
 	    Base::$tpl->assign("aPref",$aPref);
 	    $aPrefFrom=array(""=>"")+Db::GetAssoc("Assoc/Pref",array(
-	        'id_tof'=>'>0',
+	        'id_sup'=>'>0',
 	        'all'=>1
 	    ));
 	    Base::$tpl->assign("aPrefFrom",$aPrefFrom);
@@ -509,7 +509,15 @@ class ExtensionTD extends Base
 	            $oExcel->SetActiveSheetIndex();
 	            $oExcel->GetActiveSheet();
 	
-	            $aPref=Db::GetAssoc("select UPPER(cp.name),c.pref from cat_pref cp inner join cat c on c.id=cp.cat_id");
+	            $aPref=Db::GetAssoc("SELECT upper( title ) AS name, pref
+				FROM cat
+				UNION ALL
+				SELECT upper( name ) AS name, pref
+				FROM cat
+				UNION ALL
+				SELECT upper( cp.name ) AS name, c.pref
+				FROM cat_pref AS cp
+				INNER JOIN cat AS c ON c.id = cp.cat_id");
 	
 	            $aResult=$oExcel->GetSpreadsheetData();
 	
@@ -527,7 +535,7 @@ class ExtensionTD extends Base
 	                    }
 	                    {
 	                        //default file
-	                        $aCat=Db::GetRow("select * from cat where name='".$aData['brand']."'");
+	                        $aCat=Db::GetRow("select * from cat where pref='".$aPref[trim(mb_strtoupper($aData['brand']))]."'");
 	                        $aData['brand']=$aCat['name'];
 	                        $aData['pref']=$aCat['pref'];
 	                        if ($aData['brand_from']) $aData['pref_from']=trim($aPref[strtoupper($aData['brand_from'])]);
@@ -625,10 +633,10 @@ class ExtensionTD extends Base
 	    $oTable->sSql=Base::GetSql('Cat/InfoImport');
 	
 	    $oTable->aColumn['brand']=array('sTitle'=>'Brand');
-	    $oTable->aColumn['pref']=array('sTitle'=>'Pref');
+	    //$oTable->aColumn['pref']=array('sTitle'=>'Pref');
 	    $oTable->aColumn['code']=array('sTitle'=>'Code');
 	    $oTable->aColumn['brand_from']=array('sTitle'=>'Brand from');
-	    $oTable->aColumn['pref_from']=array('sTitle'=>'Pref from');
+	    //$oTable->aColumn['pref_from']=array('sTitle'=>'Pref from');
 	    $oTable->aColumn['code_from']=array('sTitle'=>'Code from');
 	    $oTable->aColumn['load_image']=array('sTitle'=>'load_image');
 	    $oTable->aColumn['load_characteristics']=array('sTitle'=>'load_characteristics');
@@ -1331,6 +1339,14 @@ class ExtensionTD extends Base
 	        $aPartInfoFrom['id_cat_part']=Db::GetOne("select id from cat_part where item_code='".$aData['pref_from']."_".$aData['code_from']."'");
 	    }
 	     
+	    if($aPartInfo && $aPartInfoFrom) {
+	      $aCross['pref']=$aPartInfo['pref']; 
+	      $aCross['code']=$aPartInfo['code']; 
+	      $aCross['pref_crs']=$aPartInfoFrom['pref'];
+	      $aCross['code_crs']=$aPartInfoFrom['code'];
+	      $this->InsertCross($aCross);
+	    }   
+	     
 	    $aOriginalCodeFrom=TecdocDb::GetOriginals(array(
 	        'art_id'=>$aPartInfoFrom['art_id'],
 	        'aIdCatPart'=>array($aPartInfoFrom['id_cat_part']),
@@ -1425,14 +1441,14 @@ class ExtensionTD extends Base
                         where a.id_src='".$aPartInfoFrom['art_id']."'
     	            ");
 	            } else {
-	                $iIdTofOe=Db::GetOne("select id_tof from cat where pref='".$aPartInfoFrom['pref']."' ");
+	                $iIdTofOe=Db::GetOne("select id_mfa from cat where pref='".$aPartInfoFrom['pref']."' ");
 	                $aIdTree=TecdocDb::GetAssoc($sSqlTree="select lsg.ID_tree,grp.id_src as ID_grp
                         FROM ".DB_OCAT."cat_alt_link_typ_art lta
                         join ".DB_OCAT."cat_alt_types t on lta.ID_typ=t.ID_typ and t.id_src='".$aValue['id_model_detail']."'
                         join ".DB_OCAT."cat_alt_link_str_grp lsg on lsg.ID_grp=lta.ID_grp
     	                join ".DB_OCAT."cat_alt_groups as grp on grp.id_grp=lsg.ID_grp
                         join ".DB_OCAT."cat_alt_articles a on a.ID_art=lta.ID_art
-	                    join ".DB_OCAT."cat_alt_original as o on o.id_art=a.id_art
+	                join ".DB_OCAT."cat_alt_original as o on o.id_art=a.id_art
                         where o.oe_code='".$aPartInfoFrom["code"]."' and o.oe_brand='".$iIdTofOe."'
     	            ");
 	            }
@@ -1451,7 +1467,7 @@ class ExtensionTD extends Base
 	    static $sPrefMers;
 	
 	    if (!$sPrefMers)
-	        $sPrefMers = Db::GetOne("SELECT pref FROM `cat` WHERE id_tof = 553"); // MERCEDES || MERCEDESBENZ
+		$sPrefMers = Db::GetOne("SELECT pref FROM `cat` WHERE id_mfa = ".Language::getConstant("mercedes:id_src_tecdoc",74)); // MERCEDES || MERCEDESBENZ
 	
 	    if ($aData['pref'] && $aData['code'] && $aData['pref_crs'] && $aData['code_crs']
 	        && !($aData['code']==$aData['code_crs'] && $aData['pref']==$aData['pref_crs'])

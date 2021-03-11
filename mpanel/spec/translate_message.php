@@ -26,6 +26,30 @@ class ATranslateMessage extends Admin
 	public function Index() {
 		$this->PreIndex ();
 		$this->initLocaleGlobal();
+
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong',0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and t.id = '".$this->aSearch['id']."'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and t.code = '".$this->aSearch['code']."'";
+                if ($this->aSearch['content'])
+                    $this->sSearchSQL .= " and t.content = '".$this->aSearch['content']."'";
+            }
+            else {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and t.id like '%".$this->aSearch['id']."%'";
+                if ($this->aSearch['code'])	
+                    $this->sSearchSQL .= " and t.code like '%".$this->aSearch['code']."%'";
+                if ($this->aSearch['content'])	
+                    $this->sSearchSQL .= " and t.content like '%".$this->aSearch['content']."%'";
+            }
+            if ($this->aSearch['date_from'])
+                $this->sSearchSQL .= " and UNIX_TIMESTAMP(t.post_date)>='".strtotime($this->aSearch['date_from'])."'";
+            if ($this->aSearch['date_to'])
+                $this->sSearchSQL .= " and UNIX_TIMESTAMP(t.post_date)<='".strtotime($this->aSearch['date_to'])."'";
+        }
+
 		$oTable = new Table();
 		$oTable->aColumn = array (
 		'id'=>array('sTitle' => 'Id', 'sOrder' => 't.id'),

@@ -54,9 +54,12 @@ if (Base::$aRequest['xajax'] || Base::$aRequest['action']=='splash_xajax') {
 }
 else include(SERVER_PATH.'/class/core/mpanel/includer.php');
 
-$sHeadAdditional="
+$sHeadAdditional= "
     <link href='/css/select2.min.css' rel='stylesheet' />
-    <script src='/js/select2.min.js'></script>";
+    <link href='/libp/mpanel/css/tecdoc_filter.css' rel='stylesheet' />
+    <script src='/js/select2.min.js'></script>
+    <script src='/libp/mpanel/js/tecdoc_filter.js'></script>
+";
 Base::$tpl->assign('sHeadAdditional',$sHeadAdditional);
 
 Base::$tpl->assign('sProjectName',Base::$aGeneralConf['ProjectName']);

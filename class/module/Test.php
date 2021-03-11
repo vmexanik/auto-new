@@ -83,12 +83,133 @@ class Test extends Base
 // 	        where 1=1 and  supplierid = '4' and datasupplierarticlenumber like 'WK 515'
 // 	        limit 100
 //         "),"характеристики товара MANN-FILTER	WK 515");
-	    
-	    
-	    
+
+//        if(Auth::NeedAuth('manager')){
+//            Base::$sText.="<button class='btn' onclick=\"xajax_process_browse_url('/?action=test_fix_cat');\">fix cat table</button>";
+//        }
 	    
 	    //Test::GenerateRubricator();
 	    Base::$sText.= "<br>Test module finished Ok.<br>";
+	}
+	//-----------------------------------------------------------------------------------------------
+	public function CheckApp() {
+	    $aData=TecdocDb::GetAll("
+	        select
+	           s.name as brand, a.search as code, a.id_art as img, a.id_art as typ
+            from ".DB_OCAT."cat_alt_articles as a 
+            join ".DB_OCAT."cat_alt_suppliers as s on s.id_src='9999' and a.id_sup=s.id_sup
+	        
+	        order by a.search
+        ");
+	     
+	    $oTable=new Table();
+	    $oTable->sType='array';
+	    $oTable->aDataFoTable=$aData;
+	    $oTable->aColumn=array(
+	        'code'=>array('sTitle'=>'code'),
+	        'model'=>array('sTitle'=>'model'),
+	        'img'=>array('sTitle'=>'img'),
+	        'typ'=>array('sTitle'=>'typ'),
+	    );
+	    $oTable->aOrdered="order by p.code";
+	    $oTable->iRowPerPage=100;
+	    $oTable->sDataTemplate='mpanel/cat/row_cat.tpl';
+	    $oTable->aCallbackAfter=array($this,'CallParseApp');
+	    Base::$sText.=$oTable->getTable();
+	}
+	//-----------------------------------------------------------------------------------------------
+	public function CallParseApp(&$aItem) {
+	    if($aItem) {
+	        foreach ($aItem as $sKey => $aValue) {
+	            $aImages=TecdocDb::GetAll("
+	                select i.path
+	                from ".DB_OCAT."cat_alt_images as i
+	                where i.id_art='".$aValue['img']."'
+                ");
+	            $aTmp=array();
+	            foreach ($aImages as $aVal) {
+	                $aTmp[]=$aVal['path'];
+	            }
+	             
+	            if($aTmp) {
+	                $aItem[$sKey]['img']="<img height='50px' src='http://tcd20.mstarproject.com/imgbank/tcd/".implode("'><img height='50px' src='http://tcd20.mstarproject.com/imgbank/tcd/", $aTmp)."'>";
+	            }
+	            
+	            $aItem[$sKey]['typ']=TecdocDb::GetOne("SELECT GROUP_CONCAT(t.id_src SEPARATOR ', ')
+	            FROM ".DB_OCAT."cat_alt_link_typ_art as l
+	            JOIN ".DB_OCAT."cat_alt_types as t on l.id_typ=t.ID_typ
+	            WHERE l.ID_art = '".$aValue['typ']."'");
+	            
+	            $aItem[$sKey]['code']="<a target='_blank' href='/buy/frictionmaster_".$aValue['code']."'>".$aValue['code']."</a>";
+	        }
+	    }
+	}
+	//-----------------------------------------------------------------------------------------------
+	public function CheckImages() {
+	    
+	    $aData=TecdocDb::GetAll("
+	        select 
+	           r.id, 
+	           r.code, 
+	           concat(r.model, ' ',r.Trim) as model, 
+	           ifnull(t.id_typ,0) as is_brand, 
+	           a.id_art as img
+            from fm.pads as r
+            left join ".DB_OCAT."cat_alt_articles as a on r.code=a.search
+            join ".DB_OCAT."cat_alt_suppliers as s on s.id_src='9999' and a.id_sup=s.id_sup
+	        left join ".DB_OCAT."cat_alt_types as t on r.KType=t.id_src
+	        
+	        union
+	        
+	        select 
+	           r.id, 
+	           r.code, 
+	           concat(r.model, ' ',r.Trim) as model, 
+	           ifnull(t.id_typ,0) as is_brand, 
+	           a.id_art as img
+            from fm.rotors as r
+            left join ".DB_OCAT."cat_alt_articles as a on r.code=a.search
+            join ".DB_OCAT."cat_alt_suppliers as s on s.id_src='9999' and a.id_sup=s.id_sup
+	        left join ".DB_OCAT."cat_alt_types as t on r.KType=t.id_src
+        ");
+	    
+	    $oTable=new Table();
+	    $oTable->sType='array';
+	    $oTable->aDataFoTable=$aData;
+	    $oTable->aColumn=array(
+	        'id'=>array('sTitle'=>'id'),
+	        'code'=>array('sTitle'=>'code'),
+	        'model'=>array('sTitle'=>'model'),
+	        'is_brand'=>array('sTitle'=>'is_brand'),
+	        'img'=>array('sTitle'=>'img'),
+	    );
+	    $oTable->aOrdered="order by p.code";
+	    $oTable->iRowPerPage=100;
+	    $oTable->sDataTemplate='mpanel/cat/row_cat.tpl';
+	    $oTable->aCallbackAfter=array($this,'CallParse');
+	    Base::$sText.=$oTable->getTable();
+	}
+	//-----------------------------------------------------------------------------------------------
+	public function CallParse(&$aItem) {
+	    if($aItem) {
+	        foreach ($aItem as $sKey => $aValue) {
+	            $aImages=TecdocDb::GetAll("
+	                select i.path
+	                from ".DB_OCAT."cat_alt_images as i 
+	                where i.id_art='".$aValue['img']."'
+                ");
+	            $aTmp=array();
+	            foreach ($aImages as $aVal) {
+	                $aTmp[]=$aVal['path'];
+	            }
+	            
+	            if($aTmp) {
+	                $aItem[$sKey]['img']="<img height='50px' src='http://tcd20.mstarproject.com/imgbank/tcd/".implode("'><img height='50px' src='http://tcd20.mstarproject.com/imgbank/tcd/", $aTmp)."'>";
+	            }
+	            
+	            $aItem[$sKey]['code']="<a target='_blank' href='/buy/frictionmaster_".$aValue['code']."'>".$aValue['code']."</a>";
+	        }
+	    }
 	}
 	//-----------------------------------------------------------------------------------------------
 	public function VinSearch() {
@@ -626,7 +747,203 @@ class Test extends Base
 		return $aResult;
 	}
 	//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+	public function UpdateCat()
+	{
+	   $sSql = "SELECT * FROM opti_sup s GROUP BY s.Search ORDER BY s.ID_src";
+	   $sSqlMan = "SELECT * FROM opti_mfa ORDER BY ID_src";
+	   $aUnknown = Db::GetAll($sSql);
+	   $aUnknownMan = Db::GetAll($sSqlMan);
+	   
+	   $is_lower = 0;
+	   if (Language::getConstant('admin_regulations:cat_name_is_lower','1'))
+	       $is_lower = 1;
+	   
+	   if ($aUnknown) {
+	       foreach ($aUnknown as $aValue) {
+	           if ($is_lower)
+	               $sNameFiltered = mb_strtolower(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '',trim(Content::Translit($aValue['Search']))),'UTF-8');
+	           else
+	               $sNameFiltered = mb_strtoupper(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '',trim(Content::Translit($aValue['Search']))),'UTF-8');
+	   
+	           $aRow = Db::GetRow("Select * from cat where name='".$sNameFiltered."'");
+	   
+	           // change id_sup
+	           if ($aRow)
+	               Db::Execute("Update cat set id_sup = ".$aValue['ID_src']." where id=".$aRow['id']);
+	           else {
+	               // generate pref
+	               $sPref=String::GeneratePref();
+	               $aInsertData=array(
+	                   'pref'=>$sPref,
+	                   'name'=>$sNameFiltered,
+	                   'title'=>str_replace("'","`",$aValue['Name']),
+	                   'id_sup'=>$aValue['ID_src'],
+	               );
+	               Db::AutoExecute("cat", $aInsertData);
+	               $iCatId=Db::InsertId();
+	               $aCatPref = Db::GetRow("Select * from cat_pref where name='".$sNameFiltered."'");
+	               if ($aCatPref)
+	                   DB::Execute("update cat_pref set cat_id=".$iCatId." where id=".$aCatPref['id']);
+	               else
+	                   DB::Execute("insert into cat_pref (name, cat_id) values ('".$sNameFiltered."','".$iCatId."')");
+	           }
+	       }
+	   }
+	   $iTotalUpdate = count($aUnknown);
+	   if ($aUnknownMan) {
+	       foreach ($aUnknownMan as $aValue) {
+	           if ($is_lower)
+	               $sNameFiltered = mb_strtolower(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '',trim(Content::Translit($aValue['Name']))),'UTF-8');
+	           else
+	               $sNameFiltered = mb_strtoupper(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '',trim(Content::Translit($aValue['Name']))),'UTF-8');
+	   
+	           $aRow = Db::GetRow("Select * from cat where name='".$sNameFiltered."'");
+	   
+	           // change id_mfa
+	           if ($aRow)
+	               Db::Execute("Update cat set is_brand=1, is_vin_brand=1, id_mfa = ".$aValue['ID_src']." where id=".$aRow['id']);
+	           else {
+	               // generate pref
+	               $sPref=String::GeneratePref();
+	               $aInsertData=array(
+	                   'pref'=>$sPref,
+	                   'name'=>$sNameFiltered,
+	                   'title'=>str_replace("'","`",$aValue['Name']),
+	                   'id_mfa'=>$aValue['ID_src'],
+	                   'is_brand'=>1,
+	                   'is_vin_brand'=>1
+	               );
+	               Db::AutoExecute("cat", $aInsertData);
+	               $iCatId=Db::InsertId();
+	               $aCatPref = Db::GetRow("Select * from cat_pref where name='".$sNameFiltered."'");
+	               if ($aCatPref)
+	                   DB::Execute("update cat_pref set cat_id=".$iCatId." where id=".$aCatPref['id']);
+	               else
+	                   DB::Execute("insert into cat_pref (name, cat_id) values ('".$sNameFiltered."','".$iCatId."')");
+	           }
+	       }
+	   }
+	   $iTotalUpdate += count($aUnknownMan);
+	   
+	       // update data cat
+	       Db::Execute("UPDATE `cat` c SET link = (
+				SELECT DISTINCT (t.WEB)
+				FROM opti_sup AS t
+				WHERE t.ID_src = c.id_sup ) where c.link is null");
+	       $iTotalUpdateLink = Db::GetOne("SELECT ROW_COUNT()");
+	   
+	       Db::Execute("UPDATE `cat` c SET addres = ( SELECT DISTINCT (
+				CONCAT( t.PostalCountry, ' ', t.City, ' ', t.Street ) )
+				FROM opti_sup AS t
+				WHERE t.ID_src = c.id_sup
+				) where addres is null");
+	       $iTotalUpdateAdres = Db::GetOne("SELECT ROW_COUNT()");
+	   
+	       Db::Execute("UPDATE `cat` c SET country = ( SELECT DISTINCT (t.PostalCountry)
+				FROM opti_sup AS t
+				WHERE t.ID_src = c.id_sup ) where country is null") ;
+	   
+	   Language::UpdateConstant('global:auto_pref_last','AAA');
+	}
+	//-----------------------------------------------------------------------------------------------
+	public function UpdateCatModel()
+	{
+	    $is_lower = 0;
+	    if (Language::getConstant('admin_regulations:cat_name_is_lower','1'))
+	        $is_lower = 1;
+	    
+	    $aMfa = array();
+	    $aOptiModels = Db::getAssoc("Select om.*,m.Name as brand,m.ID_src as id_mfa
+	        ,SUBSTRING(om.DateStart, 1, 2) month_start,SUBSTRING(om.DateStart, 4, 4) year_start
+    	    ,SUBSTRING(om.DateEnd, 1, 2) month_end,SUBSTRING(om.DateEnd, 4, 4) year_end
+	        from opti_models om
+	        inner join opti_mfa m on m.ID_mfa = om.ID_mfa
+	        ");
+	    if ($aOptiModels) {
+	        $aDataInsert = array();
+	        foreach ($aOptiModels as $aValue) {
+	            if ($is_lower)
+	                $sNameFiltered = mb_strtolower(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '',trim(Content::Translit($aValue['brand']))),'UTF-8');
+	            else
+	                $sNameFiltered = mb_strtoupper(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '',trim(Content::Translit($aValue['brand']))),'UTF-8');
+	             
+	            if (!$aMfa[$sNameFiltered])
+	                $aMfa[$sNameFiltered] = $aValue['id_mfa'];
+	            
+	            $asExist = Db::getRow("Select * from cat_model where tof_mod_id=".$aValue['ID_src']);
+	            if ($asExist) {
+	                Db::Execute("Update cat_model set brand='".$aValue['brand']."',name='".mysql_real_escape_string($aValue['Name'])."',
+	                    month_start='".$aValue['month_start']."',year_start='".$aValue['year_start']."',month_end='".
+	                    $aValue['month_end']."',year_end='".$aValue['year_end']."',is_type_auto=1,id_mfa=".
+	                    $aValue['id_mfa']." where id=".$asExist['id']);
+	            }
+	            else {
+	                $aDataInsert[] = "('".$aValue['ID_src']."','".mysql_escape_string($aValue['brand'])."','".
+	                    mysql_escape_string($aValue['Name'])."','".
+	                    $aValue['month_start']."','".$aValue['year_start']."','".$aValue['month_end']."','".
+	                    $aValue['year_end']."','1','".$aValue['id_mfa']."')";
+	            }
+	        }
+	        if ($aDataInsert) {
+	            Db::Execute($s="insert into cat_model (tof_mod_id,brand,name,month_start,year_start,month_end,year_end,visible, id_mfa)
+					values ".implode(", ", $aDataInsert).
+   					" on duplicate key update name=values(name), month_start=values(month_start), year_start=values(year_start),
+					month_end=values(month_end), brand=values(brand),id_mfa=values(id_mfa)");
+	            //file_put_contents("/tmp/aaa", $s);
+	        }
+	    }
+	    $aNotExistBrand = array();
+	    $aUnknownMan = Db::getAll("Select * from cat_model where id_mfa=0 group by brand");
+	    if ($aUnknownMan) {
+	        foreach ($aUnknownMan as $aValue) {
+	            if ($is_lower)
+	                $sNameFiltered = mb_strtolower(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '',trim(Content::Translit($aValue['brand']))),'UTF-8');
+	            else
+	                $sNameFiltered = mb_strtoupper(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '',trim(Content::Translit($aValue['brand']))),'UTF-8');
+	            
+	            if ($aMfa[$sNameFiltered]) {
+	                Db::Execute("Update cat_model set id_mfa=".$aMfa[$sNameFiltered]." where brand='".mysql_real_escape_string($aValue['brand'])."'");
+	            }
+	            else {
+    	            $aExist = Db::getRow("Select * from opti_mfa where Name='".mysql_real_escape_string($aValue['brand'])."'");
+    	            if ($aExist) {
+    	                Db::Execute("Update cat_model set id_mfa=".$aExist['ID_src']." where brand='".mysql_real_escape_string($aValue['brand'])."' and id_mfa=0");
+    	            }
+    	            else 
+    	                $aNotExistBrand[$sNameFiltered] = $aValue['brand'];
+	            }
+	        }	
+	    }
+	    /*if ($aNotExistBrand)
+	        file_put_contents("/tmp/_unk_brand_cat_model", print_r($aNotExistBrand,1));*/    	  
+	}
+	//-----------------------------------------------------------------------------------------------
+	public function UpdateIdRubric(){
+	    $aAllRubric=Db::GetAll("SELECT id, id_tree FROM rubricator ");
+	    foreach ($aAllRubric as $aRubric) {
+	        if($aRubric['id_tree']) {
+	            $aTrees=explode(",", $aRubric['id_tree']);
+	            $aTreeOut=array();
+	            foreach ($aTrees as $iVal) {
+	                if ($iVal)
+	                   $aTreeOut[]=($iVal+89900);
+	            }
+	            Db::Execute("update rubricator set id_tree='".implode(",", $aTreeOut)."' where id='".$aRubric['id']."' ");
+	        }
+	    }
+	
+	}
+    //-----------------------------------------------------------------------------------------------------------
 
+    public function FixCat()
+    {
+        $aCats=DB::GetAssoc("SELECT id, name FROM cat group by name HAVING count(name)>1");
+
+        foreach ($aCats as $key=>$name){
+            DB::Execute("UPDATE cat SET name='".$name."1' where id='".$key."'");
+        }
+    }
 
 }
 ?>

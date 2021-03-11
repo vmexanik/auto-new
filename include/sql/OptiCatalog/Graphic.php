@@ -25,12 +25,12 @@ function SqlOptiCatalogGraphicCall($aData) {
 
 	if ($aData['type_image']=='pdf')
 	{
-		$sWhere.=" and g.path like 'pdf%' ";
+		$sWhere.=" and g.path like '%pdf' ";
 		$sWhere2.=" and extension='pdf' ";
 	}
 	else
 	{
-		$sWhere.=" and g.path not like 'pdf%' ";
+		$sWhere.=" and g.path not like '%pdf' ";
 		$sWhere2.=" and extension<>'pdf' ";
 	}
 

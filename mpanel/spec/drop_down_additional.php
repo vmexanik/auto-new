@@ -26,6 +26,33 @@ class ADropDownAdditional extends Admin
 	{
 		$this->PreIndex ();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong',0)) {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and dda.id = '".$this->aSearch['id']."'";
+                if ($this->aSearch['url'])	$this->sSearchSQL .= " and dda.url = '".$this->aSearch['url']."'";
+                if ($this->aSearch['title'])	$this->sSearchSQL .= " and dda.title = '".$this->aSearch['title']."'";
+            }
+            else {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and dda.id like '%".$this->aSearch['id']."%'";
+                if ($this->aSearch['url'])	$this->sSearchSQL .= " and dda.url like '%".$this->aSearch['url']."%'";
+                if ($this->aSearch['link'])	$this->sSearchSQL .= " and dda.link like '%".$this->aSearch['link']."%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and dda.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and dda.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and dda.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and dda.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$oTable=new Table();
 		//$this->initLocaleGlobal ();
 		$oTable->aColumn=array(

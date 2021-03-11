@@ -18,6 +18,38 @@ class AContextHint extends Admin {
 	public function Index() {
 		$this->PreIndex();
 
+		Base::$sText .= $this->SearchForm();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and ch.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['key_'])
+                    $this->sSearchSQL .= " and ch.key_ = '" . $this->aSearch['key_'] . "'";
+                if ($this->aSearch['content'])
+                    $this->sSearchSQL .= " and ch.content = '" . $this->aSearch['content'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and ch.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['key_'])
+                    $this->sSearchSQL .= " and ch.key_ like '%" . $this->aSearch['key_'] . "%'";
+                if ($this->aSearch['content'])
+                    $this->sSearchSQL .= " and ch.content like '%" . $this->aSearch['content'] . "%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and ch.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and ch.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and ch.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and ch.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		require_once(SERVER_PATH.'/class/core/Table.php');
 		$oTable=new Table();
 		$oTable->aColumn = array ();

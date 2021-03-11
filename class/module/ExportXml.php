@@ -112,7 +112,7 @@ class ExportXml
 		// //$sLimit=Base::GetConstant("export_xml:length","100");
 		$sSimplePriceSql="select p.id, p.pref,  c.title as make, c.name as cat_name, p.code as code_, p.post_date
 			, if(ifnull(cp.name_rus,'')<>'', cp.name_rus, ifnull(p.part_rus,'')) as name_translate
-			, id_price_group, c.id_tof as tof_sup_id
+			, id_price_group, c.id_sup as tof_sup_id, c.id_mfa as tof_mfa_id
 			, ".$sPriceCalc." as price
 			".substr($sPriceSql,strpos($sPriceSql,'from price as p'));
 		// Debug::PrintPre($sSimplePriceSql);
@@ -820,7 +820,7 @@ class ExportXml
 				
 				
 					/*$sArtId=Db::getOne($sql="select ART_ID FROM ".DB_TOF."tof__articles as cta
-						INNER JOIN cat as cat ON cat.id_tof = cta.ART_SUP_ID
+						INNER JOIN cat as cat ON cat.id_to f = cta.ART_SUP_ID
 						inner join ".DB_TOF."tof__art_lookup l on ARL_ART_ID=ART_ID
 						where ARL_SEARCH_NUMBER='".$aValue['code_']."' and cat.name='".$aValue['cat_name']."'
 						order by ARL_KIND

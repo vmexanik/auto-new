@@ -340,7 +340,7 @@ class Price extends Base {
 				}
 			}
 		} else*/
-		if ($aPrice_profile['type_']=='xlsx'){
+		if(trim(Base::GetConstant("PHPExcel:add_path",""))=="_1.8.2" || $aPrice_profile['type_']=='xlsx') {
 			switch (Base::GetConstant("price:type_load","all")) {
 				case 'all':$iCountError = $this->LoadFromXlsxAll($iPriceQueue, $iMaxCountCol, $files, $aPrice_profile, $aProvider, $iUser);break;
 				case 'partial':$iCountError = $this->LoadFromXlsxPartial($iPriceQueue, $iMaxCountCol, $files, $aPrice_profile, $aProvider, $iUser);break;
@@ -588,7 +588,7 @@ class Price extends Base {
 			return array();
 					
 		if (!$sPrefMers)
-			$sPrefMers = Db::GetOne("SELECT pref FROM `cat` WHERE id_tof = 553"); // MERCEDES || MERCEDESBENZ
+			$sPrefMers = Db::GetOne("SELECT pref FROM `cat` WHERE id_mfa = ".Language::getConstant("mercedes:id_src_tecdoc",74)); // MERCEDES || MERCEDESBENZ
 
 		if (!$aProviderCode){
 			//$aProviderCode = Db::GetAssoc("SELECT up.code_name, up.id_user
@@ -841,16 +841,17 @@ class Price extends Base {
 			}
 			if($this->aParserAfter[$u['pref']]){
 				if(!$sCode) $sCode=$u['code_name'];
-				$sCode=trim(preg_replace('/('.$this->aParserAfter[$u['pref']].')(.*)/i','\2',$sCode));
+				//$sCode=trim(preg_replace('/('.$this->aParserAfter[$u['pref']].')(.*)/i','\2',$sCode)); HOT-75
+				$sCode=trim(preg_replace('/([^'.$this->aParserAfter[$u['pref']].'])('.$this->aParserAfter[$u['pref']].')+(.*)$/i','$1$3',$sCode));
 			}
 			if($this->aTrimLeft[$u['pref']]){
 				if(!$sCode) $sCode=$u['code_name'];
-				$iPos=strpos($sCode,$this->aTrimLeft[$u['pref']]);
+				$iPos=stripos($sCode,$this->aTrimLeft[$u['pref']]);
 				if($iPos!==FALSE) $sCode=substr($sCode,$iPos+1);
 			}
 			if($this->aTrimRight[$u['pref']]){
 				if(!$sCode) $sCode=$u['code_name'];
-				$iPos=strpos($sCode,$this->aTrimRight[$u['pref']]);
+				$iPos=stripos($sCode,$this->aTrimRight[$u['pref']]);
 				if($iPos!==FALSE) $sCode=substr($sCode,0,$iPos);
 			}
 			if($sCode){
@@ -1257,7 +1258,7 @@ class Price extends Base {
 				where cp.cat_id=0 group by cp.name order by cp.name");
         foreach ($a as $iKey => $sValue) {
             $sCatName=mb_strtoupper(str_replace(array(' ','-','#','.','/',',','_',':','[',']','(',')','*','&','+','`','\'','"','\\','<','>','?','!','$','%','^','@','~','|','=',';','{','}','№'), '', trim(Content::Translit($sValue))),'UTF-8');
-            $iCatId=Db::GetOne("select id from cat where title like '".mysql_real_escape_string($sValue)."' or name like '".$sCatName."' ");
+            $aCatId=Db::GetRow("select * from cat where title like '".mysql_real_escape_string($sValue)."' or name like '".$sCatName."' ");
             /*if(!$iCatId&&1==0){
                 $sPref=String::GeneratePref();
                 $iCatId=0;
@@ -1269,7 +1270,9 @@ class Price extends Base {
                 );
                 $iCatId=Db::InsertId();
             }*/
-            if($iCatId) {
+            if($aCatId) {
+                $iCatId = $aCatId['id'];
+                $sPref = $aCatId['pref'];
                 Base::$db->AutoExecute("cat_pref", array('pref'=>$sPref,'cat_id'=>$iCatId) , "UPDATE", "id=".$iKey, true, true);
 				if (Language::getConstant('use_price_control',0)) {
 		            // 1) обновление кода, итем кода, префикса в буфере
@@ -1631,7 +1634,11 @@ class Price extends Base {
 		file_put_contents($sLog, Date("Y-m-d H:i:s"). " Start...\n",FILE_APPEND);
 
 		$iAllStrings = 0;
-		$oExcel = new Excel();
+        if(trim(Base::GetConstant("PHPExcel:add_path",""))=="_1.8.2") {
+            $oExcel = new ExcelSpreadsheet();
+        } else {
+        	$oExcel = new Excel();
+        }
 		$oExcel->ReadExcel7($files['path'],true,false);
 		// get count
 		for ($iList=0;$iList<$aPrice_profile['list_count'];$iList++){
@@ -1659,17 +1666,22 @@ class Price extends Base {
 				if ($aPrice_profile['row_start']>$sKey) continue;
 				if ($iMaxCountCol < ($j=count($aValue)))
 					$iMaxCountCol = $j;
-
-				if ($aPrice_profile['is_check_formula_price']) {
-					// check error calculated
-					foreach($aValue as $iCol => $sValue) {
-						if ($sValue == '#N/A' || $sValue=='#VALUE' || $sValue=='' || (strpos($sValue,'=')!==false && strpos($sValue,'=')==0)) {
-							$aValue[$iCol]=$oExcel->getActiveSheet()->getCellByColumnAndRow($iCol-1,$sKey)->getOldCalculatedValue();
-						}
-					}
-				}
+				
+                if(trim(Base::GetConstant("PHPExcel:add_path",""))=="_1.8.2") {
+                //do nothing
+                //to do
+                } else {
+    				if ($aPrice_profile['is_check_formula_price']) {
+    					// check error calculated
+    					foreach($aValue as $iCol => $sValue) {
+    						if ($sValue == '#N/A' || $sValue=='#VALUE' || $sValue=='' || (strpos($sValue,'=')!==false && strpos($sValue,'=')==0)) {
+    							$aValue[$iCol]=$oExcel->getActiveSheet()->getCellByColumnAndRow($iCol-1,$sKey)->getOldCalculatedValue();
+    						}
+    					}
+    				}
+                }
 				foreach($aValue as $iCol => $sValue) {
-					if ($sValue == '#N/A' || $sValue=='#VALUE')
+					if ($sValue == '#N/A' || $sValue=='#VALUE' || $sValue=='#NULL!')
 						$aValue[$iCol]='';
 				}
 				
@@ -1688,7 +1700,11 @@ class Price extends Base {
 		
 		file_put_contents($sLog, Date("Y-m-d H:i:s"). " Start... Partial: ".$iChunkSize."\n",FILE_APPEND);
 		
-		$oExcel = new Excel();
+        if(trim(Base::GetConstant("PHPExcel:add_path",""))=="_1.8.2") {
+            $oExcel = new ExcelSpreadsheet();
+        } else {
+        	$oExcel = new Excel();
+        }
 		$objReader = $oExcel->CreateObjectExcel2007();
 		$sMessage = Language::GetMessage('error get data from file');
 		try {
@@ -1705,9 +1721,11 @@ class Price extends Base {
 		    Db::Execute("update price_queue set date_progress = ".time().", progress = '100', sum_errors = '1', current_string = '0' where id = ".$iPriceQueue);
 		    return 1; // count error
 		}
-		
-		//$aExelInfo = $objReader->listWorksheetInfo($files['path']);
-		$aExelInfo = $objReader->listWorksheetInfo_CorrectAllRows($files['path']);
+		if(trim(Base::GetConstant("PHPExcel:add_path",""))=="_1.8.2") {
+            $aExelInfo = $objReader->listWorksheetInfo($files['path']);
+        } else {
+        	$aExelInfo = $objReader->listWorksheetInfo_CorrectAllRows($files['path']);
+        }
 		unset($objReader);
 		
 		// get count
@@ -1763,7 +1781,7 @@ class Price extends Base {
 							}
 						}
 						foreach($aValue as $iCol => $sValue) {
-							if ($sValue == '#N/A' || $sValue=='#VALUE')
+							if ($sValue == '#N/A' || $sValue=='#VALUE' || $sValue=='#NULL!')
 								$aValue[$iCol]='';
 						}
 										
@@ -1907,9 +1925,8 @@ class Price extends Base {
 
 			$bAddToQueue=false;
 			if($aPriceProfile) foreach ($aPriceProfile as $sKey1 => $aValue1) {
-				//Debug::PrintPre("Profile: ".$aValue1['name']." filename='".$aValue1['file_name']."' email5='".$aValue1['email5']."' input_file='".$aData['file_name_original']."'",false);
 				if ($aValue1['file_name'] == '' && $aValue1['email5'] == '') continue;
-				Debug::PrintPre("Profile: ".$aValue1['name']." filename='".$aValue1['file_name']."' email5='".$aValue1['email5']."' input_file='".$aData['file_name_original']."'",false);
+				// иногда прерывает алгоритм - Debug::PrintPre("Profile: ".$aValue1['name']." filename='".$aValue1['file_name']."' email5='".$aValue1['email5']."' input_file='".$aData['file_name_original']."'",false);
 					
 				if ($sSource == 'mail') {
 					if (($aValue1['email'] || $aValue1['email2']|| $aValue1['email3']|| $aValue1['email4']|| $aValue1['email5'])

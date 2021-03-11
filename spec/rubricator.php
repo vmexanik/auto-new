@@ -23,6 +23,10 @@ switch (Base::$aRequest['action'])
 	case $sPrefix.'set_all':
 		$oObject->SetAll();
 		break;
+		
+	case $sPrefix.'get_part':
+		$oObject->GetPart();
+		break;
 
 	default:
 		$oObject->Index();

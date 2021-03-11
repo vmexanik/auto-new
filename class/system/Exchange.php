@@ -1,22 +1,9 @@
 <?php
 /**
  * @author Yuriy Korzun
- *  table price           + status_1c   INT
- *  
- *  table user_provider   + status_1c   INT
- *                        + id_1c       VARCHAR 
- *  
- *  table user_customer   + status_1c   INT
- *                        + id_user_1c  VARCHAR 
- * 
- *  table cart            + id_cart_1c  VARCHAR 
- *
- *  table cart_package    + status_1c   INT
- *                        + id_1c       VARCHAR 
- *
- *  create teble 1c_brand   id          INT
- *							name        VARCHAR (50)
- *							pref        VARCHAR (3)
+ * ALTER TABLE `user_customer` ADD `id_1c` VARCHAR(50) NOT NULL;
+ * ALTER TABLE `cart_package` ADD `id_1c` VARCHAR(50) NOT NULL;
+ * ALTER TABLE `user_provider` ADD `id_1c` VARCHAR(50) NOT NULL;
  *
  *
  */
@@ -203,7 +190,7 @@ class Exchange extends Base
 	    $no_spaces = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n".
 	        '<КоммерческаяИнформация ВерсияСхемы="2.04" ДатаФормирования="' . date ( 'Y-m-d' )  . '"></КоммерческаяИнформация>';
 	    $oXml = new SimpleXMLElement ( $no_spaces );
-	    $aPrice=Base::$db->getAll("select p.id , p.part_rus , p.id_provider ,p.code , p.description, p.item_code, p.cat, p.price, p.term, c.is_brand 
+	    $aPrice=Base::$db->getAll("select p.id , p.part_rus , p.id_provider ,p.code , p.description, p.item_code, p.cat, p.price, p.stock, c.is_brand 
 	                               from price p
                                    left join cat as c on p.pref=c.pref
 	                               LIMIT 5");
@@ -216,17 +203,15 @@ class Exchange extends Base
  	                    $doc = $doc0->addChild ("Товар");
 	                    $doc->addAttribute ( "Код", $aValue['id']);
         	            $doc->addAttribute ( "Название", $aValue['part_rus']);
-        	            $doc->addAttribute ( "КодПосавщика", $aValue['id_provider']);
+        	            $doc->addAttribute ( "КодПоставщика", $aValue['id_provider']);
         	            //$doc->addAttribute ( "ЕденицаИзмерения", $aValue['']);
         	            $doc->addAttribute ( "Артикул", $aValue['code']);
         	            $doc->addAttribute ( "Описание", $aValue['description']);
         	            $doc->addAttribute ( "ПрефиксКод", $aValue['item_code']);
         	            $doc->addAttribute ( "Производитель", $aValue['cat']);
+        	            $doc->addAttribute ( "Количество", $aValue['stock']);
         	            $doc->addAttribute ( "Цена", $aValue['price']);
-        	            $doc->addAttribute ( "СрокПоставки", $aValue['term']);
-        	               if ($aValue['is_brand']== 1)$sIsBrand ='Да';
-	                           else   $sIsBrand ='Нет';
-	                    $doc->addAttribute ( "Оригинал", $sIsBrand);
+        	             
 	          //Db::Execute("update price set status_1c=1 where id='".$aValue['id']."'"); //признак выгрузки
 	        }
 	    header ( "Content-type: text/xml; charset=utf-8" );
@@ -269,7 +254,7 @@ class Exchange extends Base
 	        '<КоммерческаяИнформация ВерсияСхемы="2.04" ДатаФормирования="' . date ( 'Y-m-d' )  . '"></КоммерческаяИнформация>';
 	    $oXml = new SimpleXMLElement ( $no_spaces );
 	    $aProvider=Db::GetAll(Db::GetSql("Provider",array(
-	        'where'=>"and u.visible=1 and up.status_1c<2  /*and u.post_date>SUBDATE(now(), INTERVAL 40 DAY)*/ "
+	        'where'=>"and u.visible=1 /*and up.status_1c<2  and u.post_date>SUBDATE(now(), INTERVAL 40 DAY)*/ "
 	    )));
 	    $doc0 = $oXml->addChild ("Поставщики");
 	    if($aProvider)
@@ -290,10 +275,9 @@ class Exchange extends Base
 	            $doc->addAttribute ( "Почта", $aValue['email']);
 	            $doc->addAttribute ( "СрокПоставки", $aValue['term']);
 	            $doc->addAttribute ( "Наценка", $aValue['pg_name']);
-	            $doc->addAttribute ( "ДатаПоследнегоЗаказа", $aValue['last_date_work']);
 	            $doc->addAttribute ( "Примечания", $aValue['remark']);
 	            $doc->addAttribute ( "Идентификатор1С", $aValue['id_1c']);
-	            Db::Execute("update user_provider set status_1c=1 where id_user='".$aValue['id_user']."'");//признак выгрузки
+	           // Db::Execute("update user_provider set status_1c=1 where id_user='".$aValue['id_user']."'");//признак выгрузки
 	        }
 	    header ( "Content-type: text/xml; charset=utf-8" );
 	    $sOutput=$oXml->asXML();
@@ -308,7 +292,7 @@ class Exchange extends Base
 	        '<КоммерческаяИнформация ВерсияСхемы="2.04" ДатаФормирования="' . date ( 'Y-m-d' )  . '"></КоммерческаяИнформация>';
 	    $oXml = new SimpleXMLElement ( $no_spaces );
 	    $aCustomer=Db::GetAll(Db::GetSql("Customer",array(
-	        'where'=>"and u.visible=1 and uc.name is not null and uc.status_1c<2  and u.post_date>SUBDATE(now(), INTERVAL 40 DAY) "
+	        'where'=>"and u.visible=1 /*and uc.name is not null and uc.status_1c<2  and u.post_date>SUBDATE(now(), INTERVAL 40 DAY)*/ "
 	    )));
 	    $doc0 = $oXml->addChild ("Контрагенты");
 	    if($aCustomer)
@@ -339,7 +323,7 @@ class Exchange extends Base
 	            }else {
 	            $doc->addAttribute ( "ТипПользователя", Language::GetMessage('частное лицо'));
 	               }
-	            Db::Execute("update user_customer set status_1c=1 where id_user='".$aValue['id_user']."'");
+	            //Db::Execute("update user_customer set status_1c=1 where id_user='".$aValue['id_user']."'");
 	    }
 	    header ( "Content-type: text/xml; charset=utf-8" );
 	    $sOutput=$oXml->asXML();
@@ -355,7 +339,7 @@ class Exchange extends Base
 	    $oXml = new SimpleXMLElement ( $no_spaces );
 	    $docs = $oXml->addChild ("Заказы");
 	    $aCartPackage=Db::GetAll(Db::GetSql("CartPackage",array(
-	        'where'=>" and cp.order_status='pending' and cp.status_1c<2 and cp.post_date>SUBDATE(now(), INTERVAL 40 DAY)"
+	        'where'=>" and cp.order_status='new' /*and cp.post_date>SUBDATE(now(), INTERVAL 40 DAY)*/"
 	        //'where'=>" and cp.id>'".$sLastId."'"
 	    )));
 	    if($aCartPackage)
@@ -387,33 +371,31 @@ class Exchange extends Base
 	                $user->addAttribute ( "Телефон", $aValue['phone']);
 	                $user->addAttribute ( "Город", $aValue['city']);
 	                $user->addAttribute ( "Адрес", $aValue['address']);
-    	            if($aValue['id_user_customer_type']=='2'){
-    	            $doc->addAttribute ( "ТипПользователя", Language::GetMessage('юридическое лицо'));
-    	            $doc->addAttribute ( "НазваниеОрганизации", $aValue['entity_name']);
-    	            $doc->addAttribute ( "КодЕДРПОУ", $aValue['additional_field1']);
-    	            $doc->addAttribute ( "ИПН", $aValue['additional_field2']);
-    	            $doc->addAttribute ( "БанковскиеPеквизиты", $aValue['additional_field3']);
-    	            $doc->addAttribute ( "ЮридическийAдрес", $aValue['additional_field4']);
-    	            $doc->addAttribute ( "ПочтовыйAдрес", $aValue['additional_field5']);
-    	            }else {
-    	            $doc->addAttribute ( "ТипПользователя", Language::GetMessage('частное лицо'));
-    	               }
-	                Db::Execute("update cart_package set status_1c=1 where id='".$aValue['id']."'");
+//     	            if($aValue['id_user_customer_type']=='2'){
+//     	            $user->addAttribute ( "ТипПользователя", Language::GetMessage('юридическое лицо'));
+//     	            $user->addAttribute ( "НазваниеОрганизации", $aValue['entity_name']);
+//     	            $user->addAttribute ( "КодЕДРПОУ", $aValue['additional_field1']);
+//     	            $user->addAttribute ( "ИПН", $aValue['additional_field2']);
+//     	            $user->addAttribute ( "БанковскиеPеквизиты", $aValue['additional_field3']);
+//     	            $user->addAttribute ( "ЮридическийAдрес", $aValue['additional_field4']);
+//     	            $user->addAttribute ( "ПочтовыйAдрес", $aValue['additional_field5']);
+//     	            }else {
+//     	            $user->addAttribute ( "ТипПользователя", Language::GetMessage('частное лицо'));
+//    	               }
+	              //  Db::Execute("update cart_package set status_1c=1 where id='".$aValue['id']."'");
     	              $doc = $doc->addChild ("Товары");
 	                   foreach($aCart as $aValueCart){
 	                    $t1_1 = $doc->addChild ( 'Товар' );
 	                    $t1_2 = $t1_1->addAttribute ( "Ид", $aValueCart['id']);
 	                    $t1_2 = $t1_1->addAttribute ( "Код", $aValueCart['code']);
-	                    $t1_2 = $t1_1->addAttribute ( "КодИзменен", $aValueCart['code_changed']);
 	                    $t1_2 = $t1_1->addAttribute ( "Цена", $aValueCart['price']);
 	                    $t1_2 = $t1_1->addAttribute ( "ЗакупочнаяЦена", $aValueCart['price_original']);
 	                    $t1_2 = $t1_1->addAttribute ( "Количество", $aValueCart['number']);
 	                    $t1_2 = $t1_1->addAttribute ( "Сумма", $aValueCart['price']*$aValueCart['number'] );
-	                    $t1_2 = $t1_1->addAttribute ( "КомментарийПокупателя", $aValueCart['customer_comment']);
 	                    $t1_2 = $t1_1->addAttribute ( "КомментарийМереджера", $aValueCart['manager_comment']);
 	                    $t1_2 = $t1_1->addAttribute ( "СрокПоставки", $aValueCart['term']);
 	                    $t1_2 = $t1_1->addAttribute ( "СтатусТовара", $aValueCart['order_status']);
-	                    $t1_2 = $t1_1->addAttribute ( "КодПоствщика", $aValueCart['id_provider']);
+	                    $t1_2 = $t1_1->addAttribute ( "КодПоставщика", $aValueCart['id_provider']);
 	                    $t1_2 = $t1_1->addAttribute ( "Постaвщик", $aValueCart['provider_name']);
 	                    $t1_2 = $t1_1->addAttribute ( "ПрефиксКод", $aValueCart['item_code']);
 	                    $t1_2 = $t1_1->addAttribute ( "Префикс", $aValueCart['pref']);
@@ -529,7 +511,7 @@ class Exchange extends Base
         //---------------------------------------------------------------------------------------------
         public function CatalogImportBrands(){
         	$sAttr1 = 'Бренды';$sAttr2 = 'Бренд';
-            $aCat=Base::$db->getAssoc("select pref,c.* from cat c");
+            //$aCat=Base::$db->getAssoc("select pref,c.* from cat c");
             $oOffer=$this->oXml->$sAttr1;
             if($oOffer->$sAttr2)
                 foreach($oOffer->$sAttr2 as $aValue)
@@ -538,17 +520,11 @@ class Exchange extends Base
                     $aCart=$aCart['@attributes'];
                     $sName=trim(mb_strtoupper($aCart['Название']));
                     $sPref=$this->aNamePref[$sName];
-                    if(!$sPref)$sPref=$this->aNamePref[trim(mb_strtoupper($aCart['Номер']))];
                     if(!$sPref){
                         Db::Execute("insert ignore into cat_pref (name) values ('".mysql_escape_string ($sName)."')");
                         continue;
                     }
-                    Db::Execute(" insert into 1c_brand SET
-							id='".$aCart['Номер']."',
-							name='".mysql_escape_string($aCart['Название'])."',
-							pref='".$sPref."'
-							on duplicate key update name=values(name),pref=values(pref)");
-                }
+              }
         }
         //---------------------------------------------------------------------------------------------
         public function CatalogImportProviders(){
@@ -641,7 +617,6 @@ class Exchange extends Base
             if($oOffer->$sAttr2)
                 foreach($oOffer->$sAttr2 as $aValue)
                 {
-                    $this->iProgress++;
                     $aCustomer1C=json_decode(json_encode($aValue), TRUE);
                     $aCustomer1C=$aCustomer1C['@attributes'];
                     foreach ($aCustomer1C as $key => $value) {
@@ -653,10 +628,10 @@ class Exchange extends Base
                             $aCustomer1C ['ТипПользователя']=2;
                          }
                     $aCustomer=Db::GetRow("select uc.*,u.login from user_customer uc inner join user u on u.id=uc.id_user
-							where uc.id_user_1c='".$aCustomer1C['Идентификатор1С']."' or u.login='".$aCustomer1C['Логин']."'");
+							where uc.id_1c='".$aCustomer1C['Идентификатор1С']."' or u.login='".$aCustomer1C['Логин']."'");
                     if($aCustomer['id_user']){  //меняем данные пользователя
-                        Db::Execute("update user_customer set status_1c=2
-                                ,id_user_1c='".mysql_escape_string($aCustomer1C['Идентификатор1С'])."'
+                        Db::Execute("update user_customer set
+                                 id_1c='".mysql_escape_string($aCustomer1C['Идентификатор1С'])."'
                                 ,name='".mysql_escape_string($aCustomer1C['ФИО'])."'
                                 ,city='".mysql_escape_string($aCustomer1C['Город'])."'
                                 ,address='".$aCustomer1C['Адрес']."'
@@ -670,12 +645,7 @@ class Exchange extends Base
                                 ,additional_field4='".$aCustomer1C['ЮридическийAдрес']."'
                                 ,additional_field5='".$aCustomer1C['ПочтовыйAдрес']."'
                                 where id_user='".$aCustomer['id_user']."'");
-                        if(trim($aCustomer1C['Почта']) && ($aCustomer1C['head']=='' || $aCustomer1C['head']==$aCustomer1C['Номер'] )){
-                            $sLogin=$aCustomer1C['Почта'];
-                        }else{
-                            $sLogin=$aCustomer['login'];
-                        }
-                        $sLogin=trim($sLogin);
+                        $sLogin=trim($aCustomer['login']);
                         if(!$sLogin){
                             Debug::PrintPre($aCustomer,false);
                             $aCustomer1C['error']='Empty login/email';
@@ -685,16 +655,17 @@ class Exchange extends Base
                         Db::Execute("update user set email='".mysql_escape_string($aCustomer1C['Почта'])."',
 								login='".mysql_escape_string($sLogin)."' where id='".$aCustomer['id_user']."'");
                     }else{ // добавляем нового пользователя с 1С
+                        
                         Base::$aRequest['data']['name']=$aCustomer1C['ФИО'];
                         $aCustomer=Auth::AutoCreateUser();
-                        $sPassword=Auth::GeneratePassword();
                         $sSalt=String::GenerateSalt();
-                        $sLogin='am'.$aCustomer['login'];
-                        if(Db::GetOne($s="select count(*) from user where
+                        $sPassword='123456';
+                        $sLogin=$aCustomer1C['Логин'];
+                        if(Db::GetOne("select count(*) from user where
 								login='".mysql_escape_string($sLogin)."' and id!='".$aCustomer['id_user']."'")){
-            								$aCustomer1C['error']='Dublicate login/email';
-            								Debug::PrintPre($aCustomer1C,false);
-            								continue;
+                        								$aCustomer1C['error']='Dublicate login/email';
+                        								Debug::PrintPre($aCustomer1C,false);
+                        								continue;
                         }
                         Db::Execute("update user set
 								login='".mysql_escape_string($sLogin)."',
@@ -702,72 +673,64 @@ class Exchange extends Base
 								password='".String::Md5Salt($sPassword,$sSalt)."',
 								password_temp='".$sPassword."',
 								salt='".$sSalt."',
+                                is_temp='0',
 								receive_notification='".Base::GetConstant("user:default_notification","0")."'
 								where id='".$aCustomer['id_user']."'");
-                        Db::Execute("update user_customer set status_1c=2
-                                ,id_user_1c='".$aCustomer1C['Идентификатор1С']."'
+                        Db::Execute("update user_customer set
+                                id_1c='".$aCustomer1C['Идентификатор1С']."'
                                 ,name='".mysql_escape_string($aCustomer1C['ФИО'])."'
+                                ,phone='".mysql_escape_string($aCustomer1C['Телефон'])."'
                                 ,city='".mysql_escape_string($aCustomer1C['Город'])."'
                                 ,address='".$aCustomer1C['Адрес']."'
-                                ,phone='".mysql_escape_string($aCustomer1C['Телефон'])."'
                                 ,remark='".$aCustomer1C['Примечания']."'
                                 ,id_user_customer_type='".$aCustomer1C['ТипПользователя']."'
-                                ,entity_name='".$aCustomer1C['НазваниеОрганизации']."'
-                                ,additional_field1='".mysql_escape_string($aCustomer1C['КодЕДРПОУ'])."'
-                                ,additional_field2='".mysql_escape_string($aCustomer1C['ИПН'])."'
-                                ,additional_field3='".$aCustomer1C['БанковскиеPеквизиты']."'
-                                ,additional_field4='".$aCustomer1C['ЮридическийAдрес']."'
-                                ,additional_field5='".$aCustomer1C['ПочтовыйAдрес']."'
                                 where id_user='".$aCustomer['id_user']."'");
-                    }
+                       }
                 }
         }
        //---------------------------------------------------------------------------------------------
        public function CatalogImportPrice(){ //&& !Base::GetConstant('exchange:import_nom','0')
-       	$sAttr1 = 'Товары';$sAttr2 = 'Товар';
+       	$sAttr1 = 'Товары';$sAttr2 = 'Товар';$sAttr3 = 'ОчиститьПоставщиков';
         $oOffer=$this->oXml->$sAttr1;
+        if($oOffer->$sAttr3){
+            $aClearProvider=json_decode(json_encode($oOffer->$sAttr3), TRUE);
+            $sClearProvider=trim(str_replace(' ','',$aClearProvider['@attributes']['Ид']));
+            Db::Execute("delete from price where id_provider in (".$sClearProvider.")");
+        }
         if($oOffer->$sAttr2){
-            //$aBrand1C=Base::$db->getAssoc("select id,pref from 1c_brand");
-            //$iProvider=Base::GetConstant('exchange:provider_id','241');
-           // Db::Execute(" delete from price where id_provider='".$iProvider."'");
-            
             foreach($oOffer->$sAttr2 as $aValue)
             {
-                $this->$iProgress++;
                 $aCart=json_decode(json_encode($aValue), TRUE); //(array)$aValue;
                 if ($aCart['@attributes'])
                     $aCart=$aCart['@attributes'];
-                
-                
-
-                $sBrand=trim($aCart['Brand']);
-                $sPref=$aBrand1C[$sBrand];
-                $sCode=Catalog::StripCode($aCart['ID']);
-                $sCodeIn=str_replace( "'", "",$aCart['ID']);
+                $iProvider=$aValue['КодПоставщика'];
+                $sBrand=strtoupper(trim($aValue['Производитель']));
+                $sPref=$this->aNamePref[$sBrand];
+                $sCode=Catalog::StripCode($aCart['Артикул']);
+                $sCodeIn=str_replace( "'", "",$aCart['Артикул']);
                 if(!$sPref) Db::Execute("insert ignore into cat_pref (name) values ('".mysql_escape_string ($sBrand)."')");
                 if(!$sPref || !$sCode) continue;
-                $sPrice=(string)$aCart['Price'];
+                $sPrice=(string)$aCart['Цена'];
                 $sPrice=mb_ereg_replace ( '[^0-9\.,]*', '', $sPrice );
                 $sPrice=str_replace( ',', '.', $sPrice );
-                $sStock=$aCart['Rest']?$aCart['Rest']:'0';
-                $sStock=(int)str_replace( ',', '.', $sStock );
-                if($aCart['Удален']=='ложь' || !$aCart['Удален'])
-                    Db::Execute(" insert into price SET
-						item_code='".$sPref.'_'.$sCode."',
-						id_provider='".$iProvider."',
-						code='".$sCode."',
-						code_in='".$sCodeIn."',
-						part_rus='".mysql_real_escape_string($aCart['Name'])."',
-						price='".$sPrice."',
-						pref='".$sPref."',
-						cat='".$sBrand."',
-						stock='".$sStock."'
-						on duplicate key update code_in=values(code_in),price=values(price), part_rus=values(part_rus), stock=values(stock)
-						"
-                    );
-                else
-                    Db::Execute("delete from price where item_code='".$sPref.'_'.$sCode."' and id_provider='".$iProvider."'");
-                }
+                $sStock=$aCart['Количество']?$aCart['Количество']:'0';
+                //  $sStock=(int)str_replace( ',', '.', $sStock );
+                
+                Db::Execute(" insert into price SET
+					item_code='".$sPref.'_'.$sCode."',
+					id_provider='".$iProvider."',
+					code='".$sCode."',
+					code_in='".$sCodeIn."',
+					part_rus='".mysql_real_escape_string($aCart['Название'])."',
+					price='".$sPrice."',
+					pref='".$sPref."',
+					cat='".$sBrand."',
+					stock='".$sStock."',
+                    description='".mysql_real_escape_string($aCart['Описание'])."'
+					on duplicate key update code_in=values(code_in),price=values(price), part_rus=values(part_rus), stock=values(stock), description=values(description)
+					"
+                );
+               }
             }
         }
         //---------------------------------------------------------------------------------------------
@@ -778,33 +741,44 @@ class Exchange extends Base
 	        $iDoc=0;
 	        $f = fopen(SERVER_PATH."/imgbank/temp_upload/exchange.log", "a");
 	        if($oOffer->$sAttr2)
+	            $aPaymentType=DB::GetAssoc("select name, id from payment_type");
+	            $aDelivery=DB::GetAssoc("select name, id from delivery_type");
             foreach($oOffer->$sAttr2 as $aValue)
             {
              $aOrder1C=json_decode(json_encode($aValue), TRUE); //(array)$aValue;//                        //Debug::PrintPre($aOrder1C);
                 // --------------------------------------------------- Обработка Заказ товара
                 if($aOrder1C){
-                    fwrite($f, "Doc id=".$aOrder1C['@attributes']['НомерЗаказа']." 1c=".$aOrder1C['@attributes']['НомерЗаказа1C']."\n");
-                    $aOrder= Db::GetRow("select * from cart_package where id='".$aOrder1C['@attributes']['НомерЗаказа']."' or id_1c='".$aOrder1C['@attributes']['НомерЗаказа1C']."'");
+                    $oCart1C=$aOrder1C['Товары'];
+                    $aUser1C=json_decode(json_encode($aOrder1C['Контрагент']['@attributes']), TRUE);
+                    if ($aOrder1C['@attributes'])
+                        $aOrder1C=$aOrder1C['@attributes'];
+                    
+                    fwrite($f, "Doc id=".$aOrder1C['НомерЗаказа']." 1c=".$aOrder1C['НомерЗаказа1C']."\n");
+                    $aOrder= Db::GetRow("select * from cart_package where id='".$aOrder1C['НомерЗаказа']."' or id_1c='".$aOrder1C['НомерЗаказа1C']."'");
+                    
                     if($aOrder['id']){
                         //заказ с сайта - надо проверить позиции
-                        $sPrice=(string)$aOrder1C['@attributes']['СуммаЗаказа'];
+                        $sPrice=(string)$aOrder1C['СуммаЗаказа'];
                         $sPrice=mb_ereg_replace ( '[^0-9\.,]*', '', $sPrice );
                         $sPrice=str_replace( ',', '.', $sPrice );
+                        $iIdPaymentType=$aPaymentType['СпособОплаты'];
+                        $iIdDelivery=$aDelivery['Доставка'];
+                        if (!$iIdPaymentType){$iIdPaymentType='2';}
+                        if (!$iIdDelivery){$iIdDelivery='1';}
                         $aOrderUpdate=array(
                             'price_total'=>$sPrice,
-                            'id_1c'=>$aOrder1C['@attributes']['НомерЗаказа1C'],
-                            'id_payment_type'=>$aOrder1C['@attributes']['СпособОплаты'],
-                            'id_delivery_type'=>$aOrder1C['@attributes']['Доставка'],
-                            'order_status'=>$aOrder1C['@attributes']['СтатусЗаказа'],
-                            'status_1c'=>2,
-			    'post_date_changed'=>date("Y-m-d H:i:s")
+                            'id_1c'=>$aOrder1C['НомерЗаказа1C'],
+                            'id_payment_type'=>$iIdPaymentType,
+                            'id_delivery_type'=>$iIdDelivery,
+                            'order_status'=>$aOrder1C['СтатусЗаказа'],
+                            'post_date_changed'=>date("Y-m-d H:i:s")
                         );
                         Db::AutoExecute("cart_package",$aOrderUpdate,'UPDATE'," id='".$aOrder['id']."'");
-                        if ($aOrder['order_status']!=$aOrder1C['@attributes']['СтатусЗаказа']) {
+                        if ($aOrder['order_status']!=$aOrder1C['СтатусЗаказа']) {
 	                        $iIdManager = (Auth::$aUser['type_']=='manager' ? Auth::$aUser['id_user'] : 0);
 	                        // log
 	                        Base::$db->Execute("insert into cart_package_log (id_cart_package,id_user_manager,post_date,order_status,comment,ip)
-			    				values ('".$aOrder['id']."','".$iIdManager."','".date("Y-m-d H:i:s")."','".$aOrder1C['@attributes']['СтатусЗаказа']."','','".Auth::GetIp()."')");
+			    				values ('".$aOrder['id']."','".$iIdManager."','".date("Y-m-d H:i:s")."','".$aOrder1C['СтатусЗаказа']."','','".Auth::GetIp()."')");
                         }
         
                         $aCart=Db::GetAll("select * from cart where id_cart_package='".$aOrder['id']."'
@@ -814,23 +788,22 @@ class Exchange extends Base
                         foreach($aCart as $iKey=>$aValueC){
                             $aItemCode[$aValueC['item_code']]['id']=$aValueC['id'];
                             $aItemCode[$aValueC['item_code']]['price']=$aValueC['price'];
-                            $aItemCode[$aValueC['item_code']]['code_changed']=$aValueC['code_changed'];
                             $aItemCode[$aValueC['item_code']]['number']=$aValueC['number'];
                             $aItemCode[$aValueC['item_code']]['order_status']=$aValueC['order_status'];
                             $aItemCode[$aValueC['item_code']]['processed']=0;
                         }
-                        $oCart1C=$aOrder1C['Товары'];
+                       
                         unset($aCartList);
                         
-                        if($oCart1C['Товар']['Статус'])
-                            $aCartList[] = $oCart1C['Товар'];
-                        else 
-                            $aCartList = $oCart1C['Товар'];
-                            
+                
+                        $aCartList =json_decode(json_encode($oCart1C['Товар']), TRUE);                           
                         if($aCartList)
                              
                             foreach($aCartList as $aValueC)
                             {
+                                if($aValueC['@attributes']){
+                                    $aValueC=$aValueC['@attributes'];
+                                }
                                 $aCart1C=$aValueC;
                                 $aCart1CA=$aCart1C;
                                 $sPrice=(string)$aCart1CA['Цена'];
@@ -848,7 +821,6 @@ class Exchange extends Base
                                 if ($sCode!=$aCodeB['code']){
                                     die("Eror input data");
                                 }
-                                $sCodeC=$aCart1CA['КодИзменен'];
                                 $sBrand=strtoupper(trim($aCart1CA['Производитель']));
                                 $sStatusCart=$aCart1CA['СтатусТовара'];
                                 $sPref=$this->aNamePref[$sBrand];
@@ -869,11 +841,6 @@ class Exchange extends Base
                                             fwrite($f, "-- NotChangePrice\n");
                                         }
                                     }
-                                    if($aItemCode[$sItemCode]['code_changed']!=$sCodeC) {
-                                        fwrite($f, "Code site=".$aItemCode[$sItemCode]['code_changed']." 1c=".$sCodeC."\n");
-                                        $oManager->ProcessOrderStatus($aItemCode[$sItemCode]['id'],'change_code','','','','',$sCodeC);
-                                        $aItemCode[$sItemCode]['log'].=$sCodeC.',';
-                                    }
                                     if($aItemCode[$sItemCode]['number']!=$iNumber){
                                         fwrite($f, "Number site=".$aItemCode[$sItemCode]['number']." 1c=".$iNumber."\n");
                                         $oManager->ProcessOrderStatus($aItemCode[$sItemCode]['id'],'change_quantity','','','','',$iNumber);
@@ -891,7 +858,6 @@ class Exchange extends Base
                                         'id_cart_package'=>$aOrder['id'],
                                         'code'=>$sCode,
                                         'pref'=>$sPref,
-                                        'code_changed'=>$sCodeC,
                                         'item_code'=>$sItemCode,
                                         'cat_name'=>(string)$aCart1CA['Производитель'],
                                         'number'=>$iNumber,
@@ -900,11 +866,10 @@ class Exchange extends Base
                                         'price_currency_user'=>$sPriceCurrency,
                                         'post_date'=>$aOrder1C['ДатаЗаказа'].' '.$aOrder1C['ВремяЗаказа'],
                                         'order_status'=>$sStatusCart,
-                                        'id_provider'=>$aCart1CA['КодПоствщика'],
+                                        'id_provider'=>$aCart1CA['КодПоставщика'],
                                         'provider_name'=>$aCart1CA['Постaвщик'],
                                         'type_'=>'order',
-                                        'name_translate'=>(string)($aCart1CA['Название'].' '.$aCart1CA['Производитель'].' '.$aCart1CA['Код']),
-                                        'id_cart_1c'=>$aCart1CA['Идентификатор1С'],
+                                        'name_translate'=>(string)($aCart1CA['Название']),
                                     );
                                     Db::AutoExecute("cart",$aCart);
                                     $iIdCart = Db::InsertId();
@@ -923,8 +888,7 @@ class Exchange extends Base
                         Cart::SendPendingWork($aOrder['id']);
                     }else{
                         //заказ новый из 1С - надо создать
-                        $aUser1C=json_decode(json_encode($aOrder1C['Контрагент']['@attributes']), TRUE);//(array)$aOrder1C['Контрагенты']->Контрагент;
-						if (!$aUser1C)
+                       if (!$aUser1C)
                             die("Error input data");
                         
                         if ($aUser1C ['ТипПользователя']==Language::GetMessage('частное лицо')){
@@ -947,9 +911,9 @@ class Exchange extends Base
                         if(!$aCustomer['id_user']){
                             Base::$aRequest['data']['name']=$aUser1C['ФИО'];
                             $aCustomer=Auth::AutoCreateUser();
-                            $sPassword=Auth::GeneratePassword();
                             $sSalt=String::GenerateSalt();
-                            $sLogin='am'.$aCustomer['login'];
+                            $sPassword='123456';
+                            $sLogin=$aCustomer1C['Логин'];
                             if(Db::GetOne($s="select count(*) from user where
 								    login='".mysql_escape_string($sLogin)."' and id!='".$aCustomer['id_user']."'")){
         								    $aCustomer1C['error']='Dublicate login/email';
@@ -980,20 +944,23 @@ class Exchange extends Base
                                     where id_user='".$aCustomer['id_user']."'");
                              
                         }
-                        $sPrice=(string)$aOrder1C['@attributes']['СуммаЗаказа'];
+                        $sPrice=(string)$aOrder1C['СуммаЗаказа'];
                         $sPrice=mb_ereg_replace ( '[^0-9\.,]*', '', $sPrice );
                         $sPrice=str_replace( ',', '.', $sPrice );
+                        $iIdPaymentType=$aPaymentType['СпособОплаты'];
+                        $iIdDelivery=$aDelivery['Доставка'];
+                        if (!$iIdPaymentType){$iIdPaymentType='2';}
+                        if (!$iIdDelivery){$iIdDelivery='1';}
                         $aOrder=array(
                             'id_user'=>$aCustomer['id_user'],
                             'price_total'=>$sPrice,
                             'price_delivery'=>0.00,
-                            'id_payment_type'=>$aOrder1C['@attributes']['СпособОплаты'],
-                            'id_delivery_type'=>$aOrder1C['@attributes']['Доставка'],
-                            'post_date'=>$aOrder1C['@attributes']['ДатаЗаказа'].' '.$aOrder1C['@attributes']['ВремяЗаказа'],
-                            'order_status'=>$aOrder1C['@attributes']['СтатусЗаказа'],
-                            'id_1c'=>$aOrder1C['@attributes']['НомерЗаказа1C'],
-                            'status_1c'=>2,
-			    			'post_date'=>date("Y-m-d H:i:s"),
+                            'id_payment_type'=>$iIdPaymentType,
+                            'id_delivery_type'=>$iIdDelivery,
+                            'post_date'=>$aOrder1C['ДатаЗаказа'].' '.$aOrder1C['ВремяЗаказа'],
+                            'order_status'=>$aOrder1C['СтатусЗаказа'],
+                            'id_1c'=>$aOrder1C['НомерЗаказа1C'],
+                            'post_date'=>date("Y-m-d H:i:s"),
 			    			'post_date_changed'=>date("Y-m-d H:i:s"),
                         );
                         
@@ -1007,17 +974,15 @@ class Exchange extends Base
                        	Base::$db->Execute("insert into cart_package_log (id_cart_package,id_user_manager,post_date,order_status,comment,ip)
 		    				values ('".$iCartPackage."','".$iIdManager."','".date("Y-m-d H:i:s")."','".$aOrder1C['@attributes']['СтатусЗаказа']."','','".Auth::GetIp()."')");
                         
-                        $oCart=$aOrder1C['Товары'];
                         unset($aCartList);
                         
-                        if($oCart['Товар']['Статус'])
-                            $aCartList[] = $oCart['Товар'];
-                        else
-                            $aCartList = $oCart['Товар'];
-                        
+                        $aCartList =json_decode(json_encode($oCart1C['Товар']), TRUE);                        
                         if($aCartList)
                             foreach($aCartList as $aValueC)
                             {
+                                if($aValueC['@attributes']){
+                                    $aValueC=$aValueC['@attributes'];
+                                }
                                 //$aCart1C=json_decode(json_encode($aValueC), TRUE); //(array)$aValueC;
                                 $aCart1C=$aValueC;
                                 $aCart1CA=$aCart1C;
@@ -1035,7 +1000,6 @@ class Exchange extends Base
                                 if ($sCode!=$aCodeB['code']){
                                     die("Eror input data");
                                 }
-                                $sCodeC=$aCart1CA['КодИзменен'];
                                 $sBrand=strtoupper(trim($aCart1CA['Производитель']));
                                 $sStatusCart=$aCart1CA['СтатусТовара'];
                                 $sPref= $this->aNamePref[$sBrand];
@@ -1045,9 +1009,8 @@ class Exchange extends Base
                                 $aCart=array(
                                     'id_user'=>$aCustomer['id_user'],
                                     'id_cart_package'=>$iCartPackage,
-                                    'code'=>$sCodeC,
+                                    'code'=>$sCode,
                                     'pref'=>$sPref,
-                                    'code_changed'=>$sPref,
                                     'item_code'=>$sPref.'_'.$sCode,
                                     'cat_name'=>(string)$aCart1CA['Производитель'],
                                     'number'=>(int)$aCart1CA['Количество'],
@@ -1055,12 +1018,12 @@ class Exchange extends Base
                                     'price'=>$sPrice,
                                     'price_original'=>$sPriceOriginal,
                                     'price_currency_user'=>$sPriceCurrency,
-                                    'post_date'=>$aOrder1C['@attributes']['ДатаЗаказа'].' '.$aOrder1C['@attributes']['ВремяЗаказа'],
+                                    'post_date'=>$aOrder1C['ДатаЗаказа'].' '.$aOrder1C['ВремяЗаказа'],
                                     'order_status'=>$sStatusCart,
                                     'type_'=>'order',
-                                    'id_provider'=>$aCart1CA['КодПоствщика'],
+                                    'id_provider'=>$aCart1CA['КодПоставщика'],
                                     'provider_name'=>$aCart1CA['Постaвщик'],
-                                    'name_translate'=>(string)($aCart1CA['Название'].' '.$aCart1CA['Производитель'].' '.$aCart1CA['Код']),
+                                    'name_translate'=>(string)($aCart1CA['Название']),
                                     'id_cart_1c'=>$aCart1CA['Идентификатор1С'],
                                 );
                                 Db::AutoExecute("cart",$aCart);
@@ -1085,38 +1048,34 @@ class Exchange extends Base
     		return;
     	$oCrosses = $this->oXml->$sAttr1->$sAttr2;
 		$aCross = array();
-		/*$aPref=Base::$db->getAssoc("
-    			 select upper(title) as name, pref from cat
-    					union
-    					select upper(name) as name, pref from cat
-		");*/
-		/*$aPref=Base::$db->getAssoc("
-		 select upper(name) as name, pref from 1c_brand");*/
-		$aBrand1C=Base::$db->getAssoc("select id,pref from 1c_brand");
-		$aPref=Base::$db->getAssoc("select pref, upper(title) as name from cat");
+		$aBrand=Base::$db->getAssoc("SELECT upper( cp.name ) AS name, c.pref
+                                			FROM cat_pref AS cp
+                                			INNER JOIN cat AS c ON c.id = cp.cat_id"
+	                );
 		foreach($oCrosses as $o1cData) {
 			$a1cData=(array)$o1cData;
 			$a1cData=$a1cData['@attributes'];
-			//$aCross['pref']=$aPref[strtoupper(trim($a1cData['Производитель']))];
-			$sPref='';$sBrand=trim($a1cData['Производитель']);$sPref=$aBrand1C[$sBrand];
+			
+			
+			$sPref='';$sBrand=strtoupper(trim($a1cData['Производитель']));$sPref=$aBrand[$sBrand];
 			if ($sPref)
-				$aCross['pref'] = $sPref;
-			else
-				continue;
-    
-			$sPref='';$sBrand=trim($a1cData['КроссПроизводитель']);$sPref=$aBrand1C[$sBrand];
-			if ($sPref)
-				$aCross['pref_crs'] = $sPref;
-			else
-				continue;
-    					
-			$aCross['code']=Catalog::StripCode(strtoupper($a1cData['Артикул']));
-			//$aCross['pref_crs']=$aPref[strtoupper(trim($a1cData['КроссПроизводитель']))];
-			$aCross['code_crs']=Catalog::StripCode(strtoupper($a1cData['КроссАртикул']));
-			$aCross['source']=$a1cData['Источник'];
-   					
-			if ($aCross['pref'] && $aCross['code'] && $aCross['pref_crs'] && $aCross['code_crs']) 
-				Catalog::InsertCross($aCross);
+    	    $aCross['pref'] = $sPref;
+    	    $sPrefCrs='';$sBrand=strtoupper(trim($a1cData['КроссПроизводитель']));$sPrefCrs=$aBrand[$sBrand];
+    	    if ($sPrefCrs)
+    	        $aCross['pref_crs'] = $sPrefCrs;
+    	
+	        if (!$sPref || !$sPrefCrs){
+	            $aError[]='Check brans on cross '.$a1cData['Производитель'].' - '.$a1cData['Артикул'].' on '.$a1cData['КроссПроизводитель'].' - '.$a1cData['КроссАртикул'];
+	        }else{
+	            $aCross['code']=Catalog::StripCode(strtoupper($a1cData['Артикул']));
+	            $aCross['code_crs']=Catalog::StripCode(strtoupper($a1cData['КроссАртикул']));
+	            $aCross['source']='Источник 1C';
+	
+            if ($aCross['pref'] && $aCross['code'] && $aCross['pref_crs'] && $aCross['code_crs'])
+                Catalog::InsertCross($aCross);
+			
+	        }
+			
     	}
     }
     //-----------------------------------------------------------------------------------------------

@@ -1339,12 +1339,12 @@ class VinRequest extends Base
 //			"sOrder"=>" order by name "
 //			)));
 			
-			Base::$tpl->assign('aModel',array(""=>Language::getMessage('choose model'))+TecdocDb::GetModelAssoc(
+			Base::$tpl->assign('aModel',array_merge(array(""=>Language::getMessage('choose model')),TecdocDb::GetModelAssoc(
 			array(
 			"id_make"=>Base::$aRequest['data']['id_make'],
 			"check_visible"=>"1",
 			"sOrder"=>" order by name "
-			)));
+			))));
 	
 			Base::$oResponse->addAssign('id_model','outerHTML',
 			Base::$tpl->fetch("vin_request/customer/select_model.tpl"));
@@ -1354,10 +1354,10 @@ class VinRequest extends Base
 			return;
 		}
 		if (Base::$aRequest['data']['id_model']) {
-			Base::$tpl->assign('aModification',array(""=>Language::getMessage('choose modification'))+TecdocDb::GetModificationAssoc(
+			Base::$tpl->assign('aModification',array_merge(array(""=>Language::getMessage('choose modification')),TecdocDb::GetModificationAssoc(
 			array(
 			"id_model"=>Base::$aRequest['data']['id_model'],
-			)));
+			))));
 			// Base::$oResponse->addAssign('id_model_detail','outerHTML',
 			// Base::$tpl->fetch("vin_request/customer/select_model_detail.tpl"));
 		}
@@ -1372,15 +1372,9 @@ class VinRequest extends Base
 
 			Base::$oResponse->addScript("$('#marka option[value=".$aData['id_make']."]').prop('selected', true);");
 			
-			/*Base::$tpl->assign('aModel',array(""=>Language::getMessage('choose model'))+Db::GetAssoc("Assoc/OptiCatModel",array(
-			"id_make"=>$aData['id_make'],
-			"check_visible"=>"1",
-			"sOrder"=>" order by name ")));
-			*/
 			$aModelAsoc=TecdocDb::GetModelAssoc(
 					array(
 						"id_make"=>$aData['id_make'],
-						//"id_tof"=>Base::$aRequest['data']['id_tof'],
 						"sOrder"=>" order by name"
 					)
 			);

@@ -14,9 +14,10 @@ function SqlCatModelCall($aData) {
 		$sOrder=$aData['order'];
 	} 
 
-	$sSql="	select cm.* "
+	$sSql="	select cm.*,c.title as cat_title "
 	.$sField.
 	"from cat_model as cm 
+	left join cat c on c.id_mfa=cm.id_mfa
 	where 1=1
 	".$sWhere
 	. $sOrder;

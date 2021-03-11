@@ -22,6 +22,25 @@ class ARoleManager extends Admin
 	public function Index()
 	{
 		$this->PreIndex();
+
+        Base::$sText .= $this->SearchForm();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and rn.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and rn.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['description'])
+                    $this->sSearchSQL .= " and rn.description = '" . $this->aSearch['description'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and rn.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and rn.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['description'])
+                    $this->sSearchSQL .= " and rn.description like '%" . $this->aSearch['description'] . "%'";
+            }
+        }
 		
 		if(Base::$aRequest['action']=='role_manager' && Base::$aRequest['id']){
 			$iExistPermissions=Db::getOne("Select count(*) from role_permissions where id_role=".Base::$aRequest['id']);

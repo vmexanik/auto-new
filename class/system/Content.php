@@ -324,6 +324,17 @@ class Content extends Base
 	//-----------------------------------------------------------------------------------------------
 	public static function Init()
 	{
+	    // redirect
+        $sUri=$_SERVER['REQUEST_URI'];
+
+        $sRedirectLinkTo=Db::GetOne("select link_to from redirect where link_from ='".$sUri."'");
+
+        if ($sRedirectLinkTo && ($sRedirectLinkTo!=$sUri)){
+            Base::Redirect(Language::GetConstant('global:project_url').$sRedirectLinkTo);
+        }
+	    //end redirect
+
+
 		Base::$oContent->CheckAccessManager();
 		
 		Base::$oContent->ClearTimer();
@@ -440,7 +451,7 @@ class Content extends Base
 		
 		
 		
-	    Resource::Get()->Add('/css/main.css',17);
+	    Resource::Get()->Add('/css/main.css',25);
 	    Resource::Get()->Add('/css/context_hint.css',1);
 	    
 	    if(Base::GetConstant('style_colored','0')=='1') {
@@ -458,14 +469,16 @@ class Content extends Base
 	    Resource::Get()->Add('/js/jquery.matchheight-min.js');
 	    Resource::Get()->Add('/js/jquery.maskedinput.js');
 	    Resource::Get()->Add('/js/jquery.select.js');
-	    Resource::Get()->Add('/js/main.js',2);
-	    Resource::Get()->Add('/js/functions.js',4);
+	    Resource::Get()->Add('/js/main.js',4);
+	    Resource::Get()->Add('/js/functions.js',7);
 	    Resource::Get()->Add('/js/check_phone.js');
+        Resource::Get()->Add('/js/masonry.min.js');
 		
-	    if (Auth::$aUser['type_'] == 'manager'){
+	    
 	        Resource::Get()->Add('/js/jquery.searchabledropdown-1.0.8.min.js',1);
 	        Resource::Get()->Add('/js/select2.min.js',2);
 	        Resource::Get()->Add('/css/select2.css',2);
+	   if (Auth::$aUser['type_'] == 'manager'){
 	        if (Language::getConstant('use_price_control',0))
 	            Resource::Get()->Add('/js/price_control.js',1);
 	    }
@@ -827,6 +840,25 @@ class Content extends Base
 	//-----------------------------------------------------------------------------------------------
 	public function LoadBanners() {
 	    $aBanner=Db::GetAll("select * from banner where visible=1");
+	    
+	    /* Необходимо на сервере установить  yum install libwebp-tools */
+	    /*$converter = array(
+	        '('=>'\(',
+	        ')'=>'\)',
+	        ' '=>'\ '
+	    );
+	    
+	    if(strpos($_SERVER['HTTP_ACCEPT'], 'image/webp')!==false && $aBanner) {
+	        foreach ($aBanner as $sKey => $aValue) {
+	            $sImage=$aValue['image'];
+	            $sWebpImage=str_replace(array('jpg','jpeg','png'), 'webp', $aValue['image']);
+
+	            if(!file_exists(SERVER_PATH.$sWebpImage)) {
+	                exec("cwebp ".SERVER_PATH.strtr($sImage, $converter)." -q 80 -o ".SERVER_PATH.strtr($sWebpImage, $converter));
+	            }
+	            $aBanner[$sKey]['image']=$sWebpImage;
+	        }
+	    }*/
 	
 	    if ($aBanner){
 	        Base::$tpl->assign('aBanner',$aBanner);
@@ -850,7 +882,7 @@ class Content extends Base
 	        "с"=>"s","т"=>"t","у"=>"u","ф"=>"f","х"=>"h",
 	        "ц"=>"ts","ч"=>"ch","ш"=>"sh","щ"=>"sch","ъ"=>"y",
 	        "ы"=>"yi","ь"=>"","э"=>"e","ю"=>"yu","я"=>"ya",
-			chr(194)=>"",chr(160)=>"","/"=>"_"," "=>"_","-"=>"_","["=>"","]"=>"","&"=>"and",
+			chr(194)=>"",chr(160)=>"","/"=>"_"," "=>"_","-"=>"_","["=>"","]"=>"","&"=>"and","+"=>"plus",
 	    	"("=>"",")"=>"","'"=>"","?"=>"","´"=>"","`"=>"",
 			"À"=>"A","Á"=>"A","Â"=>"A","Ã"=>"A","Ä"=>"A","à"=>"a","á"=>"a","â"=>"a","ã"=>"a","ä"=>"a","Ą"=>"A","Ä"=>"A",
 	    	"Ё"=>"E","Ë"=>"E","ё"=>"e","É"=>"E","È"=>"E","Ê"=>"E","è"=>"e","é"=>"e","ê"=>"e","ę"=>"e","Ě"=>"E","Ę" => "E","ě"=>"e",
@@ -893,11 +925,6 @@ class Content extends Base
 		if($bAbsolute) $sUrl=Language::GetConstant('global:project_url');
 		$sUrl.='/';
 		if(!$aData['data[id_make]'] && $aData['data[id_model]']){
-// 			$aData['data[id_make]']=Db::GetOne("select id from cat 
-// 				inner join ".DB_OCAT."cat_alt_manufacturer man on man.ID_src=cat.id_tof
-// 				inner join ".DB_OCAT."cat_alt_models m on m.ID_mfa=man.ID_mfa and m.ID_src='".$aData['data[id_model]']."'
-// 					");
-			
 			$aData['data[id_make]']=TecdocDb::GetIdMakeByIdModel($aData['data[id_model]']);
 		}
 		if(!$aData['cat'] && $aData['data[id_make]']){
@@ -1861,7 +1888,7 @@ class Content extends Base
             'finance_reestr_rko','finance_reestr_rko_edit','finance_customer','finance_provider','finance_profit','manager_group_provider',
             'manager_get_blacklist','manager_popular_products','call_me_show_manager','manager_finance','manager_order_report','cart_payment_end',
             'manager_customer_edit','garage_manager','own_auto_add','price_queue_edit','manager_package_status_edit','finance_bill_delete','manager_invoice_customer_create','message_delete','manager_cart_delete',
-            'manager_finance_schet','manager_export_products','manager_provider_requests_edit','manager_control','manager_report_model','export_avtopro'
+            'manager_finance_schet','manager_export_products','manager_provider_requests_edit','manager_control','manager_report_model','export_avtopro', 'related_products','related_products_add','related_products_import','related_products_edit'
         );
         if(Auth::$aUser['id'] && !(Content::IsChangeableLogin(Auth::$aUser['login']))) {
             $aDashboardAction[]='vin_request';
@@ -2034,6 +2061,15 @@ class Content extends Base
             $sUrl=str_replace("__", "_", $sUrl);
         if(!Base::GetConstant('global:url_is_not_last_slash')) $sUrl.='/';
         if(Base::GetConstant('global:url_is_lower',0)) $sUrl=mb_strtolower($sUrl);
+    }
+    //-----------------------------------------------------------------------------------------------
+	public function isGooglePageSpeed() {
+        $sUserAgent=$_SERVER['HTTP_USER_AGENT'];
+        
+        if(stristr($sUserAgent, 'Chrome-Lighthouse') === FALSE) 
+        	return false;
+
+        return true;
     }
     //-----------------------------------------------------------------------------------------------
 }

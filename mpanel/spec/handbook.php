@@ -18,8 +18,51 @@ class AHandbook extends Admin {
 	}
 	//-----------------------------------------------------------------------------------------------
 	public function Index() {
+
 		$sTablePref = $this->sTablePrefix.".";
 		$this->PreIndex();
+
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong',0)) {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and h.id = '".$this->aSearch['id']."'";
+                if ($this->aSearch['name'])	$this->sSearchSQL .= " and h.name = '".$this->aSearch['name']."'";
+                if ($this->aSearch['table_'])	$this->sSearchSQL .= " and h.table_ = '".$this->aSearch['table_']."'";
+                if ($this->aSearch['number'])	$this->sSearchSQL .= " and h.number = '".$this->aSearch['number']."'";
+                if ($this->aSearch['is_collapsed']=='1')	$this->sSearchSQL .= " and h.is_collapsed = '1'";
+                if ($this->aSearch['is_collapsed']=='0')	$this->sSearchSQL .= " and h.is_collapsed = '0'";
+                //with else "ignore" will not be is_collapsed
+                switch($this->aSearch['is_collapsed']){
+                    case '1':
+                        $this->sSearchSQL.=" and h.is_collapsed>='1'";
+                        break;
+                    case '0':
+                        $this->sSearchSQL.=" and h.is_collapsed>='0'";
+                        break;
+                    case  '':
+                        break;
+                }
+            }
+            else {
+                if ($this->aSearch['id'])$this->sSearchSQL .= " and h.id like '%".$this->aSearch['id']."%'";
+                if ($this->aSearch['name'])	$this->sSearchSQL .= " and h.name like '%".$this->aSearch['name']."%'";
+                if ($this->aSearch['table_'])	$this->sSearchSQL .= " and h.table_ like '%".$this->aSearch['table_']."%'";
+                if ($this->aSearch['number'])	$this->sSearchSQL .= " and h.number like '%".$this->aSearch['number']."%'";
+                if ($this->aSearch['is_collapsed']=='1')	$this->sSearchSQL .= " and h.is_collapsed = '1'";
+                if ($this->aSearch['is_collapsed']=='0')	$this->sSearchSQL .= " and h.is_collapsed = '0'";
+                //with else "ignore" will not be found
+                switch($this->aSearch['is_collapsed']){
+                    case '1':
+                        $this->sSearchSQL.=" and h.is_collapsed>='1'";
+                        break;
+                    case '0':
+                        $this->sSearchSQL.=" and h.is_collapsed>='0'";
+                        break;
+                    case  '':
+                        break;
+                }            }
+        }
+
 		$this->initLocaleGlobal ();
 		require_once(SERVER_PATH.'/class/core/Table.php');
 		$oTable=new Table();

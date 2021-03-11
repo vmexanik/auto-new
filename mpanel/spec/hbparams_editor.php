@@ -57,7 +57,7 @@ class AHbparamsEditor extends Admin {
 		$this->AfterIndex();
 	}
 	//-----------------------------------------------------------------------------------------------
-	public function CreateMap($sTableName,$sTemplateName="template_handbook"){
+	public static function CreateMap($sTableName,$sTemplateName="template_handbook"){
 	    $sPath=SERVER_PATH."/include/locale_map/";
 	    if(file_exists($sPath.$sTableName.".php")) return ;
 	    $bSuc=copy($sPath.$sTemplateName.".php", $sPath.$sTableName.".php");

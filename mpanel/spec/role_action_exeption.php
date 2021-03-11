@@ -22,6 +22,34 @@ class ARoleActionExeption extends Admin
 	public function Index()
 	{
 		$this->PreIndex();
+
+        Base::$sText .= $this->SearchForm();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and re.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['action_name'])
+                    $this->sSearchSQL .= " and re.action_name = '" . $this->aSearch['action_name'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and re.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['action_name'])
+                    $this->sSearchSQL .= " and re.action_name like '%" . $this->aSearch['action_name'] . "%'";
+            }
+            if ($this->aSearch['is_exeption']=='1')	$this->sSearchSQL .= " and re.is_exeption = '1'";
+            if ($this->aSearch['is_exeption']=='0')	$this->sSearchSQL .= " and re.is_exeption = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['is_exeption']){
+                case '1':
+                    $this->sSearchSQL.=" and re.is_exeption>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and re.is_exeption>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
 		
 		if(Base::$aRequest['id'])
 			Db::Execute('delete from role_action_exeption where id='.Base::$aRequest['id']);

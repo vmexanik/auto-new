@@ -22,6 +22,42 @@ class AProviderRegion extends Admin {
 	public function Index() {
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and pr.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and pr.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and pr.code = '" . $this->aSearch['code'] . "'";
+                if ($this->aSearch['description'])
+                    $this->sSearchSQL .= " and pr.description = '" . $this->aSearch['description'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and pr.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and pr.code like '%" . $this->aSearch['code'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and pr.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['description'])
+                    $this->sSearchSQL .= " and pr.description like '%" . $this->aSearch['description'] . "%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and pr.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and pr.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and pr.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and pr.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$this->initLocaleGlobal();
 		$oTable=new Table();
 		$oTable->aColumn ['id']=array('sTitle'=>'Id','sOrder'=>'pr.id');

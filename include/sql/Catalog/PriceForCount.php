@@ -137,16 +137,21 @@ function SqlCatalogPriceForCountCall($aData)
 	if ($aData['stock_exist']) {
 		$sWhere .=" and CONVERT(replace(replace(replace(replace(replace(replace(replace(replace(replace(p.stock,'>',''),'<',''),'+',''),'++',''),'+++',''),'есть','1'),'X',''),'XX',''),'XXX',''), SIGNED) > 0 ";
 	}
+
+	if (!$aData['bRubricatorFilter']){
+		$sJoinPGA="	 left join price_group_assign as pgs on pgs.item_code=p.item_code
+		  left join price_group prg on prg.id=pgs.id_price_group
+		 ";
+	}
 	
 	$sSql="select ".$sFieldAdd."count(distinct(p.item_code))
 	 from price as p
-	 left join price_group_assign as pgs on pgs.item_code=p.item_code
+	 ".$sJoinPGA."
 	 inner join cat as c on p.pref=c.pref and c.visible=1
 	 inner join user_provider as up on p.id_provider=up.id_user
 	 inner join user as u on up.id_user=u.id and u.visible=1
 	 inner join currency as cu on up.id_currency=cu.id 
 	 inner join provider_group as pg on up.id_provider_group=pg.id
-	 left join price_group prg on prg.id=pgs.id_price_group
 	 left join price_group_param as pgp on pgp.item_code=p.item_code
 	 
 	 where 1=1

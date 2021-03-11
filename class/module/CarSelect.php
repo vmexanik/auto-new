@@ -148,7 +148,10 @@ class CarSelect extends Base
     	        $aModif=CarSelect::GetModifications(Base::$aRequest);
     	        if(count($aModif )==1) {
     	            $aModif = reset($aModif);
-                    Base::$aRequest['modification']=$aModif['id'];
+    	            if ($aModif['id'])
+                        Base::$aRequest['modification']=$aModif['id'];
+    	            elseif ($aModif[0]['id'])
+                        Base::$aRequest['modification']=$aModif['0']['id'];
 	                Base::$oResponse->addAssign('car_selected_modif','innerHTML',$aModif[0]['name']);
 	                CarSelect::Index();
     	        }
@@ -271,9 +274,9 @@ class CarSelect extends Base
 	    if(!$aData['year']) return 0;
 	     
 	    $aBrands=Db::GetAll("
-	        select cat.id_tof, cat.title, cat.name, cm.tof_mod_id
+	        select cat.id_mfa, cat.title, cat.name, cm.tof_mod_id
             from cat
-            inner join cat_model as cm on cat.id_tof=cm.id_tof and cm.visible=1
+            inner join cat_model as cm on cat.id_mfa=cm.id_mfa and cm.visible=1
             where cat.is_brand = 1 and cat.is_main = 1 and cat.visible
 	        order by cat.title
         ");
@@ -296,9 +299,9 @@ class CarSelect extends Base
 	            if($aTcdModel) {
 	                $aResult=array();
 	                foreach ($aBrands as $aValue) {
-	                    if(!in_array($aValue['id_tof'], $aResult)) {
+	                    if(!in_array($aValue['id_mfa'], $aResult)) {
 	                        if(in_array($aValue['tof_mod_id'],$aTcdModel)) {
-	                            $aResult[$aValue['id_tof']]=$aValue;
+	                            $aResult[$aValue['id_mfa']]=$aValue;
 	                        }
 	                    }
 	                }
@@ -312,7 +315,7 @@ class CarSelect extends Base
 	public function GetModels($aData) {
 	    if(!$aData['year'] || !$aData['car_select']['brand']) return 0;
 	    
-	    $iIdTofBrandSelected=Db::GetOne("select id_tof from cat where name='".$aData['car_select']['brand']."' ");
+	    $iIdTofBrandSelected=Db::GetOne("select id_mfa from cat where name='".$aData['car_select']['brand']."' ");
 	    if($iIdTofBrandSelected) {
 	        $sSql="select m.ID_src, m.ID_src as id
     	        from ".DB_OCAT."cat_alt_manufacturer man 
@@ -445,7 +448,7 @@ class CarSelect extends Base
 	        ");
 	    
 	    if($aModelAssoc) {
-	    $sSql="select concat(t.Name,' (',SUBSTRING(KwHp, LOCATE('/', KwHp)+1),' л.с.)', ' - ' , t.Engines) as name,
+	    $sSql="select concat(t.Name,' (',SUBSTRING(KwHp, LOCATE('/', KwHp)+1),' л.с.)', ' - ' , ifnull(t.Engines,'')) as name,
                        t.Description as full_name, t.id_src as id, t.fuel,  concat ( ifnull( substr(m.DateStart,4,4) ,0), '-',ifnull( substr(m.DateEnd,4,4) ,0)) as start_end, m.name as mod_grp
 	                from ".DB_OCAT."cat_alt_manufacturer man
                     inner join ".DB_OCAT."cat_alt_models m on m.ID_mfa=man.ID_mfa
@@ -456,7 +459,7 @@ class CarSelect extends Base
                        t.body like REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE('".$aData['body']."','хэтчбек','Наклонная задняя часть'),'внедорожник','вездеход%'),'минивэн','вэн'),'кабриолет','кабрио'),'с бортом','c бортовой платформой/ходовая часть'),'xxx','') and
                        (if (litres.TYP_LITRES<>'',trim(concat( litres.TYP_LITRES, ' ', lower(t.Fuel)   )) like '".$aData['volume']."' ,
                          trim(concat(SUBSTRING_INDEX(t.name, ' ', 1),' ',lower(t.Fuel))) like '".$aData['volume']."'))
-                        order by t.Name
+                       group by id order by t.Name
                 ";
 	        $aType=TecdocDb::GetAll($sSql);
 	        if($aType) foreach($aType as $sKey => $aValue){
@@ -501,7 +504,7 @@ class CarSelect extends Base
             ";
 	        $aAuto=TecdocDb::GetRow($sSql);
 	        if($aAuto) {
-	            $aAuto['id_make']=Db::GetOne("select id from cat where id_tof='".$aAuto['make_tof_id']."' ");
+	            $aAuto['id_make']=Db::GetOne("select id from cat where id_mfa='".$aAuto['make_tof_id']."' ");
 	        }
 	    }
 	    

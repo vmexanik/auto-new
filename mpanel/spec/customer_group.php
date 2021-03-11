@@ -22,6 +22,42 @@ class ACustomerGroup extends Admin {
 	public function Index() {
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and cg.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and cg.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['group_discount'])
+                    $this->sSearchSQL .= " and cg.group_discount = '" . $this->aSearch['group_discount'] . "'";
+                if ($this->aSearch['hours_expired_cart'])
+                    $this->sSearchSQL .= " and cg.hours_expired_cart = '" . $this->aSearch['hours_expired_cart'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and cg.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['group_discount'])
+                    $this->sSearchSQL .= " and cg.group_discount like '%" . $this->aSearch['group_discount'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and cg.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['hours_expired_cart'])
+                    $this->sSearchSQL .= " and cg.hours_expired_cart like '%" . $this->aSearch['hours_expired_cart'] . "%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and cg.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and cg.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and cg.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and cg.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$this->initLocaleGlobal();
 		$oTable=new Table();
 		$oTable->aColumn=array(

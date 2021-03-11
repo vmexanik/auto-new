@@ -102,7 +102,27 @@ switch (Base::$aRequest['action'])
 	case $sPrefix.'show_popup_cart':
 	    $oObject->ShowPopupCart();
 	    break;
+	    
+    case $sPrefix.'change_oblast':
+        $oObject->ChangeOblast();
+        break;
+    
+    case $sPrefix.'change_city':
+        $oObject->ChangeCity();
+        break;
 
+    case $sPrefix.'check_login':
+        $oObject->CheckLogin();
+        break;
+
+    case $sPrefix.'package_one_click':
+        $oObject->OrderOneClick();
+        break;
+    
+    case $sPrefix.'package_one_click_end':
+        $oObject->OrderOneClickEnd();
+        break;
+        
 	default:
 		$oObject->Index();
 		break;

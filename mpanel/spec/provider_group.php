@@ -19,6 +19,42 @@ class AProviderGroup extends Admin {
 	public function Index() {
 		$this->PreIndex();
 
+        Base::$sText .= $this->SearchForm ();
+        if ($this->aSearch) {
+            if (Language::getConstant('mpanel_search_strong', 0)) {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and pg.id = '" . $this->aSearch['id'] . "'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and pg.name = '" . $this->aSearch['name'] . "'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and pg.code = '" . $this->aSearch['code'] . "'";
+                if ($this->aSearch['group_margin'])
+                    $this->sSearchSQL .= " and pg.group_margin = '" . $this->aSearch['group_margin'] . "'";
+            } else {
+                if ($this->aSearch['id'])
+                    $this->sSearchSQL .= " and pg.id like '%" . $this->aSearch['id'] . "%'";
+                if ($this->aSearch['code'])
+                    $this->sSearchSQL .= " and pg.code like '%" . $this->aSearch['code'] . "%'";
+                if ($this->aSearch['name'])
+                    $this->sSearchSQL .= " and pg.name like '%" . $this->aSearch['name'] . "%'";
+                if ($this->aSearch['group_margin'])
+                    $this->sSearchSQL .= " and pg.group_margin like '%" . $this->aSearch['group_margin'] . "%'";
+            }
+            if ($this->aSearch['visible']=='1')	$this->sSearchSQL .= " and pg.visible = '1'";
+            if ($this->aSearch['visible']=='0')	$this->sSearchSQL .= " and pg.visible = '0'";
+            //with else "ignore" will not be found
+            switch($this->aSearch['visible']){
+                case '1':
+                    $this->sSearchSQL.=" and pg.visible>='1'";
+                    break;
+                case '0':
+                    $this->sSearchSQL.=" and pg.visible>='0'";
+                    break;
+                case  '':
+                    break;
+            }
+        }
+
 		$this->initLocaleGlobal();
 		$oTable=new Table();
 		$oTable->aColumn=array(

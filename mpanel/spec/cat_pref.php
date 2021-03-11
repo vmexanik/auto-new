@@ -20,7 +20,21 @@ class ACatPref extends Admin {
 	//-----------------------------------------------------------------------------------------------
 	public function Index() {
 		$this->PreIndex();
-		
+
+		Base::$sText .= $this->SearchForm ();
+		if ($this->aSearch) {
+			if (Language::getConstant('mpanel_search_strong',0)) {
+				if ($this->aSearch['id'])$this->sSearchSQL .= " and cp.id = '".$this->aSearch['id']."'";
+				if ($this->aSearch['pref'])	$this->sSearchSQL .= " and c.pref = '".$this->aSearch['pref']."'";
+				if ($this->aSearch['name'])	$this->sSearchSQL .= " and cp.name = '".$this->aSearch['name']."'";
+			}
+			else {
+				if ($this->aSearch['id'])$this->sSearchSQL .= " and cp.id like '%".$this->aSearch['id']."%'";
+				if ($this->aSearch['pref'])	$this->sSearchSQL .= " and c.pref like '%".$this->aSearch['pref']."%'";
+				if ($this->aSearch['name'])	$this->sSearchSQL .= " and cp.name like '%".$this->aSearch['name']."%'";
+			}
+		}
+
 		$oTable=new Table();
 		$oTable->aColumn=array(
 		'id'=>array('sTitle'=>Language::getDMessage('Id'), 'sOrder'=>'cp.id', 'sWidth'=>1, 'sMethod'=>'exact'),
