@@ -1,6 +1,6 @@
 /.idea/
 /cache/*
-/css/combined/*.css*
-/js/combined/*.js*
-/template/templates_c/*.php*
-/connect.php
+/css/combined/
+/js/combined/
+connect.php
+/template/templates_c/
